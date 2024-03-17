@@ -3,6 +3,7 @@
 #include "animation.cpp"
 
 using namespace std;
+extern int groundLevel;
 
 enum Direction {
   LEFT,
@@ -21,31 +22,31 @@ class Player {
 	  ASSETS_PATH"_Idle.png",
 	  10,
 	  1.0f / 12.0f,
-	  3.0f
+	  4.0f
   };
   Animation runningAnimation{
 	  ASSETS_PATH"_Run.png",
 	  10,
 	  1.0f / 12.0f,
-	  3.0f
+	  4.0f
   };
   Animation attackAnimation{
 	  ASSETS_PATH"_Attack.png",
 	  4,
 	  1.0f / 12.0f,
-	  3.0f
+	  4.0f
   };
   Animation jumpAnimation{
 	  ASSETS_PATH"_Jump.png",
 	  3,
 	  1.0f / 12.0f,
-	  3.0f
+	  4.0f
   };
   Animation fallAnimation{
 	  ASSETS_PATH"_Fall.png",
 	  3,
 	  1.0f / 12.0f,
-	  3.0f
+	  4.0f
   };
 
  public:
@@ -54,10 +55,6 @@ class Player {
   Direction lastDirection = RIGHT;
 
   Player() {
-	position = {
-		(float)SCREEN_WIDTH / 2.0f - idleAnimation.GetWidth() / 2.0f,
-		GROUND_LEVEL - idleAnimation.GetHeight()
-	};
   }
 
   void draw() {
@@ -69,10 +66,10 @@ class Player {
 	}
 
 	// add gravity to the object
-	if (position.y >= GROUND_LEVEL - idleAnimation.GetHeight()) {
+	if (position.y >= groundLevel - idleAnimation.GetHeight()) {
 	  // on the ground
 	  upwardsVelocity = 0;
-	  position.y = GROUND_LEVEL - idleAnimation.GetHeight();
+	  position.y = groundLevel - idleAnimation.GetHeight();
 	  jumping = false;
 	} else {
 	  // falling
@@ -80,12 +77,12 @@ class Player {
 	  upwardsVelocity += GRAVITY * deltaTime * deltaTime;
 	}
 
-	if (IsKeyDown(KEY_SPACE) && !jumping) {
+	if ((IsKeyPressed(KEY_SPACE) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) && !jumping) {
 	  // jumping
 	  jumping = true;
 	  // JUMP_FORCE is in pixels per second
 	  upwardsVelocity += JUMP_FORCE * deltaTime;
-	} else if (IsKeyDown(KEY_N) && !attacking) {
+	} else if ((IsKeyPressed(KEY_N) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) && !attacking) {
 	  attacking = true;
 	}
 
@@ -110,6 +107,14 @@ class Player {
   }
 
   [[nodiscard]] float GetHeight() const {
-	return this->idleAnimation.GetHeight();
+	return this->runningAnimation.GetHeight();
+  }
+
+  [[nodiscard]] float GetWidth() const {
+	return abs(this->runningAnimation.GetWidth());
+  }
+
+  void SetPosition(Vector2 pos) {
+	this->position = pos;
   }
 };

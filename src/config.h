@@ -5,7 +5,7 @@
 #define SCREEN_HEIGHT    1080
 
 #define WINDOW_TITLE "Window title"
-#define GROUND_LEVEL  (SCREEN_HEIGHT - 100)
+//#define GROUND_LEVEL  (SCREEN_HEIGHT - 100)
 #define GRAVITY  1000
 #define JUMP_FORCE  (-600)
 
