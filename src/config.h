@@ -1,0 +1,10 @@
+#ifndef RAYLIB_TEST_SRC_CONFIG_H_
+#define RAYLIB_TEST_SRC_CONFIG_H_
+
+#define SCREEN_WIDTH    1920
+#define SCREEN_HEIGHT    1080
+
+#define WINDOW_TITLE "Window title"
+#define GROUND_LEVEL  (SCREEN_HEIGHT - 100)
+
+#endif //RAYLIB_TEST_SRC_CONFIG_H_
