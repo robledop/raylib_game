@@ -7,44 +7,50 @@ int main() {
   SetTargetFPS(60);
   Rectangle buildings[10] = {0};
 
-  for (int i = 0; i < 10; i++) {
-	buildings[i].x = GetRandomValue(-1000, 2000);
-	buildings[i].y = GROUND_LEVEL - 500;
-	buildings[i].width = GetRandomValue(50, 200);
-	buildings[i].height = 500;
+  for (auto &building : buildings) {
+	building.x = GetRandomValue(-1000, 2000);
+	building.y = GROUND_LEVEL - 500;
+	building.width = GetRandomValue(50, 200);
+	building.height = 500;
   }
 
   auto player = Player();
-  player.y = GROUND_LEVEL;
-  player.x = 100;
-
+  
   Camera2D camera = {0};
-  camera.target = (Vector2){player.x, player.y};
-  camera.offset = (Vector2){SCREEN_WIDTH / 2.0f, GROUND_LEVEL};
+  camera.target = player.position;
+  camera.offset = player.position;
   camera.rotation = 0.0f;
 
   camera.zoom = 1.0f;
-  Color groundColor = GREEN;
+  auto groundColor = GREEN;
   while (!WindowShouldClose()) {
 	// Camera target follows player
-	camera.target = (Vector2){static_cast<float>(player.x), static_cast<float>(player.y)};
+	camera.target = {player.position.x, GROUND_LEVEL - player.GetHeight()};
 
-	if (IsKeyDown(KEY_RIGHT)) { player.direction = RIGHT; }
-	else if (IsKeyDown(KEY_LEFT)) { player.direction = LEFT; }
-	else { player.direction = STOP; }
+	if (IsKeyDown(KEY_RIGHT)) {
+	  player.direction = RIGHT;
+	  player.lastDirection = RIGHT;
+	} else if (IsKeyDown(KEY_LEFT)) {
+	  player.direction = LEFT;
+	  player.lastDirection = LEFT;
+	} else { player.direction = STOP; }
 
 	BeginDrawing();
-	ClearBackground(BLUE);
+	{
+	  ClearBackground(BLUE);
 
-	BeginMode2D(camera);
-	  for (auto building : buildings) {
-		DrawRectangleRec(building, GRAY);
+	  BeginMode2D(camera);
+	  {
+		for (auto building : buildings) {
+		  DrawRectangleRec(building, DARKBLUE);
+		}
+
+		player.draw();
 	  }
+	  EndMode2D();
 
-	  player.draw();
-	EndMode2D();
-	
-	DrawRectangle(0, GROUND_LEVEL - 60, SCREEN_WIDTH, SCREEN_HEIGHT / 4, groundColor);
+	  DrawRectangle(0, GROUND_LEVEL, SCREEN_WIDTH, SCREEN_HEIGHT / 4, groundColor);
+	}
 	EndDrawing();
   }
 

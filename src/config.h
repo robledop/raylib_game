@@ -6,5 +6,7 @@
 
 #define WINDOW_TITLE "Window title"
 #define GROUND_LEVEL  (SCREEN_HEIGHT - 100)
+#define GRAVITY  1000
+#define JUMP_FORCE  (-600)
 
 #endif //RAYLIB_TEST_SRC_CONFIG_H_

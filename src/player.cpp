@@ -1,5 +1,8 @@
+#include <valarray>
 #include "raylib.h"
 #include "config.h"
+
+using namespace std;
 
 enum Direction {
   LEFT,
@@ -9,131 +12,159 @@ enum Direction {
 
 class Player {
  private:
-  Image playerRunning{};
-  Texture2D playerRunningAnim{};
-  Image playerIdle{};
-  Texture2D playerIdleAnim{};
-  Image playerAttack1{};
-  Texture2D playerAttack1Anim{};
-  unsigned int nextFrameDataOffset;
-  int currentAnimFrame;
-  int frameDelay;
-  int frameCounter;
-  int animFrames;
+  bool attacking{};
+  bool jumping{};
+  bool falling{};
+  float velocity{};
+  Texture2D playerRunningTexture{};
+  Rectangle playerRunningRec{};
+  Texture2D playerIdleTexture{};
+  Rectangle playerIdleRec{};
+  Texture2D playerAttack1Texture{};
+  Rectangle playerAttack1Rec{};
+  Texture2D playerJumpTexture{};
+  Rectangle playerJumpRec{};
+  Texture2D playerFallTexture{};
+  Rectangle playerFallRec{};
+
+  const float updateTime{1.0f / 12.0f};
+  float runningTime{};
+  float frame{};
+
+  bool AnimateTexture(Texture2D texture, Rectangle *rec, Vector2 pos, int numberOfFrames, bool facingRight = true) {
+	float deltaTime{GetFrameTime()};
+	runningTime += deltaTime;
+	bool completed{false};
+
+	rec->width = facingRight ? abs(rec->width) : -abs(rec->width);
+	if (runningTime >= updateTime) {
+	  runningTime = 0.0f;
+	  rec->x = frame * abs(rec->width);
+	  frame++;
+	  if (frame > (float)numberOfFrames) {
+		frame = 0;
+		completed = true;
+	  }
+	}
+
+	DrawTextureRec(texture, *rec, pos, WHITE);
+	return completed;
+  }
 
  public:
-  int x;
-  int y;
+  Vector2 position{};
   Direction direction = STOP;
+  Direction lastDirection = RIGHT;
 
   Player() {
-	x = 100;
-	y = GROUND_LEVEL;
+	playerIdleTexture = LoadTexture(ASSETS_PATH"_Idle.png");
+	playerIdleTexture.height *= 3;
+	playerIdleTexture.width *= 3;
+	playerRunningTexture = LoadTexture(ASSETS_PATH"_Run.png");
+	playerRunningTexture.height *= 3;
+	playerRunningTexture.width *= 3;
+	playerAttack1Texture = LoadTexture(ASSETS_PATH"_Attack.png");
+	playerAttack1Texture.height *= 3;
+	playerAttack1Texture.width *= 3;
+	playerJumpTexture = LoadTexture(ASSETS_PATH"_Jump.png");
+	playerJumpTexture.height *= 3;
+	playerJumpTexture.width *= 3;
+	playerFallTexture = LoadTexture(ASSETS_PATH"_Fall.png");
+	playerFallTexture.height *= 3;
+	playerFallTexture.width *= 3;
 
-	nextFrameDataOffset = 0;  // Current byte offset to next frame in image.data
+	playerIdleRec = {
+		0.0f,
+		0.0f,
+		(float)playerIdleTexture.width / 10.0f,
+		(float)playerIdleTexture.height
+	};
 
-	currentAnimFrame = 0;       // Current animation frame to load and draw
-	frameDelay = 8;             // Frame delay to switch between animation frames
-	frameCounter = 0;           // General frames counter
-	animFrames = 0;
+	playerRunningRec = {
+		0.0f,
+		0.0f,
+		(float)playerRunningTexture.width / 10.0f,
+		(float)playerRunningTexture.height
+	};
 
-	// Load all GIF animation frames into a single Image
-	// NOTE: GIF data is always loaded as RGBA (32bit) by default
-	// NOTE: Frames are just appended one after another in image.data memory
-	playerIdle = LoadImageAnim(ASSETS_PATH"__Idle.gif", &animFrames);
-	playerRunning = LoadImageAnim(ASSETS_PATH"__Run.gif", &animFrames);
-	playerAttack1 = LoadImageAnim(ASSETS_PATH"__Attack.gif", &animFrames);
+	playerAttack1Rec = {
+		0.0f,
+		0.0f,
+		(float)playerAttack1Texture.width / 4.0f,
+		(float)playerAttack1Texture.height
+	};
 
-	// Load texture from image
-	// NOTE: We will update this texture when required with next frame data
-	// WARNING: It's not recommended to use this technique for sprites animation,
-	// use spritesheets instead, like illustrated in textures_sprite_anim example
-	playerIdleAnim = LoadTextureFromImage(playerIdle);
-	playerRunningAnim = LoadTextureFromImage(playerRunning);
-	playerAttack1Anim = LoadTextureFromImage(playerAttack1);
+	playerJumpRec = {
+		0.0f,
+		0.0f,
+		(float)playerJumpTexture.width / 3.0f,
+		(float)playerJumpTexture.height
+	};
+
+	playerFallRec = {
+		0.0f,
+		0.0f,
+		(float)playerFallTexture.width / 3.0f,
+		(float)playerFallTexture.height
+	};
+
+	position = {
+		(float)SCREEN_WIDTH / 2.0f - playerRunningRec.width / 2.0f,
+		GROUND_LEVEL - playerRunningRec.height
+	};
   }
 
   void draw() {
-	if (direction == LEFT) {
-	  this->x -= 6;
-	} else if (direction == RIGHT) {
-	  this->x += 6;
+	float deltaTime{GetFrameTime()};
+	if (direction == LEFT && !attacking) {
+	  this->position.x -= 6;
+	} else if (direction == RIGHT && !attacking) {
+	  this->position.x += 6;
 	}
 
-	frameCounter++;
-	if (frameCounter >= frameDelay) {
-	  // Move to next frame
-	  // NOTE: If final frame is reached we return to first frame
-	  currentAnimFrame++;
-	  if (currentAnimFrame >= animFrames) currentAnimFrame = 0;
-
-	  // Get memory offset position for next frame data in image.data
-	  nextFrameDataOffset = playerIdle.width * playerIdle.height * 4 * currentAnimFrame;
-
-	  // Update GPU texture data with next frame image data
-	  // WARNING: Data size (frame size) and pixel format must match already created texture
-	  UpdateTexture(playerIdleAnim, ((unsigned char *)playerIdle.data) + nextFrameDataOffset);
-	  UpdateTexture(playerRunningAnim, ((unsigned char *)playerRunning.data) + nextFrameDataOffset);
-	  UpdateTexture(playerAttack1Anim, ((unsigned char *)playerAttack1.data) + nextFrameDataOffset);
-
-	  frameCounter = 0;
-	}
-
-	if (IsKeyDown(KEY_SPACE)) {
-	  
-	  TraceLog(TraceLogLevel::LOG_INFO, "Player attack");
-	  
-	  DrawTexturePro(playerAttack1Anim,
-					 {
-						 0,
-						 0,
-						 static_cast<float>(direction == RIGHT ? playerAttack1.width : -playerAttack1.width),
-						 static_cast<float>(playerAttack1.height)
-					 },
-					 {
-						 static_cast<float>(this->x - playerAttack1.width * 1.5),
-						 static_cast<float>(this->y - playerAttack1.height * 3.75),
-						 static_cast<float>(playerAttack1.width * 3),
-						 static_cast<float>(playerAttack1.height * 3)
-					 },
-					 {0, 0},
-					 0,
-					 WHITE);
-	} else if (direction == LEFT || direction == RIGHT) {
-	  DrawTexturePro(playerRunningAnim,
-					 {
-						 0,
-						 0,
-						 static_cast<float>(direction == RIGHT ? playerRunning.width : -playerRunning.width),
-						 static_cast<float>(playerIdle.height)
-					 },
-					 {
-						 static_cast<float>(this->x - playerRunning.width * 1.5),
-						 static_cast<float>(this->y - playerRunning.height * 3.75),
-						 static_cast<float>(playerRunning.width * 3),
-						 static_cast<float>(playerRunning.height * 3)
-					 },
-					 {0, 0},
-					 0,
-					 WHITE);
-
+	// add gravity to the object
+	if (position.y >= GROUND_LEVEL - playerIdleRec.height) {
+	  // on the ground
+	  velocity = 0;
+	  position.y = GROUND_LEVEL - playerIdleRec.height;
+	  jumping = false;
 	} else {
-	  DrawTexturePro(playerIdleAnim,
-					 {
-						 0,
-						 0,
-						 static_cast<float>(playerIdle.width),
-						 static_cast<float>(playerIdle.height)
-					 },
-					 {
-						 static_cast<float>(this->x - playerIdle.width * 1.5),
-						 static_cast<float>(this->y - playerIdle.height * 3.75),
-						 static_cast<float>(playerIdle.width * 3),
-						 static_cast<float>(playerIdle.height * 3)
-					 },
-					 {0, 0},
-					 0,
-					 WHITE);
+	  // falling
+	  // GRAVITY is in pixels per second squared
+	  velocity += GRAVITY * deltaTime * deltaTime;
 	}
+
+	if (IsKeyDown(KEY_SPACE) && !jumping) {
+	  // jumping
+	  jumping = true;
+	  // JUMP_FORCE is in pixels per second
+	  velocity += JUMP_FORCE * deltaTime;
+	} else if (IsKeyDown(KEY_N) && !attacking) {
+	  frame = 0;
+	  attacking = true;
+	}
+
+	position.y += velocity;
+
+	bool facingRight = lastDirection == RIGHT;
+
+	if (attacking) {
+	  bool completed = AnimateTexture(playerAttack1Texture, &playerAttack1Rec, position, 4, facingRight);
+	  if (completed) {
+		attacking = false;
+	  }
+	} else if (jumping && velocity < 0) {
+	  AnimateTexture(playerJumpTexture, &playerJumpRec, position, 3, facingRight);
+	} else if (velocity > 0) {
+	  AnimateTexture(playerFallTexture, &playerFallRec, position, 3, facingRight);
+	} else if (direction == RIGHT || direction == LEFT) {
+	  AnimateTexture(playerRunningTexture, &playerRunningRec, position, 10, facingRight);
+	} else {
+	  AnimateTexture(playerIdleTexture, &playerIdleRec, position, 10, facingRight);
+	}
+  }
+
+  [[nodiscard]] float GetHeight() const {
+	return playerIdleRec.height;
   }
 };
