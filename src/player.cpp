@@ -13,7 +13,6 @@ enum Direction {
 
 class Player {
  private:
-  bool attacking{};
   bool jumping{};
   bool falling{};
   float upwardsVelocity{};
@@ -50,6 +49,7 @@ class Player {
   };
 
  public:
+  bool attacking{};
   Vector2 position{};
   Direction direction = STOP;
   Direction lastDirection = RIGHT;
