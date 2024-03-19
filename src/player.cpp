@@ -20,32 +20,27 @@ class Player {
   Animation idleAnimation{
 	  ASSETS_PATH"_Idle.png",
 	  10,
-	  1.0f / 12.0f,
-	  4.0f
+	  1.0f / 12.0f
   };
   Animation runningAnimation{
 	  ASSETS_PATH"_Run.png",
 	  10,
-	  1.0f / 12.0f,
-	  4.0f
+	  1.0f / 12.0f
   };
   Animation attackAnimation{
 	  ASSETS_PATH"_Attack.png",
 	  4,
-	  1.0f / 12.0f,
-	  4.0f
+	  1.0f / 12.0f
   };
   Animation jumpAnimation{
 	  ASSETS_PATH"_Jump.png",
 	  3,
-	  1.0f / 12.0f,
-	  4.0f
+	  1.0f / 12.0f
   };
   Animation fallAnimation{
 	  ASSETS_PATH"_Fall.png",
 	  3,
-	  1.0f / 12.0f,
-	  4.0f
+	  1.0f / 12.0f
   };
 
  public:
@@ -116,5 +111,13 @@ class Player {
 
   void SetPosition(Vector2 pos) {
 	this->position = pos;
+  }
+  
+  void UpdateScale() {
+	idleAnimation.UpdateScale();
+	runningAnimation.UpdateScale();
+	attackAnimation.UpdateScale();
+	jumpAnimation.UpdateScale();
+	fallAnimation.UpdateScale();
   }
 };

@@ -15,8 +15,10 @@ int main() {
   Texture2D background1 = LoadTexture(ASSETS_PATH"background_layer_1.png");
   Texture2D background2 = LoadTexture(ASSETS_PATH"background_layer_2.png");
   Texture2D background3 = LoadTexture(ASSETS_PATH"background_layer_3.png");
+  
+  float scale = (GetScreenHeight() + 100) / background1.height;
 
-  GroundGrass groundGrass{1000, -1000, groundLevel};
+  GroundGrass groundGrass{1000};
 
   float bg1X{};
   float bg2X{};
@@ -30,7 +32,6 @@ int main() {
   camera.offset = {GetScreenWidth() / 2.0f - player.GetWidth() / 2, GetScreenHeight() / 2.0f};
 
   camera.zoom = 1.0f;
-  auto groundColor = GREEN;
 
   while (!WindowShouldClose()) {
 	float deltaTime = GetFrameTime();
@@ -38,8 +39,12 @@ int main() {
 	if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT))) {
 	  if (IsWindowFullscreen()) {
 		SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+		scale = (GetScreenHeight() + 100) / background1.height;
+		player.UpdateScale();
 	  } else {
 		SetWindowSize(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()));
+		scale = (GetScreenHeight() + 100) / background1.height;
+		player.UpdateScale();
 	  }
 
 	  ToggleFullscreen();
@@ -61,11 +66,11 @@ int main() {
 	if (player.direction == RIGHT && !player.attacking) {
 	  bg1X -= 1;
 	  bg2X -= 2;
-	  bg3X -= 5;
+	  bg3X -= 3;
 
-	  if (bg1X <= -background1.width * 6) bg1X = 0;
-	  if (bg2X <= -background2.width * 6) bg2X = 0;
-	  if (bg3X <= -background3.width * 6) bg3X = 0;
+	  if (bg1X <= -background1.width * scale) bg1X = 0;
+	  if (bg2X <= -background2.width * scale) bg2X = 0;
+	  if (bg3X <= -background3.width * scale) bg3X = 0;
 	}
 
 	if (player.direction == LEFT && !player.attacking) {
@@ -73,35 +78,35 @@ int main() {
 	  bg2X += 2;
 	  bg3X += 3;
 
-	  if (bg1X >= 0) bg1X = -background1.width * 6;
-	  if (bg2X >= 0) bg2X = -background2.width * 6;
-	  if (bg3X >= 0) bg3X = -background3.width * 6;
+	  if (bg1X >= 0) bg1X = -background1.width * scale;
+	  if (bg2X >= 0) bg2X = -background2.width * scale;
+	  if (bg3X >= 0) bg3X = -background3.width * scale;
 	}
 
 	Vector2 bg1Pos{bg1X, 0};
-	Vector2 bg1Pos_2{bg1X + background1.width * 6, 0};
+	Vector2 bg1Pos_2{bg1X + background1.width * scale, 0};
 	Vector2 bg2Pos{bg2X, 0};
-	Vector2 bg2Pos_2{bg2X + background2.width * 6, 0};
+	Vector2 bg2Pos_2{bg2X + background2.width * scale, 0};
 
 	Vector2 bg3Pos{bg3X, 0};
-	Vector2 bg3Pos_2{bg3X + background3.width * 6, 0};
+	Vector2 bg3Pos_2{bg3X + background3.width * scale, 0};
 
 	BeginDrawing();
 	{
 	  ClearBackground(BLUE);
 
-	  DrawTextureEx(background1, bg1Pos, 0.0f, 6.0f, WHITE);
-	  DrawTextureEx(background1, bg1Pos_2, 0.0f, 6.0f, WHITE);
-	  DrawTextureEx(background2, bg2Pos, 0.0f, 6.0f, WHITE);
-	  DrawTextureEx(background2, bg2Pos_2, 0.0f, 6.0f, WHITE);
-	  DrawTextureEx(background3, bg3Pos, 0.0f, 6.0f, WHITE);
-	  DrawTextureEx(background3, bg3Pos_2, 0.0f, 6.0f, WHITE);
+	  DrawTextureEx(background1, bg1Pos, 0.0f, scale, WHITE);
+	  DrawTextureEx(background1, bg1Pos_2, 0.0f, scale, WHITE);
+	  DrawTextureEx(background2, bg2Pos, 0.0f, scale, WHITE);
+	  DrawTextureEx(background2, bg2Pos_2, 0.0f, scale, WHITE);
+	  DrawTextureEx(background3, bg3Pos, 0.0f, scale, WHITE);
+	  DrawTextureEx(background3, bg3Pos_2, 0.0f, scale, WHITE);
 
 	  BeginMode2D(camera);
 	  {
 		player.draw();
 //		DrawCircle(0, groundLevel - 500, 100, RED);
-		groundGrass.Draw();
+		groundGrass.Draw(-1000, groundLevel);
 	  }
 	  EndMode2D();
 

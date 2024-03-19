@@ -10,21 +10,24 @@ class Animation {
   float runningTime{};
   float frame{};
   int numberOfFrames;
-  float scale;
+  int width;
+  int height;
+
 
  public:
-  Animation(const char *texturePath, int numberOfFrames, float updateTime, float scale) {
+  Animation(const char *texturePath, int numberOfFrames, float updateTime) {
 	this->texture = LoadTexture(texturePath);
+	width = texture.width;
+	height = texture.height;
+	float scale = (GetScreenHeight() / height) / 2;
+
 	this->numberOfFrames = numberOfFrames;
 	this->updateTime = updateTime;
-	this->texture.height *= scale;
-	this->texture.width *= scale;
-	this->scale = scale;
 	rectangle = {
 		0.0f,
 		0.0f,
-		(float)texture.width / (float)numberOfFrames,
-		(float)texture.height
+		(float)(width * scale) / (float)numberOfFrames,
+		(float)(height * scale)
 	};
   }
 
@@ -43,8 +46,18 @@ class Animation {
   float GetWidth() const {
 	return rectangle.width;
   }
+  
+  void UpdateScale() {
+	float scale = (GetScreenHeight() / height) / 2;
+	texture.width = width * scale;
+	texture.height = height * scale;
+
+	rectangle.height = (float)texture.height;
+	rectangle.width = (float)texture.width / (float)numberOfFrames;
+  }
 
   bool Animate(Vector2 pos, bool facingRight = true) {
+	UpdateScale();
 	position = pos;
 	bool completed{false};
 	float deltaTime{GetFrameTime()};
@@ -60,7 +73,9 @@ class Animation {
 		completed = true;
 	  }
 	}
+
 	DrawTextureRec(texture, rectangle, position, WHITE);
+
 	return completed;
   }
 };
