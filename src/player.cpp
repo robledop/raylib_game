@@ -45,14 +45,16 @@ class Player {
   };
 
  public:
+  bool onGround{};
   bool attacking{};
   Vector2 position{};
   Direction direction = STOP;
   Direction lastDirection = RIGHT;
 
   Player() {
+	position = {0, 1000};
   }
-
+  
   void draw() {
 	float deltaTime{GetFrameTime()};
 	if (direction == LEFT && !attacking) {
@@ -62,10 +64,11 @@ class Player {
 	}
 
 	// add gravity to the object
-	if (position.y >= groundLevel - idleAnimation.GetHeight()) {
+//	if (position.y >= groundLevel - idleAnimation.GetHeight()) {
+	if (onGround) {
 	  // on the ground
 	  upwardsVelocity = 0;
-	  position.y = groundLevel - idleAnimation.GetHeight();
+//	  position.y = groundLevel - idleAnimation.GetHeight();
 	  jumping = false;
 	} else {
 	  // falling

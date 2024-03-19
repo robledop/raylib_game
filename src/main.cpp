@@ -3,7 +3,7 @@
 #include "player.cpp"
 #define RAYGUI_IMPLEMENTATION
 #include "include/raygui.h"
-#include "ground_grass.cpp"
+#include "level_loader.cpp"
 
 int groundLevel;
 float scale;
@@ -11,15 +11,13 @@ int main() {
 
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
   SetTargetFPS(60);
-  groundLevel = GetScreenHeight() - 100;
-  scale = min((float)GetScreenWidth()/SCREEN_WIDTH, (float)GetScreenHeight()/SCREEN_HEIGHT);
+  auto loader = LevelLoader{ASSETS_PATH"levels/level1.txt"};
+  groundLevel = -1000;
+  scale = min((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
 
   Texture2D background1 = LoadTexture(ASSETS_PATH"background_layer_1.png");
   Texture2D background2 = LoadTexture(ASSETS_PATH"background_layer_2.png");
   Texture2D background3 = LoadTexture(ASSETS_PATH"background_layer_3.png");
-  
-
-  GroundGrass groundGrass{100};
 
   float bg1X{};
   float bg2X{};
@@ -28,30 +26,24 @@ int main() {
   auto player = Player{};
 
   Camera2D camera = {0};
-//  camera.target = player.position;
-  camera.target = {player.position.x, (float)groundLevel - 530};
-  camera.offset = {GetScreenWidth() / 2.0f - player.GetWidth() / 2, GetScreenHeight() / 2.0f};
 
   camera.zoom = 1.0f;
 
+  player.position.y = -1000;
   while (!WindowShouldClose()) {
-	float deltaTime = GetFrameTime();
-	groundLevel = GetScreenHeight() - 100;
 	if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT))) {
 	  if (IsWindowFullscreen()) {
 		SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-		scale = min((float)GetScreenWidth()/SCREEN_WIDTH, (float)GetScreenHeight()/SCREEN_HEIGHT);
+		scale = min((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
 	  } else {
 		SetWindowSize(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()));
-		scale = min((float)GetScreenWidth()/SCREEN_WIDTH, (float)GetScreenHeight()/SCREEN_HEIGHT);
+		scale = min((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
 	  }
 
 	  ToggleFullscreen();
 	}
 
-	// Camera target follows player
-//	camera.target = player.position;
-	camera.target = {player.position.x, (float)groundLevel - 530};
+	camera.target = {player.position.x , player.position.y};
 	camera.offset = {GetScreenWidth() / 2.0f - player.GetWidth() / 2, GetScreenHeight() - 600.0f};
 
 	if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) {
@@ -104,10 +96,15 @@ int main() {
 	  BeginMode2D(camera);
 	  {
 		player.draw();
-//		DrawCircle(0, groundLevel - 500, 100, RED);
-		groundGrass.Draw(-1000, groundLevel);
+		loader.DrawLevel();
 	  }
 	  EndMode2D();
+
+	  if (loader.CheckCollision(player.position.x, player.position.y, player.GetWidth(), player.GetHeight())) {
+		player.onGround = true;
+	  } else {
+		player.onGround = false;
+	  }
 
 #ifdef BG_LOG
 	  DrawText(TextFormat("bg3X RED: %f", bg3X), 10, 10, 50, WHITE);
@@ -129,6 +126,7 @@ int main() {
 	  DrawText(TextFormat("Camera y: %f", camera.target.y), 10, 400, 50, WHITE);
 	  DrawText(TextFormat("Camera offset x: %f", camera.offset.x), 10, 450, 50, WHITE);
 	  DrawText(TextFormat("Camera offset y: %f", camera.offset.y), 10, 500, 50, WHITE);
+	  DrawText(TextFormat("On ground: %b", player.onGround), 10, 550, 50, WHITE);
 
 	  // Guide lines
 	  DrawLine(GetScreenWidth() / 2, 0, GetScreenWidth() / 2, GetScreenHeight(), RED);

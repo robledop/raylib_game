@@ -72,7 +72,12 @@ class Animation {
 	  }
 	}
 
-	DrawTextureRec(texture, rectangle, position, WHITE);
+	if (facingRight){
+	  DrawRectangle(position.x, position.y, rectangle.width, rectangle.height, RED);
+	}else{
+	  DrawRectangle(position.x, position.y, -rectangle.width, rectangle.height, RED);
+	}
+	DrawTextureRec(texture, rectangle, position, BLUE);
 
 	return completed;
   }
