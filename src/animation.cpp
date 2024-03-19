@@ -1,6 +1,7 @@
 #include <complex>
 #include "raylib.h"
 using namespace std;
+extern float scale;
 
 class Animation {
   Texture2D texture;
@@ -19,15 +20,14 @@ class Animation {
 	this->texture = LoadTexture(texturePath);
 	width = texture.width;
 	height = texture.height;
-	float scale = (GetScreenHeight() / height) / 2;
 
 	this->numberOfFrames = numberOfFrames;
 	this->updateTime = updateTime;
 	rectangle = {
 		0.0f,
 		0.0f,
-		(float)(width * scale) / (float)numberOfFrames,
-		(float)(height * scale)
+		(float)(width * scale * 4) / (float)numberOfFrames,
+		(float)(height * scale * 4)
 	};
   }
 
@@ -48,9 +48,8 @@ class Animation {
   }
   
   void UpdateScale() {
-	float scale = (GetScreenHeight() / height) / 2;
-	texture.width = width * scale;
-	texture.height = height * scale;
+	texture.width = width * scale * 4;
+	texture.height = height * scale * 4;
 
 	rectangle.height = (float)texture.height;
 	rectangle.width = (float)texture.width / (float)numberOfFrames;

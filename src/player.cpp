@@ -4,6 +4,7 @@
 
 using namespace std;
 extern int groundLevel;
+extern float scale;
 
 enum Direction {
   LEFT,
@@ -113,11 +114,4 @@ class Player {
 	this->position = pos;
   }
   
-  void UpdateScale() {
-	idleAnimation.UpdateScale();
-	runningAnimation.UpdateScale();
-	attackAnimation.UpdateScale();
-	jumpAnimation.UpdateScale();
-	fallAnimation.UpdateScale();
-  }
 };
