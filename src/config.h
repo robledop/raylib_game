@@ -8,6 +8,7 @@
 //#define GROUND_LEVEL  (SCREEN_HEIGHT - 100)
 #define GRAVITY  1000
 #define JUMP_FORCE  (-600)
+#define BG_SCALE 6.7f
 
 //#define ASSETS_PATH "~/source/raylib_game/assets"
 

@@ -23,6 +23,15 @@ class GroundGrass {
 	texture.width = width * scale * 3;
 	texture.height = width * scale * 3;
 	
+	leftRect.width = 24 * 3 * scale;
+	leftRect.height = 24 * 3 * scale;
+	
+	rightRect.width = 24 * 3 * scale;
+	rightRect.height = 24 * 3 * scale;
+	
+	middleRect.width = 24 * 3 * scale;
+	middleRect.height = 24 * 3 * scale;
+	
 	for (int i = 0; i < size; i++) {
 	  if (i == 0) {
 		DrawTextureRec(texture, leftRect, {x + i * 24.0f * 3, (float)y}, WHITE);

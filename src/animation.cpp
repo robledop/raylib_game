@@ -14,7 +14,6 @@ class Animation {
   int width;
   int height;
 
-
  public:
   Animation(const char *texturePath, int numberOfFrames, float updateTime) {
 	this->texture = LoadTexture(texturePath);

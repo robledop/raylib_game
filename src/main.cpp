@@ -19,7 +19,7 @@ int main() {
   Texture2D background3 = LoadTexture(ASSETS_PATH"background_layer_3.png");
   
 
-  GroundGrass groundGrass{1000};
+  GroundGrass groundGrass{100};
 
   float bg1X{};
   float bg2X{};
@@ -67,9 +67,9 @@ int main() {
 	  bg2X -= 2;
 	  bg3X -= 3;
 
-	  if (bg1X <= -background1.width * scale * 6) bg1X = 0;
-	  if (bg2X <= -background2.width * scale * 6) bg2X = 0;
-	  if (bg3X <= -background3.width * scale * 6) bg3X = 0;
+	  if (bg1X <= -background1.width * scale * BG_SCALE) bg1X = 0;
+	  if (bg2X <= -background2.width * scale * BG_SCALE) bg2X = 0;
+	  if (bg3X <= -background3.width * scale * BG_SCALE) bg3X = 0;
 	}
 
 	if (player.direction == LEFT && !player.attacking) {
@@ -77,29 +77,29 @@ int main() {
 	  bg2X += 2;
 	  bg3X += 3;
 
-	  if (bg1X >= 0) bg1X = -background1.width * scale * 6;
-	  if (bg2X >= 0) bg2X = -background2.width * scale * 6;
-	  if (bg3X >= 0) bg3X = -background3.width * scale * 6;
+	  if (bg1X >= 0) bg1X = -background1.width * scale * BG_SCALE;
+	  if (bg2X >= 0) bg2X = -background2.width * scale * BG_SCALE;
+	  if (bg3X >= 0) bg3X = -background3.width * scale * BG_SCALE;
 	}
 
 	Vector2 bg1Pos{bg1X, 0};
-	Vector2 bg1Pos_2{bg1X + background1.width * scale * 6, 0};
+	Vector2 bg1Pos_2{bg1X + background1.width * scale * BG_SCALE, 0};
 	Vector2 bg2Pos{bg2X, 0};
-	Vector2 bg2Pos_2{bg2X + background2.width * scale * 6, 0};
+	Vector2 bg2Pos_2{bg2X + background2.width * scale * BG_SCALE, 0};
 
 	Vector2 bg3Pos{bg3X, 0};
-	Vector2 bg3Pos_2{bg3X + background3.width * scale * 6, 0};
+	Vector2 bg3Pos_2{bg3X + background3.width * scale * BG_SCALE, 0};
 
 	BeginDrawing();
 	{
 	  ClearBackground(BLUE);
 
-	  DrawTextureEx(background1, bg1Pos, 0.0f, scale * 6, WHITE);
-	  DrawTextureEx(background1, bg1Pos_2, 0.0f, scale * 6, WHITE);
-	  DrawTextureEx(background2, bg2Pos, 0.0f, scale * 6, WHITE);
-	  DrawTextureEx(background2, bg2Pos_2, 0.0f, scale * 6, WHITE);
-	  DrawTextureEx(background3, bg3Pos, 0.0f, scale * 6, WHITE);
-	  DrawTextureEx(background3, bg3Pos_2, 0.0f, scale * 6, WHITE);
+	  DrawTextureEx(background1, bg1Pos, 0.0f, scale * BG_SCALE, WHITE);
+	  DrawTextureEx(background1, bg1Pos_2, 0.0f, scale * BG_SCALE, WHITE);
+	  DrawTextureEx(background2, bg2Pos, 0.0f, scale * BG_SCALE, WHITE);
+	  DrawTextureEx(background2, bg2Pos_2, 0.0f, scale * BG_SCALE, WHITE);
+	  DrawTextureEx(background3, bg3Pos, 0.0f, scale * BG_SCALE, WHITE);
+	  DrawTextureEx(background3, bg3Pos_2, 0.0f, scale * BG_SCALE, WHITE);
 
 	  BeginMode2D(camera);
 	  {
