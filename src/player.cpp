@@ -103,6 +103,8 @@ class Player {
 	} else {
 	  idleAnimation.Animate(position, facingRight);
 	}
+
+	
   }
 
   [[nodiscard]] float GetHeight() const {
