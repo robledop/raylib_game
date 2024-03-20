@@ -29,7 +29,7 @@ class GroundGrass {
 	float center = pw / 2;
 	float characterWidth = pw / 8;
 	return (px < (x - center + characterWidth + 10) && (px + center + 10) > x) &&
-		(py + ph - 40 < y && py + ph  > y);
+		(py + ph - 40 < y && py + ph + 5  > y);
   }
 
   void Draw() {

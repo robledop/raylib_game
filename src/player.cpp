@@ -45,7 +45,7 @@ class Player {
   };
 
  public:
-  bool onGround{};
+  bool onGround{true};
   bool attacking{};
   Vector2 position{};
   Direction direction = STOP;
@@ -73,7 +73,9 @@ class Player {
 	} else {
 	  // falling
 	  // GRAVITY is in pixels per second squared
-	  upwardsVelocity += GRAVITY * deltaTime * deltaTime;
+	  if (upwardsVelocity < 10){
+		upwardsVelocity += GRAVITY * deltaTime * deltaTime;
+	  }
 	}
 
 	if ((IsKeyPressed(KEY_SPACE) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) && !jumping) {

@@ -29,7 +29,7 @@ int main() {
 
   camera.zoom = 1.0f;
 
-  player.position.y = -1000;
+  player.position.y = 685;
   while (!WindowShouldClose()) {
 	if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT))) {
 	  if (IsWindowFullscreen()) {
@@ -43,7 +43,7 @@ int main() {
 	  ToggleFullscreen();
 	}
 
-	camera.target = {player.position.x , player.position.y};
+	camera.target = {player.position.x , player.position.y - 100};
 	camera.offset = {GetScreenWidth() / 2.0f - player.GetWidth() / 2, GetScreenHeight() - 600.0f};
 
 	if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) {
@@ -95,8 +95,8 @@ int main() {
 
 	  BeginMode2D(camera);
 	  {
-		player.draw();
 		loader.DrawLevel();
+		player.draw();
 	  }
 	  EndMode2D();
 
