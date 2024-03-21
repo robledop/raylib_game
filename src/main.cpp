@@ -100,18 +100,18 @@ int main() {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT))) {
-	  if (IsWindowFullscreen()) {
-		SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-		scale = MIN((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
-	  } else {
-		SetWindowSize(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()));
-		scale = MIN((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
-	  }
+//	  if (IsWindowFullscreen()) {
+//		SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+//		scale = MIN((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
+//	  } else {
+//		SetWindowSize(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()));
+//		scale = MIN((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
+//	  }
 
 	  ToggleFullscreen();
 	}
 
-	camera.target = {player.position.x, player.position.y * 0.55f};
+	camera.target = {player.position.x, GetScreenHeight() - GetScreenHeight() * 0.65f};
 //	camera.offset = {GetScreenWidth() / 2.0f - player.GetWidth() / 2, GetScreenHeight() - 600.0f};
 
 	if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) {
