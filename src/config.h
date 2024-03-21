@@ -1,6 +1,7 @@
 #ifndef RAYLIB_TEST_SRC_CONFIG_H_
 #define RAYLIB_TEST_SRC_CONFIG_H_
-
+#define MAX(a, b) ((a)>(b)? (a) : (b))
+#define MIN(a, b) ((a)<(b)? (a) : (b))
 #define SCREEN_WIDTH    1920
 #define SCREEN_HEIGHT    1080
 
@@ -12,7 +13,7 @@
 
 //#define ASSETS_PATH "~/source/raylib_game/assets"
 
-#define LOG
+//#define LOG
 
 //#define BG_LOG	
 #define FPS

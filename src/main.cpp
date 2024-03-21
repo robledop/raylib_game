@@ -9,18 +9,21 @@
 int groundLevel;
 float scale;
 int main() {
-
+  SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
   SetTargetFPS(60);
+  SetWindowMinSize(320, 240);
+
   auto loader = LevelLoader{ASSETS_PATH"levels/level1.txt"};
   groundLevel = -1000;
-  scale = min((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
+  scale = MIN((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
 
   Texture2D background1 = LoadTexture(ASSETS_PATH"background_layer_1.png");
   Texture2D background2 = LoadTexture(ASSETS_PATH"background_layer_2.png");
   Texture2D background3 = LoadTexture(ASSETS_PATH"background_layer_3.png");
 
   RenderTexture2D target = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+  SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);  // Texture scale filter to use
 
   float bg1X{};
   float bg2X{};
@@ -33,15 +36,61 @@ int main() {
   camera.zoom = 1.0f;
 
   player.position.y = 685;
+  
+  camera.offset = {GetScreenWidth() / 2.0f - (player.GetWidth() /2), GetScreenHeight() / 2.0f - player.GetHeight() / 2};
+  
+//  float upperLim = ((float) SCREEN_HEIGHT / 2) - (float) player.GetHeight();
+//  float lowerLim = (float) target.texture.height - ((float) SCREEN_HEIGHT / 2) - (float) player.GetHeight();
+//  float leftLim = ((float) SCREEN_WIDTH / 2) - (float) player.GetWidth();
+//  float rightLim = (float) target.texture.width - ((float) SCREEN_HEIGHT / 2) - ((float) player.GetWidth() * 2);
+  
   while (!WindowShouldClose()) {
+//	if( player.position.y < upperLim && player.position.x <leftLim)
+//	{
+//	  camera.target = (Vector2) {leftLim, upperLim};
+//	}
+//	else if( player.position.y < upperLim && player.position.x > rightLim)
+//	{
+//	  camera.target = (Vector2) {rightLim, upperLim};
+//	}
+//	else if( player.position.y > lowerLim && player.position.x > rightLim)
+//	{
+//	  camera.target = (Vector2) {rightLim, lowerLim};
+//	}
+//	else if( player.position.y > lowerLim && player.position.x < leftLim)
+//	{
+//	  camera.target = (Vector2) {leftLim, lowerLim};
+//	}
+//	else if( player.position.x > rightLim)
+//	{
+//	  camera.target = (Vector2) {rightLim, player.position.y};
+//	}
+//	else if( player.position.y < upperLim)
+//	{
+//	  camera.target = (Vector2) {player.position.x, upperLim};
+//	}
+//	else if( player.position.x < leftLim)
+//	{
+//	  camera.target = (Vector2) {leftLim, player.position.y};
+//	}
+//	else if( player.position.y > lowerLim)
+//	{
+//	  camera.target = (Vector2) {player.position.x, lowerLim};
+//	}
+//	else
+//	{
+//	  camera.target = (Vector2) {player.position.x, player.position.y};
+//	}
+	
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Draw
 	//----------------------------------------------------------------------------------
 	// Update virtual mouse (clamped mouse value behind game screen)
 	Vector2 mouse = GetMousePosition();
 	Vector2 virtualMouse = {0};
-	virtualMouse.x = (mouse.x - (GetScreenWidth() - (SCREEN_WIDTH * scale)) * 0.5f) / scale;
-	virtualMouse.y = (mouse.y - (GetScreenHeight() - (SCREEN_HEIGHT * scale)) * 0.5f) / scale;
+	virtualMouse.x = (mouse.x - (GetScreenWidth() - (SCREEN_WIDTH * scale))) / scale;
+	virtualMouse.y = (mouse.y - (GetScreenHeight() - (SCREEN_HEIGHT * scale))) / scale;
 	virtualMouse = Vector2Clamp(virtualMouse, (Vector2){0, 0}, (Vector2){(float)SCREEN_WIDTH, (float)SCREEN_HEIGHT});
 
 	// Apply the same transformation as the virtual mouse to the real mouse (i.e. to work with raygui)
@@ -53,17 +102,17 @@ int main() {
 	if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT))) {
 	  if (IsWindowFullscreen()) {
 		SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-		scale = min((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
+		scale = MIN((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
 	  } else {
 		SetWindowSize(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()));
-		scale = min((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
+		scale = MIN((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
 	  }
 
 	  ToggleFullscreen();
 	}
 
-	camera.target = {player.position.x, player.position.y};
-	camera.offset = {GetScreenWidth() / 2.0f - player.GetWidth() / 2, GetScreenHeight() - 600.0f};
+	camera.target = {player.position.x, player.position.y * 0.55f};
+//	camera.offset = {GetScreenWidth() / 2.0f - player.GetWidth() / 2, GetScreenHeight() - 600.0f};
 
 	if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) {
 	  player.direction = RIGHT;
@@ -110,7 +159,7 @@ int main() {
 	// ! Begin drawing into the framebuffer
 	// Draw everything in the render texture, note this will not be rendered on screen, yet
 	BeginTextureMode(target);
-	ClearBackground(RAYWHITE); // Draw render texture to screen, properly scaled
+	ClearBackground(BLACK);
 
 	DrawTextureEx(background1, bg1Pos, 0.0f, scale * BG_SCALE, WHITE);
 	DrawTextureEx(background1, bg1Pos_2, 0.0f, scale * BG_SCALE, WHITE);
@@ -146,7 +195,7 @@ int main() {
 	DrawText(TextFormat("Camera y: %f", camera.target.y), 10, 400, 50, WHITE);
 	DrawText(TextFormat("Camera offset x: %f", camera.offset.x), 10, 450, 50, WHITE);
 	DrawText(TextFormat("Camera offset y: %f", camera.offset.y), 10, 500, 50, WHITE);
-	DrawText(TextFormat("On ground: %b", player.onGround), 10, 550, 50, WHITE);
+	DrawText(TextFormat("On ground: %d", player.onGround), 10, 550, 50, WHITE);
 
 	// Guide lines
 //	  DrawLine(GetScreenWidth() / 2, 0, GetScreenWidth() / 2, GetScreenHeight(), RED);
@@ -164,7 +213,12 @@ int main() {
 
 	// ! Draw the framebuffer texture (our render target)
 	BeginDrawing();
-	ClearBackground(RAYWHITE);
+	ClearBackground(BLACK);
+
+	// Draw render texture to screen, properly scaled
+//	DrawTexturePro(target.texture, (Rectangle){ 0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height },
+//				   (Rectangle){ (GetScreenWidth() - ((float)gameScreenWidth*scale))*0.5f, (GetScreenHeight() - ((float)gameScreenHeight*scale))*0.5f,
+//								(float)gameScreenWidth*scale, (float)gameScreenHeight*scale }, (Vector2){ 0, 0 }, 0.0f, WHITE);
 
 	Rectangle source = {0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height};
 	Rectangle dest = {
