@@ -1,15 +1,11 @@
 #include <string>
-#include <iostream>
 #include <fstream>
-#include <ostream>
 #include <vector>
-#include "raylib.h"
 #include "ground_grass.cpp"
 
 using namespace std;
 
 extern float scale;
-extern int groundLevel;
 
 class LevelLoader {
   vector<string> level;
@@ -44,15 +40,15 @@ class LevelLoader {
 	}
   }
   
-  bool CheckCollision(int px, int py, int pw, int ph) {
+  float CheckCollision(Rectangle hitbox, float playerSpeed) {
 	for (auto &g : ground) {
-	  if (g.CheckCollision(px, py, pw, ph)) {
-		groundLevel = g.y;
-		return true;
+	  if (g.CheckCollision(hitbox, playerSpeed)) {
+		TraceLog(LOG_INFO, "Collision detected");
+		return g.y;
 	  }
 	}
-	groundLevel = 2000;
-	return false;
+	
+	return 0;
   }
   
 };

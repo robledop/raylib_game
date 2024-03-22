@@ -38,12 +38,12 @@ class Animation {
 	return position;
   }
 
-  float GetHeight() const {
+  float GetTextureHeight() const {
 	return rectangle.height;
   }
 
-  float GetWidth() const {
-	return rectangle.width;
+  float GetTextureWidth() const {
+	return abs(rectangle.width);
   }
   
   void UpdateScale() {
@@ -72,13 +72,7 @@ class Animation {
 	  }
 	}
 
-//	if (facingRight){
-//	  DrawRectangle(position.x, position.y, rectangle.width, rectangle.height, RED);
-//	}else{
-//	  DrawRectangle(position.x, position.y, -rectangle.width, rectangle.height, RED);
-//	}
 	DrawTextureRec(texture, rectangle, position, WHITE);
-	DrawRectangle(position.x + abs(rectangle.width) / 2, position.y + rectangle.height, 10, 10, BLUE);
 
 	return completed;
   }

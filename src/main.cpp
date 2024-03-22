@@ -6,7 +6,6 @@
 #include "include/raygui.h"
 #include "level_loader.cpp"
 
-int groundLevel;
 float scale;
 int main() {
   SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
@@ -15,7 +14,6 @@ int main() {
   SetWindowMinSize(320, 240);
 
   auto loader = LevelLoader{ASSETS_PATH"levels/level1.txt"};
-  groundLevel = -1000;
   scale = MIN((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
 
   Texture2D background1 = LoadTexture(ASSETS_PATH"background_layer_1.png");
@@ -32,57 +30,13 @@ int main() {
   auto player = Player{};
 
   Camera2D camera = {0};
-
   camera.zoom = 1.0f;
-
   player.position.y = 685;
-  
-  camera.offset = {GetScreenWidth() / 2.0f - (player.GetWidth() /2), GetScreenHeight() / 2.0f - player.GetHeight() / 2};
-  
-//  float upperLim = ((float) SCREEN_HEIGHT / 2) - (float) player.GetHeight();
-//  float lowerLim = (float) target.texture.height - ((float) SCREEN_HEIGHT / 2) - (float) player.GetHeight();
-//  float leftLim = ((float) SCREEN_WIDTH / 2) - (float) player.GetWidth();
-//  float rightLim = (float) target.texture.width - ((float) SCREEN_HEIGHT / 2) - ((float) player.GetWidth() * 2);
-  
+
+  camera.offset = {GetScreenWidth() / 2.0f - (player.GetTextureWidth() / 2), GetScreenHeight() / 2.0f -
+	  player.GetTextureHeight() / 2};
+
   while (!WindowShouldClose()) {
-//	if( player.position.y < upperLim && player.position.x <leftLim)
-//	{
-//	  camera.target = (Vector2) {leftLim, upperLim};
-//	}
-//	else if( player.position.y < upperLim && player.position.x > rightLim)
-//	{
-//	  camera.target = (Vector2) {rightLim, upperLim};
-//	}
-//	else if( player.position.y > lowerLim && player.position.x > rightLim)
-//	{
-//	  camera.target = (Vector2) {rightLim, lowerLim};
-//	}
-//	else if( player.position.y > lowerLim && player.position.x < leftLim)
-//	{
-//	  camera.target = (Vector2) {leftLim, lowerLim};
-//	}
-//	else if( player.position.x > rightLim)
-//	{
-//	  camera.target = (Vector2) {rightLim, player.position.y};
-//	}
-//	else if( player.position.y < upperLim)
-//	{
-//	  camera.target = (Vector2) {player.position.x, upperLim};
-//	}
-//	else if( player.position.x < leftLim)
-//	{
-//	  camera.target = (Vector2) {leftLim, player.position.y};
-//	}
-//	else if( player.position.y > lowerLim)
-//	{
-//	  camera.target = (Vector2) {player.position.x, lowerLim};
-//	}
-//	else
-//	{
-//	  camera.target = (Vector2) {player.position.x, player.position.y};
-//	}
-	
-	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Draw
 	//----------------------------------------------------------------------------------
@@ -100,19 +54,12 @@ int main() {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT))) {
-//	  if (IsWindowFullscreen()) {
-//		SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-//		scale = MIN((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
-//	  } else {
-//		SetWindowSize(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()));
-//		scale = MIN((float)GetScreenWidth() / SCREEN_WIDTH, (float)GetScreenHeight() / SCREEN_HEIGHT);
-//	  }
-
 	  ToggleFullscreen();
 	}
 
 	camera.target = {player.position.x, GetScreenHeight() - GetScreenHeight() * 0.65f};
-//	camera.offset = {GetScreenWidth() / 2.0f - player.GetWidth() / 2, GetScreenHeight() - 600.0f};
+//	camera.target = player.position;
+//	camera.offset = {GetScreenWidth() / 2.0f - player.GetTextureWidth() / 2, GetScreenHeight() - 600.0f};
 
 	if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) {
 	  player.direction = RIGHT;
@@ -150,11 +97,6 @@ int main() {
 	Vector2 bg3Pos{bg3X, 0};
 	Vector2 bg3Pos_2{bg3X + background3.width * scale * BG_SCALE, 0};
 
-	if (loader.CheckCollision(player.position.x, player.position.y, player.GetWidth(), player.GetHeight())) {
-	  player.onGround = true;
-	} else {
-	  player.onGround = false;
-	}
 
 	// ! Begin drawing into the framebuffer
 	// Draw everything in the render texture, note this will not be rendered on screen, yet
@@ -170,8 +112,19 @@ int main() {
 
 	BeginMode2D(camera);
 	{
+	  float collision = loader.CheckCollision(player.hitbox, player.upwardsVelocity);
+	  if (collision == 0) {
+		player.SetOnGround(false);
+	  } else {
+		player.SetOnGround(true);
+		player.position.y = collision - player.GetTextureHeight();
+		player.upwardsVelocity = 0;
+		player.falling = false;
+	  }
+	  
 	  loader.DrawLevel();
 	  player.draw();
+	  
 	}
 	EndMode2D();
 
@@ -190,7 +143,7 @@ int main() {
 	DrawText(TextFormat("Screen height: %d", GetScreenHeight()), 10, 150, 50, WHITE);
 	DrawText(TextFormat("Screen width: %d", GetScreenWidth()), 10, 200, 50, WHITE);
 	DrawText(TextFormat("Player height: %f", player.GetHeight()), 10, 250, 50, WHITE);
-	DrawText(TextFormat("Player width: %f", player.GetWidth()), 10, 300, 50, WHITE);
+	DrawText(TextFormat("Player width: %f", player.GetTextureWidth()), 10, 300, 50, WHITE);
 	DrawText(TextFormat("Camera x: %f", camera.target.x), 10, 350, 50, WHITE);
 	DrawText(TextFormat("Camera y: %f", camera.target.y), 10, 400, 50, WHITE);
 	DrawText(TextFormat("Camera offset x: %f", camera.offset.x), 10, 450, 50, WHITE);

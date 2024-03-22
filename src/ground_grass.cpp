@@ -8,9 +8,9 @@ class GroundGrass {
   float height;
 
  public:
-  int x;
-  int y;
-  GroundGrass(int x, int y) {
+  float x;
+  float y;
+  GroundGrass(float x, float y) {
 	this->x = x;
 	this->y = y;
 
@@ -19,17 +19,18 @@ class GroundGrass {
 	height = texture.height;
   }
 
-  /// 
-  /// \param px - player x
-  /// \param py - player y 
-  /// \param pw - player width 
-  /// \param ph - player height 
-  /// \return 
-  bool CheckCollision(int px, int py, int pw, int ph) {
-	float center = pw / 2;
-	float characterWidth = pw / 8;
-	return (px < (x - center + characterWidth + 10) && (px + center + 10) > x) &&
-		(py + ph - 40 < y && py + ph + 5  > y);
+  bool CheckCollision(Rectangle hitbox, float playerSpeed) {
+
+	bool collision = (hitbox.x <= (x + width) && hitbox.x + hitbox.width >= x)
+		&& hitbox.y + hitbox.height <= y + playerSpeed * GetFrameTime()
+		&& hitbox.y + hitbox.height >= y - playerSpeed * GetFrameTime();
+	if (collision) {
+	  return true;
+	}
+	return false;
+
+//	return (px < (x - center + characterWidth) && (px + center ) > x) &&
+//		(py + ph - 40 < y && py + ph + 5  > y);
   }
 
   void Draw() {
@@ -38,5 +39,6 @@ class GroundGrass {
 
 	DrawTextureRec(texture, middleRect, {(float)x, (float)y}, WHITE);
 	DrawRectangle(x, y, 10, 10, RED);
+//	DrawRectangleRec({x, y, middleRect.width, middleRect.height}, GREEN);
   }
 };
