@@ -85,7 +85,7 @@ class Player {
 	DrawRectangle(position.x, position.y, 10, 10, GREEN);
 #endif
 
-	float deltaTime{GetFrameTime()};
+    const float deltaTime{GetFrameTime()};
 	if (direction == LEFT && !attacking && !leftBlocked) {
 	  this->position.x -= 6;
 	} else if (direction == RIGHT && !attacking && !rightBlocked) {
@@ -117,11 +117,10 @@ class Player {
 
 	position.y += upwardsVelocity;
 
-	bool facingRight = lastDirection == RIGHT;
+    const bool facingRight = lastDirection == RIGHT;
 
 	if (attacking) {
-	  bool completed = attackAnimation.Animate(position, facingRight);
-	  if (completed) {
+        if (attackAnimation.Animate(position, facingRight)) {
 		attacking = false;
 	  }
 	} else if (jumping && upwardsVelocity < 0) {

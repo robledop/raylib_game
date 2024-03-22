@@ -25,7 +25,7 @@ class Animation {
 	rectangle = {
 		0.0f,
 		0.0f,
-		(float)(width * scale * 4) / (float)numberOfFrames,
+		(float)(width * scale * 4) / static_cast<float>(numberOfFrames),
 		(float)(height * scale * 4)
 	};
 	UpdateScale();
@@ -35,7 +35,8 @@ class Animation {
 	this->position = pos;
   }
 
-  Vector2 GetPosition() {
+  Vector2 GetPosition() const
+  {
 	return position;
   }
 
@@ -51,8 +52,8 @@ class Animation {
 	texture.width = width * scale * 4;
 	texture.height = height * scale * 4;
 
-	rectangle.height = (float)texture.height;
-	rectangle.width = (float)texture.width / (float)numberOfFrames;
+	rectangle.height = static_cast<float>(texture.height);
+	rectangle.width = static_cast<float>(texture.width) / static_cast<float>(numberOfFrames);
   }
 
   bool Animate(Vector2 pos, bool facingRight = true) {
@@ -66,7 +67,7 @@ class Animation {
 	  runningTime = 0.0f;
 	  rectangle.x = frame * abs(rectangle.width);
 	  frame++;
-	  if (frame > (float)numberOfFrames) {
+	  if (frame > static_cast<float>(numberOfFrames)) {
 		frame = 0;
 		completed = true;
 	  }

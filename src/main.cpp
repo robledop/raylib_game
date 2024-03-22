@@ -33,7 +33,7 @@ int main() {
   camera.zoom = 1.0f;
   player.position.y = 685;
 
-  camera.offset = {GetScreenWidth() / 2.0f - (player.GetTextureWidth() / 2), GetScreenHeight() / 2.0f -
+  camera.offset = {static_cast<float>(GetScreenWidth()) / 2.0f - (player.GetTextureWidth() / 2), static_cast<float>(GetScreenHeight()) / 2.0f -
 	  player.GetTextureHeight() / 2};
 
   while (!WindowShouldClose()) {
@@ -45,7 +45,7 @@ int main() {
 	Vector2 virtualMouse = {0};
 	virtualMouse.x = (mouse.x - (GetScreenWidth() - (SCREEN_WIDTH * scale))) / scale;
 	virtualMouse.y = (mouse.y - (GetScreenHeight() - (SCREEN_HEIGHT * scale))) / scale;
-	virtualMouse = Vector2Clamp(virtualMouse, (Vector2){0, 0}, (Vector2){(float)SCREEN_WIDTH, (float)SCREEN_HEIGHT});
+	virtualMouse = Vector2Clamp(virtualMouse, {0, 0}, {static_cast<float>(SCREEN_WIDTH), static_cast<float>(SCREEN_HEIGHT)});
 
 	// Apply the same transformation as the virtual mouse to the real mouse (i.e. to work with raygui)
 	//SetMouseOffset(-(GetScreenWidth() - (gameScreenWidth*scale))*0.5f, -(GetScreenHeight() - (gameScreenHeight*scale))*0.5f);
@@ -175,8 +175,8 @@ int main() {
 	DrawFPS(10, 10);
 #endif
 
-	DrawText(TextFormat("Default Mouse: [%i , %i]", (int)mouse.x, (int)mouse.y), 350, 25, 20, GREEN);
-	DrawText(TextFormat("Virtual Mouse: [%i , %i]", (int)virtualMouse.x, (int)virtualMouse.y), 350, 55, 20, YELLOW);
+	DrawText(TextFormat("Default Mouse: [%i , %i]", static_cast<int>(mouse.x), static_cast<int>(mouse.y)), 350, 25, 20, GREEN);
+	DrawText(TextFormat("Virtual Mouse: [%i , %i]", static_cast<int>(virtualMouse.x), static_cast<int>(virtualMouse.y)), 350, 55, 20, YELLOW);
 
 	// ! End drawing into the framebuffer
 	EndTextureMode();
@@ -190,17 +190,17 @@ int main() {
 //				   (Rectangle){ (GetScreenWidth() - ((float)gameScreenWidth*scale))*0.5f, (GetScreenHeight() - ((float)gameScreenHeight*scale))*0.5f,
 //								(float)gameScreenWidth*scale, (float)gameScreenHeight*scale }, (Vector2){ 0, 0 }, 0.0f, WHITE);
 
-	Rectangle source = {0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height};
+	Rectangle source = {0.0f, 0.0f, static_cast<float>(target.texture.width), static_cast<float>(-target.texture.height)};
 	Rectangle dest = {
-		(GetScreenWidth() - ((float)SCREEN_WIDTH * scale)) * 0.5f,
-		(GetScreenHeight() - ((float)SCREEN_HEIGHT * scale)) * 0.5f,
-		(float)SCREEN_WIDTH * scale, (float)SCREEN_HEIGHT * scale
+		(GetScreenWidth() - (static_cast<float>(SCREEN_WIDTH) * scale)) * 0.5f,
+		(GetScreenHeight() - (static_cast<float>(SCREEN_HEIGHT) * scale)) * 0.5f,
+		static_cast<float>(SCREEN_WIDTH) * scale, static_cast<float>(SCREEN_HEIGHT) * scale
 	};
 
 	DrawTexturePro(target.texture,
 				   source,
 				   dest,
-				   (Vector2){0, 0},
+				   {0, 0},
 				   0.0f,
 				   WHITE);
 	EndDrawing();

@@ -19,13 +19,14 @@ class GroundGrass {
 	height = texture.height;
   }
 
-  bool CheckTopCollision(Rectangle hitbox, float playerSpeed) {
+  bool CheckTopCollision(Rectangle hitbox, float playerSpeed) const {
 	return (hitbox.x < (x + middleRect.width) && hitbox.x + hitbox.width > x)
 		&& hitbox.y + hitbox.height <= y + playerSpeed * GetFrameTime()
 		&& hitbox.y + hitbox.height >= y - 10 - playerSpeed * GetFrameTime();
   }
 
-  bool CheckSideCollision(Rectangle hitbox, float playerSpeed) {
+  bool CheckSideCollision(Rectangle hitbox, float playerSpeed) const
+  {
 	return hitbox.y < y + middleRect.height && hitbox.y + hitbox.height > y
 		&& ((hitbox.x + hitbox.width <= x + playerSpeed * GetFrameTime()
 			&& hitbox.x + hitbox.width >= x - 10 - playerSpeed * GetFrameTime())
