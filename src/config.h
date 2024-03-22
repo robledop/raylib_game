@@ -15,6 +15,8 @@
 //#define LOG
 
 //#define BG_LOG	
+//#define GUIDES
+
 #define FPS
 
 #endif //RAYLIB_TEST_SRC_CONFIG_H_

@@ -17,7 +17,7 @@ class LevelLoader {
 	while (getline(file, line)) {
 	  level.push_back(line);
 	}
-	
+
 	LoadLevel();
   }
 
@@ -39,16 +39,24 @@ class LevelLoader {
 	  g.Draw();
 	}
   }
-  
+
   float CheckCollision(Rectangle hitbox, float playerSpeed) {
 	for (auto &g : ground) {
-	  if (g.CheckCollision(hitbox, playerSpeed)) {
-		TraceLog(LOG_INFO, "Collision detected");
+	  if (g.CheckTopCollision(hitbox, playerSpeed)) {
 		return g.y;
 	  }
 	}
-	
+
 	return 0;
   }
-  
+
+  float CheckSideCollision(Rectangle hitbox, float playerSpeed) {
+	for (auto &g : ground) {
+	  if (g.CheckSideCollision(hitbox, playerSpeed)) {
+		return g.x;
+	  }
+	}
+	return 0;
+  }
+
 };

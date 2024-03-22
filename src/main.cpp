@@ -69,7 +69,7 @@ int main() {
 	  player.lastDirection = LEFT;
 	} else { player.direction = STOP; }
 
-	if (player.direction == RIGHT && !player.attacking) {
+	if (player.direction == RIGHT && !player.attacking && !player.blocked) {
 	  bg1X -= 1;
 	  bg2X -= 2;
 	  bg3X -= 3;
@@ -79,7 +79,7 @@ int main() {
 	  if (bg3X <= -background3.width * scale * BG_SCALE) bg3X = 0;
 	}
 
-	if (player.direction == LEFT && !player.attacking) {
+	if (player.direction == LEFT && !player.attacking && !player.blocked) {
 	  bg1X += 1;
 	  bg2X += 2;
 	  bg3X += 3;
@@ -112,6 +112,9 @@ int main() {
 
 	BeginMode2D(camera);
 	{
+	  loader.DrawLevel();
+	  player.draw();
+
 	  float collision = loader.CheckCollision(player.hitbox, player.upwardsVelocity);
 	  if (collision == 0) {
 		player.SetOnGround(false);
@@ -121,10 +124,24 @@ int main() {
 		player.upwardsVelocity = 0;
 		player.falling = false;
 	  }
-	  
-	  loader.DrawLevel();
-	  player.draw();
-	  
+
+	  float sideCollision = loader.CheckSideCollision(player.hitbox, 6);
+	  if (sideCollision > 0) {
+		player.blocked = true;
+		if (sideCollision > player.hitbox.x) {
+		  player.rightBlocked = true;
+		  player.leftBlocked = false;
+		} else if (sideCollision < player.hitbox.x + player.GetWidth()) {
+		  player.leftBlocked = true;
+		  player.rightBlocked = false;
+		}
+		player.SetXPosition(sideCollision);
+	  } else {
+		player.blocked = false;
+		player.leftBlocked = false;
+		player.rightBlocked = false;
+	  }
+
 	}
 	EndMode2D();
 

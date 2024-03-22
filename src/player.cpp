@@ -42,6 +42,9 @@ class Player {
   };
 
  public:
+  bool blocked{false};
+  bool leftBlocked{};
+  bool rightBlocked{};
   bool falling{};
   float upwardsVelocity{};
   Rectangle hitbox{};
@@ -50,12 +53,17 @@ class Player {
   Vector2 position{};
   Direction direction = STOP;
   Direction lastDirection = RIGHT;
-  
+
   void SetOnGround(bool on_ground) {
-	if (on_ground){
-	  TraceLog(LOG_INFO, "On the ground at %f", position.y);
-	}
 	this->onGround = on_ground;
+  }
+
+  void SetXPosition(float x) {
+	if (lastDirection == RIGHT && rightBlocked) {
+	  this->position.x = x - GetTextureWidth() / 2.5f - hitbox.width;
+	} else if (lastDirection == LEFT && leftBlocked) {
+	  this->position.x = x - (GetTextureWidth() / 2.1f) + 24 * 3;
+	}
   }
 
   void draw() {
@@ -71,13 +79,16 @@ class Player {
 		GetWidth(),
 		GetHeight()
 	};
+	
+#ifdef GUIDES
 	DrawRectangleRec(hitbox, RED);
 	DrawRectangle(position.x, position.y, 10, 10, GREEN);
+#endif
 
 	float deltaTime{GetFrameTime()};
-	if (direction == LEFT && !attacking) {
+	if (direction == LEFT && !attacking && !leftBlocked) {
 	  this->position.x -= 6;
-	} else if (direction == RIGHT && !attacking) {
+	} else if (direction == RIGHT && !attacking && !rightBlocked) {
 	  this->position.x += 6;
 	}
 
@@ -122,8 +133,10 @@ class Player {
 	} else {
 	  idleAnimation.Animate(position, facingRight);
 	}
-	
-	DrawRectangle(hitbox.x, hitbox.y,10,10, GREEN);
+
+#ifdef GUIDES
+	DrawRectangle(hitbox.x, hitbox.y, 10, 10, GREEN);
+#endif
   }
 
   [[nodiscard]] float GetTextureHeight() const {

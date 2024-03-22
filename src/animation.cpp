@@ -28,6 +28,7 @@ class Animation {
 		(float)(width * scale * 4) / (float)numberOfFrames,
 		(float)(height * scale * 4)
 	};
+	UpdateScale();
   }
 
   void SetPosition(Vector2 pos) {
@@ -55,7 +56,6 @@ class Animation {
   }
 
   bool Animate(Vector2 pos, bool facingRight = true) {
-	UpdateScale();
 	position = pos;
 	bool completed{false};
 	float deltaTime{GetFrameTime()};
