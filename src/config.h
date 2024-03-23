@@ -6,9 +6,10 @@
 #define SCREEN_HEIGHT    (1080)
 
 #define WINDOW_TITLE "Raylib game"
-#define GRAVITY  (1000)
-#define JUMP_FORCE  (-600)
+#define GRAVITY  (1500)
+#define JUMP_FORCE  (-800)
 #define BG_SCALE (6.7f)
+#define RUN_SPEED (7)
 
 //#define ASSETS_PATH "~/source/raylib_game/assets"
 

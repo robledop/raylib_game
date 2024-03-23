@@ -42,6 +42,7 @@ class Player {
   };
 
  public:
+  bool isDead{false};
   bool blocked{false};
   bool leftBlocked{};
   bool rightBlocked{};
@@ -67,6 +68,14 @@ class Player {
   }
 
   void draw() {
+	if (isDead){
+	  return;
+	}
+	
+	if (position.y > SCREEN_HEIGHT + GetTextureHeight()) {
+	  isDead = true;
+	}
+	
 	float hitboxX;
 	if (lastDirection == RIGHT) {
 	  hitboxX = position.x + GetTextureWidth() / 2.5f;
@@ -87,9 +96,9 @@ class Player {
 
     const float deltaTime{GetFrameTime()};
 	if (direction == LEFT && !attacking && !leftBlocked) {
-	  this->position.x -= 6;
+	  this->position.x -= RUN_SPEED;
 	} else if (direction == RIGHT && !attacking && !rightBlocked) {
-	  this->position.x += 6;
+	  this->position.x += RUN_SPEED;
 	}
 
 	// add gravity to the object
@@ -143,7 +152,7 @@ class Player {
   }
 
   [[nodiscard]] float GetHeight() const {
-	return this->runningAnimation.GetTextureHeight() / 2;
+	return (this->runningAnimation.GetTextureHeight() / 2);
   }
 
   [[nodiscard]] float GetTextureWidth() const {
