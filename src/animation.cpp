@@ -1,3 +1,6 @@
+#ifndef ANIMATION_H
+#define ANIMATION_H
+
 #include <complex>
 #include "raylib.h"
 using namespace std;
@@ -78,3 +81,5 @@ class Animation {
 	return completed;
   }
 };
+
+#endif

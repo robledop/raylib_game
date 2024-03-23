@@ -25,7 +25,7 @@ int main() {
 	virtualMouse.y = (mouse.y - (GetScreenHeight() - (SCREEN_HEIGHT * scale))) / scale;
 	virtualMouse =
 		Vector2Clamp(virtualMouse, {0, 0}, {static_cast<float>(SCREEN_WIDTH), static_cast<float>(SCREEN_HEIGHT)});
-
+	
 	// Apply the same transformation as the virtual mouse to the real mouse (i.e. to work with raygui)
 	//SetMouseOffset(-(GetScreenWidth() - (gameScreenWidth*scale))*0.5f, -(GetScreenHeight() - (gameScreenHeight*scale))*0.5f);
 	//SetMouseScale(1/scale, 1/scale);
@@ -47,39 +47,21 @@ int main() {
 	DrawText(TextFormat("background3.width: %d", background3.width), 10, 160, 50, WHITE);
 #endif
 
-#ifdef LOG
-	// Stats
-	DrawText(TextFormat("Player x: %f", player.position.x), 10, 10, 50, WHITE);
-	DrawText(TextFormat("Player y: %f", player.position.y), 10, 60, 50, WHITE);
-	DrawText(TextFormat("Ground level: %d", groundLevel), 10, 100, 50, WHITE);
-	DrawText(TextFormat("Screen height: %d", GetScreenHeight()), 10, 150, 50, WHITE);
-	DrawText(TextFormat("Screen width: %d", GetScreenWidth()), 10, 200, 50, WHITE);
-	DrawText(TextFormat("Player height: %f", player.GetHeight()), 10, 250, 50, WHITE);
-	DrawText(TextFormat("Player width: %f", player.GetTextureWidth()), 10, 300, 50, WHITE);
-	DrawText(TextFormat("Camera x: %f", camera.target.x), 10, 350, 50, WHITE);
-	DrawText(TextFormat("Camera y: %f", camera.target.y), 10, 400, 50, WHITE);
-	DrawText(TextFormat("Camera offset x: %f", camera.offset.x), 10, 450, 50, WHITE);
-	DrawText(TextFormat("Camera offset y: %f", camera.offset.y), 10, 500, 50, WHITE);
-	DrawText(TextFormat("On ground: %d", player.onGround), 10, 550, 50, WHITE);
-
-	// Guide lines
-//	  DrawLine(GetScreenWidth() / 2, 0, GetScreenWidth() / 2, GetScreenHeight(), RED);
-#endif
 
 #ifdef FPS
 	DrawFPS(10, 10);
 #endif
 
-	DrawText(TextFormat("Default Mouse: [%i , %i]", static_cast<int>(mouse.x), static_cast<int>(mouse.y)),
-			 350,
-			 25,
-			 20,
-			 GREEN);
-	DrawText(TextFormat("Virtual Mouse: [%i , %i]", static_cast<int>(virtualMouse.x), static_cast<int>(virtualMouse.y)),
-			 350,
-			 55,
-			 20,
-			 YELLOW);
+//	DrawText(TextFormat("Default Mouse: [%i , %i]", static_cast<int>(mouse.x), static_cast<int>(mouse.y)),
+//			 350,
+//			 25,
+//			 20,
+//			 GREEN);
+//	DrawText(TextFormat("Virtual Mouse: [%i , %i]", static_cast<int>(virtualMouse.x), static_cast<int>(virtualMouse.y)),
+//			 350,
+//			 55,
+//			 20,
+//			 YELLOW);
 
 	EndTextureMode();
 

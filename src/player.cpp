@@ -72,7 +72,7 @@ class Player {
 	  return;
 	}
 	
-	if (position.y > SCREEN_HEIGHT + GetTextureHeight()) {
+	if (position.y > maxY) {
 	  isDead = true;
 	}
 	
