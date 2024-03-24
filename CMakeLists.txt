@@ -37,7 +37,8 @@ add_executable(${PROJECT_NAME}
         src/terrain/wall_left.cpp
         src/terrain/wall_right.cpp
         src/decorations/decoration.cpp
-        src/shop.cpp)
+        src/shop.cpp
+        src/terrain/ground_rock.cpp)
 
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})

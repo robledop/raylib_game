@@ -1,6 +1,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include "terrain/ground_rock.cpp"
 #include "terrain/ground_grass.cpp"
 #include "terrain/ground_grass_left_corner.cpp"
 #include "terrain/ground_grass_right_corner.cpp"
@@ -58,19 +59,42 @@ class LevelLoader {
 		switch (c) {
 		  case '#': {
 			if (i > 0 && level[i - 1][j] == '#' && j > 0 && line[j - 1] != '#') {
-			  auto g = WallLeft({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet);
-			  ground.push_back(g);
+			  if (line[j - 1] == '.') {
+				auto g = WallLeft({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet, true);
+				ground.push_back(g);
+			  } else {
+				auto g = WallLeft({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet);
+				ground.push_back(g);
+			  }
 			} else if (line[j + 1] != '#' && i > 0 && level[i - 1][j] == '#') {
-			  auto g = WallRight({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet);
-			  ground.push_back(g);
+			  if (line[j + 1] == '.') {
+				auto g = WallRight({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet, true);
+				ground.push_back(g);
+			  } else {
+				auto g = WallRight({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet);
+				ground.push_back(g);
+			  }
 			} else if (j > 0 && line[j - 1] != '#') {
-			  auto g = GroundGrassLeftCorner({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet);
-			  ground.push_back(g);
+			  if (line[j - 1] == '.') {
+				auto g = GroundGrassLeftCorner({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet, true);
+				ground.push_back(g);
+			  } else {
+				auto g = GroundGrassLeftCorner({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet);
+				ground.push_back(g);
+			  }
 			} else if (line[j + 1] != '#') {
-			  auto g = GroundGrassRightCorner({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet);
-			  ground.push_back(g);
+			  if (line[j + 1] == '.') {
+				auto g = GroundGrassRightCorner({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet, true);
+				ground.push_back(g);
+			  } else {
+				auto g = GroundGrassRightCorner({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet);
+				ground.push_back(g);
+			  }
 			} else if (i > 0 && level[i - 1][j] == '#') {
 			  auto g = GroundDark({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet);
+			  ground.push_back(g);
+			} else if (i > 0 && (level[i - 1][j] == '.' || level[i - 1][j] == '*')) {
+			  auto g = GroundRock({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet);
 			  ground.push_back(g);
 			} else {
 			  auto g = GroundGrass({(float)j * 24 * 3, (float)i * 24 * 3}, &tileSet);
@@ -78,21 +102,30 @@ class LevelLoader {
 			}
 			break;
 		  }
-		  
+
 		  case '.': {
-			if (level[i - 1][j] == ' '){
+			if (level[i - 1][j] == ' ') {
 			  auto b =
 				  Decoration{{(float)j * 24 * 3, (float)i * 24 * 3},
 							 &tileSet,
 							 {24 * 16, 0, 24, 24}};
 			  decorations.push_back(b);
-			}else{
+			} else {
 			  auto b =
 				  Decoration{{(float)j * 24 * 3, (float)i * 24 * 3},
 							 &tileSet,
 							 {24 * 15, 24, 24, 24}};
 			  decorations.push_back(b);
 			}
+
+			break;
+		  }
+
+		  case '*': {
+			auto b = Decoration{{(float)j * 24 * 3, (float)i * 24 * 3},
+								&tileSet,
+								{(24 * 18) + 10, (24 * 6) - 10, 24, 24}};
+			decorations.push_back(b);
 
 			break;
 		  }
