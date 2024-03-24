@@ -3,7 +3,7 @@
 #include "config.h"
 #define RAYGUI_IMPLEMENTATION
 #include "include/raygui.h"
-#include "game.cpp"
+#include "game.h"
 
 float scale;
 int main() {

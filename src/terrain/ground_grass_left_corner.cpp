@@ -1,12 +1,12 @@
 #include "raylib.h"
-#include "block.cpp"
+#include "terrain.h"
 
 extern float scale;
 
-class GroundGrassLeftCorner : public Block {
+class GroundGrassLeftCorner : public Terrain {
   bool adjacent = false;
  public:
-  GroundGrassLeftCorner(Vector2 pos, const Texture2D* tex, bool adjacent = false) : Block(pos, tex) {
+  GroundGrassLeftCorner(Vector2 pos, const Texture2D* tex, bool adjacent = false) : Terrain(pos, tex) {
 	if (adjacent){
 	  sourceRect =  {2, 0, 22, 24};
 	}else{

@@ -28,9 +28,9 @@ set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/src/")
 
 add_executable(${PROJECT_NAME}
         src/terrain/ground_grass.cpp
-        src/level_loader.cpp
+        src/level_manager.cpp
         src/game.cpp
-        src/block.cpp
+        src/terrain/terrain.cpp
         src/terrain/ground_grass_left_corner.cpp
         src/terrain/ground_grass_right_corner.cpp
         src/terrain/ground_dark.cpp
@@ -38,7 +38,15 @@ add_executable(${PROJECT_NAME}
         src/terrain/wall_right.cpp
         src/decorations/decoration.cpp
         src/shop.cpp
-        src/terrain/ground_rock.cpp)
+        src/terrain/ground_rock.cpp
+        src/player.h
+        src/animation.h
+        src/shop.h
+        src/terrain/terrain.h
+        src/level_manager.h
+        src/game.h
+        src/colors.h
+        src/decorations/decoration.h)
 
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
