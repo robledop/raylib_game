@@ -17,27 +17,27 @@ class Player {
   bool jumping{};
 
   Animation idleAnimation{
-	  ASSETS_PATH"_Idle.png",
+	  ASSETS_PATH"player/_Idle.png",
 	  10,
 	  1.0f / 12.0f
   };
   Animation runningAnimation{
-	  ASSETS_PATH"_Run.png",
+	  ASSETS_PATH"player/_Run.png",
 	  10,
 	  1.0f / 12.0f
   };
   Animation attackAnimation{
-	  ASSETS_PATH"_Attack.png",
+	  ASSETS_PATH"player/_Attack.png",
 	  4,
 	  1.0f / 12.0f
   };
   Animation jumpAnimation{
-	  ASSETS_PATH"_Jump.png",
+	  ASSETS_PATH"player/_Jump.png",
 	  3,
 	  1.0f / 12.0f
   };
   Animation fallAnimation{
-	  ASSETS_PATH"_Fall.png",
+	  ASSETS_PATH"player/_Fall.png",
 	  3,
 	  1.0f / 12.0f
   };

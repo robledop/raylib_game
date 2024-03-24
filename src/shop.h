@@ -10,7 +10,7 @@ class Shop {
  private:
   Vector2 position;
   Animation animation{
-	  ASSETS_PATH"decorations/shop_anim.png",
+	  ASSETS_PATH"shops/shop_anim.png",
 	  6,
 	  1.0f / 12.0f
   };
