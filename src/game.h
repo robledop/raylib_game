@@ -11,16 +11,22 @@
 
 class Game {
  private:
+  float maxX;
+  float minX{800.f};
+  float maxY;
+  float minY{};
   std::map<std::tuple<int, int>, tson::Tile *> tileData;
   vector<Terrain> terrains;
   tson::Tileson tileson{};
   std::unique_ptr<tson::Map> map;
   Player player{};
-//  LevelManager levelManager{"assets/levels/level1/level1.txt"};
-  Texture2D background1 = LoadTexture("../assets/levels/level1/background_layer_1.png");
-  Texture2D background2 = LoadTexture("../assets/levels/level1/background_layer_2.png");
-  Texture2D background3 = LoadTexture("../assets/levels/level1/background_layer_3.png");
-  Texture2D tileSet = LoadTexture("../assets/oak_woods_tileset.png");
+  Texture2D background1;
+  float bg1ParallaxX{};
+  Texture2D background2;
+  float bg2ParallaxX{};
+  Texture2D background3;
+  float bg3ParallaxX{};
+  Texture2D tileSet = LoadTexture("assets/tilesets/oak_woods_tileset.png");
   Camera2D camera{};
   float bg1X{};
   float bg2X{};

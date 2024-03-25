@@ -7,6 +7,7 @@
     "expandedProjectPaths": [
         "."
     ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "": {
             "scaleInDock": 1
@@ -24,11 +25,11 @@
             "expandedGroupLayers": [
                 5
             ],
-            "scale": 3,
-            "selectedLayer": 3,
+            "scale": 0.33,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 207.5,
-                "y": 137
+                "x": 1331.8181818181818,
+                "y": -184.848484848485
             }
         },
         "level1.json#decorations": {
@@ -51,7 +52,7 @@
             }
         },
         "oak_woods_tileset.json": {
-            "scaleInDock": 1,
+            "scaleInDock": 2,
             "scaleInEditor": 1
         },
         "oak_woods_tileset.tsx": {

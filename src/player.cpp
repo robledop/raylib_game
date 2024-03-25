@@ -19,9 +19,9 @@ void Player::draw() {
 	return;
   }
 
-  if (position.y > maxY) {
-	isDead = true;
-  }
+//  if (position.y > maxY) {
+//	isDead = true;
+//  }
 
   float hitboxX;
   if (lastDirection == RIGHT) {
