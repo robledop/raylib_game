@@ -1,0 +1,104 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "level1.json",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "decorations.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "decorations.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "level1.json": {
+            "expandedGroupLayers": [
+                5
+            ],
+            "scale": 3,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 207.5,
+                "y": 137
+            }
+        },
+        "level1.json#decorations": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "level1.json#oak_woods_tileset": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "level1.json#shop": {
+            "scaleInDock": 1
+        },
+        "level1.tmx": {
+            "scale": 3,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 149.66666666666666,
+                "y": 106
+            }
+        },
+        "oak_woods_tileset.json": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "oak_woods_tileset.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "shop.json": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "shop.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "/home/robledo/source/raylib_game/assets/tiled",
+    "last.imagePath": "/home/robledo/source/raylib_game/assets/shops",
+    "lastUsedTilesetExportFilter": "JSON tileset files (*.tsj *.json)",
+    "map.height": 100,
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 24,
+    "map.tileWidth": 24,
+    "map.width": 500,
+    "openFiles": [
+        "level1.json",
+        "shop.json"
+    ],
+    "project": "raylib_game.tiled-project",
+    "recentFiles": [
+        "shop.json",
+        "level1.json",
+        "decorations.tsx",
+        "level1.tmx",
+        "shop.tsx",
+        "oak_woods_tileset.json",
+        "oak_woods_tileset.tsx",
+        "decorations.json"
+    ],
+    "resizeMap.removeObjects": true,
+    "tileset.lastUsedFormat": "json",
+    "tileset.tileSize": {
+        "height": 128,
+        "width": 118
+    },
+    "tileset.type": 0
+}

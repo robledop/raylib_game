@@ -2,22 +2,23 @@
 #define RAYLIB_GAME_SRC_TERRAIN_H_
 
 #include "raylib.h"
+#include <tuple>
+
 extern float scale;
 
 class Terrain {
  protected:
-  const Texture2D *texture;
   bool blocking;
+  Rectangle rect;
+  Vector2 position{};
 
  public:
-  Rectangle sourceRect;
-  Vector2 position{};
-  Terrain(Vector2 pos, const Texture2D *tex, bool blocking = true);
-  bool CheckTopCollision(Rectangle hitbox, float playerSpeed) const;
-  bool CheckSideCollision(Rectangle hitbox, float playerSpeed) const;
+  Terrain(Vector2 pos, Rectangle rectangle, bool blocking = true);
+  std::tuple<bool, float> CheckTopCollision(Rectangle hitbox, float playerSpeed) const;
+  std::tuple<bool, float>  CheckSideCollision(Rectangle hitbox, float playerSpeed) const;
   bool CheckBottomCollision(Rectangle hitbox, float playerSpeed) const;
 
-  void Draw();
+//  void Draw();
 
 };
 
