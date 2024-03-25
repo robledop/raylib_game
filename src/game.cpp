@@ -73,34 +73,52 @@ void Game::Draw() {
 
   BeginMode2D(camera);
   {
+	bool collision = false;
+	bool sideCollision = false;
+	float yPos;
+	float xPos;
 
 	for (auto &terrain : terrains) {
-	  auto [collision, yPos] = terrain.CheckTopCollision(player.hitbox, player.upwardsVelocity);
-	  if (!collision && round(player.position.y) != round(yPos - player.GetTextureHeight())) {
-		player.SetOnGround(false);
-	  } else if (collision) {
-		player.SetOnGround(true);
-		player.position.y = yPos - player.GetTextureHeight();
-		player.upwardsVelocity = 0;
-		player.falling = false;
+	  auto [coll, y] = terrain.CheckTopCollision(player.hitbox, player.upwardsVelocity);
+	  if (coll) {
+		collision = true;
+		yPos = y;
+		break;
 	  }
+	}
 
-	  auto [sideCollision, xPos] = terrain.CheckSideCollision(player.hitbox, RUN_SPEED + player.upwardsVelocity / 2.0f);
-	  if (sideCollision) {
-		player.blocked = true;
-		if (xPos > player.hitbox.x) {
-		  player.rightBlocked = true;
-		  player.leftBlocked = false;
-		} else if (xPos < player.hitbox.x + player.GetWidth()) {
-		  player.leftBlocked = true;
-		  player.rightBlocked = false;
-		}
-		player.SetXPosition(xPos);
-	  } else {
-		player.blocked = false;
+	for (auto &terrain : terrains) {
+	  auto [sideColl, x] = terrain.CheckSideCollision(player.hitbox, RUN_SPEED + player.upwardsVelocity / 2.0f);
+	  if (sideColl) {
+		sideCollision = true;
+		xPos = x;
+		break;
+	  }
+	}
+
+	if (collision) {
+	  player.SetOnGround(true);
+	  player.position.y = yPos - player.GetTextureHeight();
+	  player.upwardsVelocity = 0;
+	  player.falling = false;
+	} else {
+	  player.SetOnGround(false);
+	}
+
+	if (sideCollision) {
+	  player.blocked = true;
+	  if (xPos > player.hitbox.x) {
+		player.rightBlocked = true;
 		player.leftBlocked = false;
+	  } else if (xPos < player.hitbox.x + player.GetWidth()) {
+		player.leftBlocked = true;
 		player.rightBlocked = false;
 	  }
+	  player.SetXPosition(xPos);
+	} else {
+	  player.blocked = false;
+	  player.leftBlocked = false;
+	  player.rightBlocked = false;
 	}
 
 	DrawTileMap();
@@ -167,7 +185,7 @@ void Game::LoadTileMap() {
 //	  }
 //	}
 
-	tson::Layer *layer = map->getLayer("Main Layer");
+	tson::Layer *layer = map->getLayer("Collision Layer");
 	tson::Tileset *tileset = map->getTileset("oak_woods_tileset");
 	tson::Tile *tile = tileset->getTile(1);
 
