@@ -1,19 +1,17 @@
 #include "animation.h"
 
-Animation::Animation(const char *texturePath, int numberOfFrames, float updateTime) {
+Animation::Animation(const char *texturePath, int numberOfFrames, float updateTime, float scale) {
+  this->scale = scale;
   this->texture = LoadTexture(texturePath);
-  width = texture.width;
-  height = texture.height;
 
   this->numberOfFrames = numberOfFrames;
   this->updateTime = updateTime;
   rectangle = {
 	  0.0f,
 	  0.0f,
-	  (float)(width * scale * 4) / static_cast<float>(numberOfFrames),
-	  (float)(height * scale * 4)
+	  static_cast<float>(texture.width) / static_cast<float>(numberOfFrames),
+	  static_cast<float>(texture.height)
   };
-  UpdateScale();
 }
 
 void Animation::SetPosition(Vector2 pos) {
@@ -25,19 +23,11 @@ Vector2 Animation::GetPosition() const {
 }
 
 float Animation::GetTextureHeight() const {
-  return rectangle.height;
+  return rectangle.height * scale;
 }
 
 float Animation::GetTextureWidth() const {
-  return abs(rectangle.width);
-}
-
-void Animation::UpdateScale() {
-  texture.width = width * scale * 4;
-  texture.height = height * scale * 4;
-
-  rectangle.height = static_cast<float>(texture.height);
-  rectangle.width = static_cast<float>(texture.width) / static_cast<float>(numberOfFrames);
+  return abs(rectangle.width * scale);
 }
 
 bool Animation::Animate(Vector2 pos, bool facingRight) {
@@ -57,7 +47,13 @@ bool Animation::Animate(Vector2 pos, bool facingRight) {
 	}
   }
 
-  DrawTextureRec(texture, rectangle, position, WHITE);
+//  DrawTextureRec(texture, rectangle, position, WHITE);
+  DrawTexturePro(texture,
+				 rectangle,
+				 {position.x, position.y, abs(rectangle.width * scale), rectangle.height * scale},
+				 {0, 0},
+				 0,
+				 WHITE);
 
   return completed;
 }

@@ -7,7 +7,8 @@
 #include "player.h"
 #include "level_manager.h"
 #include "include/tileson.hpp"
-#include "terrain/terrain.h"
+#include "terrain/collision_body.h"
+#include "enemies/skeleton.h"
 
 class Game {
  private:
@@ -15,8 +16,10 @@ class Game {
   float minX{800.f};
   float maxY;
   float minY{};
+  vector<tson::Tileset> tilesets;
   std::map<std::tuple<int, int>, tson::Tile *> tileData;
-  vector<Terrain> terrains;
+  vector<CollisionBody> terrains;
+  vector<Skeleton> skeletons;
   tson::Tileson tileson{};
   std::unique_ptr<tson::Map> map;
   Player player{};

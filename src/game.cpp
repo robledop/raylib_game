@@ -119,9 +119,13 @@ void Game::Draw() {
 	  player.leftBlocked = false;
 	  player.rightBlocked = false;
 	}
-
+	
 	DrawTileMap();
-	player.draw();
+	for (auto &enemy : skeletons) {
+	  enemy.Draw();
+	}
+	player.Draw();
+
   }
   EndMode2D();
 
@@ -167,7 +171,6 @@ void Game::LoadTileMap() {
 //	}
 
 	tson::Layer *layer = map->getLayer("Collision Layer");
-	tson::Tileset *tileset = map->getTileset("oak_woods_tileset");
 
 	if (layer->getType() == tson::LayerType::TileLayer) {
 	  //When the map is of a fixed size, you can get the tiles like this
@@ -177,7 +180,7 @@ void Game::LoadTileMap() {
 		maxX = (layer->getSize().x * 24 * 3) - 1200;
 		maxY = (layer->getSize().y * 24 * 3) - 700;
 
-		for (auto t : tileData) {
+		for (auto &t : tileData) {
 		  Vector2 pos = {static_cast<float>(get<0>(t.first) * 24 * 3), static_cast<float>(get<1>(t.first) * 24 * 3)};
 		  auto drawingRect = t.second->getDrawingRect();
 		  Rectangle collisionRect = {
@@ -187,7 +190,7 @@ void Game::LoadTileMap() {
 			  static_cast<float>(drawingRect.height * 3 * scale)
 		  };
 
-		  Terrain terrain = Terrain(pos, collisionRect, true);
+		  CollisionBody terrain = CollisionBody(pos, collisionRect, true);
 		  terrains.push_back(terrain);
 		}
 	  }
@@ -212,16 +215,16 @@ void Game::LoadTileMap() {
 	background3 = LoadTexture(bg3ImagePath.c_str());
 	bg3ParallaxX = bg3->getParallax().x;
 
-	//If an object supports properties, you can easily get a property value by calling get<T>() or the property itself with getProp()
-	int myInt = layer->get<int>("my_int");
-	float myFloat = layer->get<float>("my_float");
-	bool myBool = layer->get<bool>("my_bool");
-	std::string myString = layer->get<std::string>("my_string");
-	tson::Colori myColor = layer->get<tson::Colori>("my_color");
+	tson::Layer *enemyLayer = map->getLayer("Enemies");
+	for (auto &e : enemyLayer->getTileData()) {
+	  auto x = static_cast<float>(get<0>(e.first) * 24 * 3);
+	  auto y = static_cast<float>(get<1>(e.first) * 24 * 3) - 86;
+	  skeletons.push_back(Skeleton{
+		  {static_cast<float>(x),
+		   static_cast<float>(y)},
+		  {x, y, 24, 24}, player});
+	}
 
-	fs::path file = layer->get<fs::path>("my_file");
-
-	tson::Property *prop = layer->getProp("my_property");
   } else //Error occurred
   {
 	std::cout << map->getStatusMessage();

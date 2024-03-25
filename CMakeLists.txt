@@ -27,26 +27,22 @@ file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/s
 set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/src/")
 
 add_executable(${PROJECT_NAME}
-        src/terrain/ground_grass.cpp
         src/level_manager.cpp
         src/game.cpp
-        src/terrain/terrain.cpp
-        src/terrain/ground_grass_left_corner.cpp
-        src/terrain/ground_grass_right_corner.cpp
-        src/terrain/ground_dark.cpp
-        src/terrain/wall_left.cpp
-        src/terrain/wall_right.cpp
+        src/terrain/collision_body.cpp
         src/decorations/decoration.cpp
         src/shop.cpp
-        src/terrain/ground_rock.cpp
         src/player.h
         src/animation.h
         src/shop.h
-        src/terrain/terrain.h
+        src/terrain/collision_body.h
         src/level_manager.h
         src/game.h
         src/colors.h
-        src/decorations/decoration.h)
+        src/decorations/decoration.h
+        src/enemies/skeleton.cpp
+        src/enemies/skeleton.h
+)
 
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})

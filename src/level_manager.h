@@ -21,7 +21,7 @@
 //class LevelManager {
 // private:
 //  vector<string> level;
-//  vector<Terrain> ground;
+//  vector<CollisionBody> ground;
 //  vector<Decoration> decorations;
 //  vector<Shop> shops;
 //  Texture2D tileSet;

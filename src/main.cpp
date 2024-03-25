@@ -16,6 +16,8 @@ int main() {
   RenderTexture2D target = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
   SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);  // Texture scale filter to use
   Game game{};
+  
+//  SetExitKey(0);
 
   while (!WindowShouldClose()) {
 	// Update virtual mouse (clamped mouse value behind game screen)

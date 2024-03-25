@@ -5807,7 +5807,7 @@ namespace tson
 			uint32_t                    m_gid {};                                    /*! id without flip flags */
 			tson::Tileset *             m_tileset;                                   /*! A pointer to the tileset where this Tile comes from */
 			tson::Map *                 m_map;                                       /*! A pointer to the map where this tile is contained */
-			tson::Rect                  m_drawingRect;                               /*! A rect that shows which part of the tileset that is used for this tile */
+			tson::Rect                  m_drawingRect;                               /*! A collisionRect that shows which part of the tileset that is used for this tile */
 			tson::Rect                  m_subRect;                                   /*! Tiled 1.9: Contains the newly added sub-rectangle variables: 'x', 'y', 'width' and 'height'*/
 			tson::TileFlipFlags         m_flipFlags = TileFlipFlags::None;           /*! Resolved using bit 32, 31 and 30 from gid */
 			inline void performDataCalculations();                                   /*! Declared in tileson_forward.hpp - Calculate all the values used in the tile class. */
@@ -6031,7 +6031,7 @@ const tson::Rect &tson::Tile::getSubRectangle() const
 /*** End of inlined file: Tile.hpp ***/
 
 
-/*** Start of inlined file: Terrain.hpp ***/
+/*** Start of inlined file: CollisionBody.hpp ***/
 //
 // Created by robin on 22.03.2020.
 //
@@ -6146,7 +6146,7 @@ tson::Property *tson::Terrain::getProp(const std::string &name)
 
 #endif //TILESON_TERRAIN_HPP
 
-/*** End of inlined file: Terrain.hpp ***/
+/*** End of inlined file: CollisionBody.hpp ***/
 
 
 /*** Start of inlined file: Grid.hpp ***/
@@ -6673,9 +6673,9 @@ tson::Tile *tson::Tileset::getTile(uint32_t id)
 }
 
 /*!
- * Get an existing Terrain object by name
+ * Get an existing CollisionBody object by name
  * @param name
- * @return A pointer to the Terrain if found. nullptr otherwise.
+ * @return A pointer to the CollisionBody if found. nullptr otherwise.
  */
 tson::Terrain *tson::Tileset::getTerrain(const std::string &name)
 {

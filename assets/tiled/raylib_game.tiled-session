@@ -12,9 +12,15 @@
         "": {
             "scaleInDock": 1
         },
+        "Skeleton Walk.tsj": {
+            "dynamicWrapping": false
+        },
         "decorations.json": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "decorations.tsj": {
+            "dynamicWrapping": true
         },
         "decorations.tsx": {
             "dynamicWrapping": true,
@@ -25,11 +31,11 @@
             "expandedGroupLayers": [
                 5
             ],
-            "scale": 0.33,
-            "selectedLayer": 5,
+            "scale": 2,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 1331.8181818181818,
-                "y": -184.848484848485
+                "x": 746.5,
+                "y": 330
             }
         },
         "level1.json#decorations": {
@@ -52,8 +58,9 @@
             }
         },
         "oak_woods_tileset.json": {
+            "dynamicWrapping": false,
             "scaleInDock": 2,
-            "scaleInEditor": 1
+            "scaleInEditor": 2
         },
         "oak_woods_tileset.tsx": {
             "dynamicWrapping": false,
@@ -69,10 +76,14 @@
             "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "skeleton.tsj": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         }
     },
     "last.exportedFilePath": "/home/robledo/source/raylib_game/assets/tiled",
-    "last.imagePath": "/home/robledo/source/raylib_game/assets/shops",
+    "last.imagePath": "/home/robledo/source/raylib_game/assets/enemies/skeleton",
     "lastUsedTilesetExportFilter": "JSON tileset files (*.tsj *.json)",
     "map.height": 100,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
@@ -81,25 +92,26 @@
     "map.tileWidth": 24,
     "map.width": 500,
     "openFiles": [
-        "level1.json",
-        "shop.json"
+        "level1.json"
     ],
     "project": "raylib_game.tiled-project",
+    "property.type": "int",
     "recentFiles": [
-        "shop.json",
+        "skeleton.tsj",
+        "oak_woods_tileset.json",
         "level1.json",
+        "decorations.json",
+        "shop.json",
         "decorations.tsx",
         "level1.tmx",
         "shop.tsx",
-        "oak_woods_tileset.json",
-        "oak_woods_tileset.tsx",
-        "decorations.json"
+        "oak_woods_tileset.tsx"
     ],
     "resizeMap.removeObjects": true,
     "tileset.lastUsedFormat": "json",
     "tileset.tileSize": {
-        "height": 128,
-        "width": 118
+        "height": 33,
+        "width": 22
     },
     "tileset.type": 0
 }

@@ -14,14 +14,10 @@ void Player::SetXPosition(float x) {
   }
 }
 
-void Player::draw() {
+void Player::Draw() {
   if (isDead) {
 	return;
   }
-
-//  if (position.y > maxY) {
-//	isDead = true;
-//  }
 
   float hitboxX;
   if (lastDirection == RIGHT) {

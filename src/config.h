@@ -19,7 +19,7 @@
 
 //#define ASSETS_PATH "~/source/raylib_game/assets"
 
-#define LOG
+//#define LOG
 
 //#define BG_LOG	
 //#define GUIDES

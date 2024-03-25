@@ -4,7 +4,6 @@
 #include <complex>
 #include "raylib.h"
 using namespace std;
-extern float scale;
 
 class Animation {
  private:
@@ -17,15 +16,15 @@ class Animation {
   int numberOfFrames;
   int width;
   int height;
+  float scale{};
 
  public:
-  Animation(const char *texturePath, int numberOfFrames, float updateTime);
+  Animation(const char *texturePath, int numberOfFrames, float updateTime, float scale = 4.f);
 
   void SetPosition(Vector2 pos);
   Vector2 GetPosition() const;
   float GetTextureHeight() const;
   float GetTextureWidth() const;
-  void UpdateScale();
   bool Animate(Vector2 pos, bool facingRight = true);
 };
 

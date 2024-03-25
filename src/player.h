@@ -58,7 +58,7 @@ class Player {
 
   void SetOnGround(bool on_ground);
   void SetXPosition(float x);
-  void draw();
+  void Draw();
   [[nodiscard]] float GetTextureHeight() const;
   [[nodiscard]] float GetHeight() const;
   [[nodiscard]] float GetTextureWidth() const;
