@@ -24,6 +24,8 @@
 //#define BG_LOG	
 //#define GUIDES
 
+//#define SHOW_COLLISION_BOXES
+
 #define FPS
 
 #endif //RAYLIB_TEST_SRC_CONFIG_H_

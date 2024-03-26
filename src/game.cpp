@@ -25,10 +25,12 @@ Game::Game() {
 }
 void Game::Draw() {
   UpdateCamera();
-  if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT)) {
+  if (!player.isDead && (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)
+	  || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT))) {
 	player.direction = RIGHT;
 	player.lastDirection = RIGHT;
-  } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A) || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT)) {
+  } else if (!player.isDead && (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)
+	  || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT))) {
 	player.direction = LEFT;
 	player.lastDirection = LEFT;
   } else { player.direction = STOP; }
@@ -119,15 +121,18 @@ void Game::Draw() {
 	  player.leftBlocked = false;
 	  player.rightBlocked = false;
 	}
-	
+
 	DrawTileMap();
+	player.Draw();
 	for (auto &enemy : skeletons) {
 	  enemy.Draw();
 	}
-	player.Draw();
 
   }
   EndMode2D();
+
+  // Draw the health bar in the top-left corner of the screen
+  DrawRectangle(10, 10, player.health * 2, 10, RED);
 
 #ifdef LOG
   // Stats
@@ -219,10 +224,11 @@ void Game::LoadTileMap() {
 	for (auto &e : enemyLayer->getTileData()) {
 	  auto x = static_cast<float>(get<0>(e.first) * 24 * 3);
 	  auto y = static_cast<float>(get<1>(e.first) * 24 * 3) - 86;
+	  auto rect = e.second->getDrawingRect();
 	  skeletons.push_back(Skeleton{
 		  {static_cast<float>(x),
 		   static_cast<float>(y)},
-		  {x, y, 24, 24}, player});
+		  {x, y, static_cast<float>(rect.width * 5), static_cast<float>(rect.height * 5)}, player});
 	}
 
   } else //Error occurred

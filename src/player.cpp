@@ -14,8 +14,38 @@ void Player::SetXPosition(float x) {
   }
 }
 
+void Player::Attack() {
+  float deltaTime{GetFrameTime()};
+  static float runningTime{};
+  static float frame{};
+  runningTime += deltaTime;
+  float updateTime{1 / 12.f};
+
+  if (runningTime >= updateTime) {
+	runningTime = 0.0f;
+	frame++;
+	if (frame > 4.f) {
+	  dealDamage = false;
+	  frame = 0;
+	} else if (frame > 2.f) {
+	  dealDamage = true;
+	}
+  }
+}
+
 void Player::Draw() {
-  if (isDead) {
+  if (isDead && !deathAnimationPlayed) {
+	deathAnimationPlayed = deathAnimation.Animate(position, lastDirection == RIGHT);
+	return;
+  } else if (isDead) {
+	auto rect = deathAnimation.GetSourceRec();
+	rect.x = rect.x + abs(rect.width) * (deathAnimation.numberOfFrames - 1);
+	DrawTexturePro(deathAnimation.GetTexture(),
+				   rect,
+				   {position.x, position.y, abs(rect.width) * deathAnimation.scale, rect.height * deathAnimation.scale},
+				   {0, 0},
+				   0,
+				   WHITE);
 	return;
   }
 
@@ -32,8 +62,18 @@ void Player::Draw() {
 	  GetHeight()
   };
 
-#ifdef GUIDES
+  if (lastDirection == RIGHT) {
+	weaponHitbox = {hitbox.x + hitbox.width, hitbox.y, 170, hitbox.height};
+  } else {
+	weaponHitbox = {hitbox.x - 170, hitbox.y, 170, hitbox.height};
+  }
+
+#ifdef SHOW_COLLISION_BOXES
   DrawRectangleRec(hitbox, RED);
+  DrawRectangleRec(weaponHitbox, BLUE);
+#endif
+
+#ifdef GUIDES
   DrawRectangle(position.x, position.y, 10, 10, GREEN);
 #endif
 
@@ -72,6 +112,7 @@ void Player::Draw() {
   const bool facingRight = lastDirection == RIGHT;
 
   if (attacking) {
+	Attack();
 	if (attackAnimation.Animate(position, facingRight)) {
 	  attacking = false;
 	}
@@ -116,4 +157,10 @@ void Player::Draw() {
 
 void Player::SetPosition(Vector2 pos) {
   this->position = pos;
+}
+void Player::Damage(int damage) {
+  health -= damage;
+  if (health <= 0) {
+	isDead = true;
+  }
 }

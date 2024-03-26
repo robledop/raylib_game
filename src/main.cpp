@@ -51,7 +51,7 @@ int main() {
 
 
 #ifdef FPS
-	DrawFPS(10, 10);
+	DrawFPS(SCREEN_WIDTH - 100, 10);
 #endif
 
 //	DrawText(TextFormat("Default Mouse: [%i , %i]", static_cast<int>(mouse.x), static_cast<int>(mouse.y)),

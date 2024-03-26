@@ -8,17 +8,17 @@ using namespace std;
 class Animation {
  private:
   Texture2D texture;
-  Rectangle rectangle;
   Vector2 position;
   float updateTime;
   float runningTime{};
   float frame{};
-  int numberOfFrames;
   int width;
   int height;
-  float scale{};
+  Rectangle rectangle;
 
  public:
+  float scale{};
+  int numberOfFrames;
   Animation(const char *texturePath, int numberOfFrames, float updateTime, float scale = 4.f);
 
   void SetPosition(Vector2 pos);
@@ -26,6 +26,8 @@ class Animation {
   float GetTextureHeight() const;
   float GetTextureWidth() const;
   bool Animate(Vector2 pos, bool facingRight = true);
+  Texture2D GetTexture() const;
+  Rectangle GetSourceRec() const;
 };
 
 #endif //RAYLIB_GAME_SRC_ANIMATION_H_

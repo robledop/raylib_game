@@ -3,6 +3,7 @@
 
 #include "raylib.h"
 #include "animation.h"
+#include <vector>
 
 extern float scale;
 
@@ -27,7 +28,7 @@ class Player {
 	  1.0f / 12.0f
   };
   Animation attackAnimation{
-	  "assets/player/_Attack.png",
+	  "assets/player/_AttackNoMovement.png",
 	  4,
 	  1.0f / 12.0f
   };
@@ -41,9 +42,18 @@ class Player {
 	  3,
 	  1.0f / 12.0f
   };
+  
+  Animation deathAnimation{
+	  "assets/player/_DeathNoMovement.png",
+	  10,
+	  1.0f / 12.0f
+  };
 
  public:
+  float health{100};
+  Rectangle weaponHitbox{};
   bool isDead{false};
+  bool deathAnimationPlayed{false};
   bool blocked{false};
   bool leftBlocked{};
   bool rightBlocked{};
@@ -52,6 +62,7 @@ class Player {
   Rectangle hitbox{};
   bool onGround{true};
   bool attacking{};
+  bool dealDamage{};
   Vector2 position{};
   Direction direction = STOP;
   Direction lastDirection = RIGHT;
@@ -64,6 +75,8 @@ class Player {
   [[nodiscard]] float GetTextureWidth() const;
   [[nodiscard]] float GetWidth() const;
   void SetPosition(Vector2 pos);
+  void Attack();
+  void Damage(int damage);
 };
 
 #endif 

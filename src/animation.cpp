@@ -41,7 +41,7 @@ bool Animation::Animate(Vector2 pos, bool facingRight) {
 	runningTime = 0.0f;
 	rectangle.x = frame * abs(rectangle.width);
 	frame++;
-	if (frame > static_cast<float>(numberOfFrames)) {
+	if (frame >= static_cast<float>(numberOfFrames)) {
 	  frame = 0;
 	  completed = true;
 	}
@@ -56,4 +56,10 @@ bool Animation::Animate(Vector2 pos, bool facingRight) {
 				 WHITE);
 
   return completed;
+}
+Texture2D Animation::GetTexture() const {
+  return texture;
+}
+Rectangle Animation::GetSourceRec() const {
+  return rectangle;
 }
