@@ -1,5 +1,5 @@
-#ifndef RAYLIB_GAME_SRC_ANIMATION_H_
-#define RAYLIB_GAME_SRC_ANIMATION_H_
+#ifndef RAYLIB_GAME_SRC_ANIMATION_H
+#define RAYLIB_GAME_SRC_ANIMATION_H
 
 #include <complex>
 #include "raylib.h"
@@ -30,4 +30,4 @@ class Animation {
   Rectangle GetSourceRec() const;
 };
 
-#endif //RAYLIB_GAME_SRC_ANIMATION_H_
+#endif //RAYLIB_GAME_SRC_ANIMATION_H
