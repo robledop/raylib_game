@@ -8,6 +8,11 @@
 
 class Skeleton : public CollisionBody {
  private:
+  bool dealDamage{};
+  float runningTime{};
+  float frame{};
+  bool hit;
+  
   Rectangle weaponHitbox{};
   bool damagedByCurrentAttack{};
   int health{100};
@@ -27,6 +32,13 @@ class Skeleton : public CollisionBody {
 	  1.0f / 12.0f,
 	  5.f
   };
+  
+  Animation hitAnimation{
+	  "assets/enemies/skeleton/Skeleton Hit.png",
+	  8,
+	  1.0f / 12.0f,
+	  5.f
+  };
 
  public:
   Skeleton(Vector2 pos, Rectangle collisionRect, Player &player);
@@ -35,6 +47,7 @@ class Skeleton : public CollisionBody {
   void Damage();
   [[nodiscard]] int GetHealth() const;
   [[nodiscard]] bool IsDead() const;
+  void Attack();
 };
 
 #endif
