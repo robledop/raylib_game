@@ -52,13 +52,11 @@ void Skeleton::Draw() {
   }
 
   // Draw health bar at the top of the skeleton
-  DrawRectangle(currentX + 10, currentY - 10, health, 10, RED);
+  DrawRectangle(static_cast<int>(currentX) + 10, static_cast<int>(currentY) - 10, health, 10, RED);
 }
 
-Skeleton::Skeleton(Vector2
-				   pos, Rectangle
-				   collisionRect, Player &player) : CollisionBody{pos, collisionRect, true},
-													player{player} {
+Skeleton::Skeleton(Vector2 pos, Rectangle collRect, Player &player) : CollisionBody{pos, collRect, true},
+																		   player{player} {
   currentY = pos.y;
   currentX = pos.x;
 }

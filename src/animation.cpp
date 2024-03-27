@@ -33,7 +33,7 @@ float Animation::GetTextureWidth() const {
 bool Animation::Animate(Vector2 pos, bool facingRight) {
   position = pos;
   bool completed{false};
-  float deltaTime{GetFrameTime()};
+  const float deltaTime{GetFrameTime()};
   runningTime += deltaTime;
 
   rectangle.width = facingRight ? abs(rectangle.width) : -abs(rectangle.width);

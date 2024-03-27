@@ -40,7 +40,7 @@ class Game {
   Game();
   void Draw();
   void LoadTileMap();
-  void DrawTileMap();
+  void DrawTileMap() const;
 };
 
 #endif 

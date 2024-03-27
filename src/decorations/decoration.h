@@ -12,7 +12,7 @@ class Decoration {
  public:
   Decoration(Vector2 pos, const Texture *tex);
   Decoration(Vector2 pos, const Texture *tex, Rectangle rec);
-  void Draw();
+  void Draw() const;
 };
 
 #endif 

@@ -309,8 +309,21 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="C:\Source\Repos\raylib_game\src\ground_grass.cpp" />
-    <ClCompile Include="C:\Source\Repos\raylib_game\src\level_loader.cpp" />
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\level_manager.cpp" />
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\game.cpp" />
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\terrain\collision_body.cpp" />
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\decorations\decoration.cpp" />
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\shop.cpp" />
+    <ClInclude Include="C:\Source\Repos\raylib_game\src\player.h" />
+    <ClInclude Include="C:\Source\Repos\raylib_game\src\animation.h" />
+    <ClInclude Include="C:\Source\Repos\raylib_game\src\shop.h" />
+    <ClInclude Include="C:\Source\Repos\raylib_game\src\terrain\collision_body.h" />
+    <ClInclude Include="C:\Source\Repos\raylib_game\src\level_manager.h" />
+    <ClInclude Include="C:\Source\Repos\raylib_game\src\game.h" />
+    <ClInclude Include="C:\Source\Repos\raylib_game\src\colors.h" />
+    <ClInclude Include="C:\Source\Repos\raylib_game\src\decorations\decoration.h" />
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\enemies\skeleton.cpp" />
+    <ClInclude Include="C:\Source\Repos\raylib_game\src\enemies\skeleton.h" />
     <ClCompile Include="C:\Source\Repos\raylib_game\src\animation.cpp" />
     <ClCompile Include="C:\Source\Repos\raylib_game\src\main.cpp" />
     <ClCompile Include="C:\Source\Repos\raylib_game\src\player.cpp" />

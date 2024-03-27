@@ -3,7 +3,6 @@
 
 #include "raylib.h"
 #include "animation.h"
-#include <vector>
 
 extern float scale;
 
@@ -50,7 +49,7 @@ class Player {
   };
 
  public:
-  float health{100};
+  int health{100};
   Rectangle weaponHitbox{};
   bool isDead{false};
   bool deathAnimationPlayed{false};
