@@ -17,9 +17,6 @@ class CollisionBody {
   std::tuple<bool, float> CheckTopCollision(Rectangle hitbox, float playerSpeed) const;
   std::tuple<bool, float>  CheckSideCollision(Rectangle hitbox, float playerSpeed) const;
   bool CheckBottomCollision(Rectangle hitbox, float playerSpeed) const;
-
-//  void Draw();
-
 };
 
 #endif 

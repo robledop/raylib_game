@@ -18,7 +18,7 @@ class Skeleton : public CollisionBody {
   int health{100};
   float currentY{};
   float currentX{};
-  Player &player;
+  Player *player;
   Animation idleAnimation{
 	  "assets/enemies/skeleton/Skeleton Idle.png",
 	  11,
@@ -41,13 +41,15 @@ class Skeleton : public CollisionBody {
   };
 
  public:
-  Skeleton(Vector2 pos, Rectangle collisionRect, Player &player);
+  Reactor reactor{};
+  Skeleton(Vector2 pos, Rectangle collisionRect, Player *player);
   void Draw();
   [[nodiscard]] Rectangle GetHitbox() const;
-  void Damage();
+  void Damage(int damage);
   [[nodiscard]] int GetHealth() const;
   [[nodiscard]] bool IsDead() const;
   void Attack();
+  void Init();
 };
 
 #endif

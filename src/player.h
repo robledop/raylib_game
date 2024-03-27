@@ -3,6 +3,7 @@
 
 #include "raylib.h"
 #include "animation.h"
+#include "reactor.h"
 
 extern float scale;
 
@@ -11,6 +12,7 @@ enum Direction {
   RIGHT,
   STOP
 };
+
 
 class Player {
  private:
@@ -41,7 +43,7 @@ class Player {
 	  3,
 	  1.0f / 12.0f
   };
-  
+
   Animation deathAnimation{
 	  "assets/player/_DeathNoMovement.png",
 	  10,
@@ -49,6 +51,8 @@ class Player {
   };
 
  public:
+  Reactor reactor{};
+  int maxHealth{100};
   int health{100};
   Rectangle weaponHitbox{};
   bool isDead{false};
@@ -61,11 +65,11 @@ class Player {
   Rectangle hitbox{};
   bool onGround{true};
   bool attacking{};
-  bool dealDamage{};
   Vector2 position{};
-  Direction direction = STOP;
-  Direction lastDirection = RIGHT;
+  Direction direction{STOP};
+  Direction lastDirection{RIGHT};
 
+  Player();
   void SetOnGround(bool on_ground);
   void SetXPosition(float x);
   void Draw();
@@ -76,6 +80,7 @@ class Player {
   void SetPosition(Vector2 pos);
   void Attack();
   void Damage(int damage);
+  void Init();
 };
 
 #endif 

@@ -4,16 +4,15 @@ void Skeleton::Draw() {
 	return;
   }
 
-  bool facingRight = player.position.x + idleAnimation.GetTextureWidth() > currentX;
+  bool facingRight = player->position.x + idleAnimation.GetTextureWidth() > currentX;
   collisionRect = {currentX, currentY, idleAnimation.GetTextureWidth(), idleAnimation.GetTextureHeight()};
   position.y = currentY - abs(idleAnimation.GetTextureHeight() - attackAnimation.GetTextureHeight());
-  
+
   if (facingRight) {
 	position.x = currentX;
 	weaponHitbox = {collisionRect.x + idleAnimation.GetTextureWidth(), collisionRect.y, 90, collisionRect.height};
   } else {
 	position.x = currentX - abs(idleAnimation.GetTextureWidth() - attackAnimation.GetTextureWidth());
-
 	weaponHitbox = {collisionRect.x - 90, collisionRect.y, 90, collisionRect.height};
   }
 
@@ -27,12 +26,14 @@ void Skeleton::Draw() {
 	position.x = currentX - abs(idleAnimation.GetTextureWidth() - hitAnimation.GetTextureWidth());
 	bool completed = hitAnimation.Animate(position, facingRight);
 	hit = !completed;
-  } else if (abs(player.position.x - currentX) < 400) {
+  } else if (abs(player->position.x - currentX) < 400) {
 	Attack();
 	attackAnimation.Animate(position, facingRight);
-	if (CheckCollisionRecs(player.hitbox, weaponHitbox)) {
+	if (CheckCollisionRecs(player->hitbox, weaponHitbox)) {
 	  if (dealDamage) {
-		player.Damage(1);
+//		player->Damage(1);
+		// TODO: debouncing
+		player->reactor.DispatchEvent(TAKE_DAMAGE, 1);
 	  }
 	}
   } else {
@@ -41,25 +42,23 @@ void Skeleton::Draw() {
 	idleAnimation.Animate(position, facingRight);
   }
 
-  if (player.dealDamage && !damagedByCurrentAttack) {
-	if (CheckCollisionRecs(player.weaponHitbox, collisionRect)) {
-	  TraceLog(LOG_INFO, "Skeleton hit");
-	  hit = true;
-	  Damage();
-	}
-  } else if (!player.dealDamage) {
-	damagedByCurrentAttack = false;
-  }
-
   // Draw health bar at the top of the skeleton
   DrawRectangle(static_cast<int>(currentX) + 10, static_cast<int>(currentY) - 10, health, 10, RED);
 }
 
-Skeleton::Skeleton(Vector2 pos, Rectangle collRect, Player &player) : CollisionBody{pos, collRect, true},
-																		   player{player} {
+Skeleton::Skeleton(Vector2 pos, Rectangle collRect, Player *p) : CollisionBody{pos, collRect, true},
+																 player{p} {
   currentY = pos.y;
   currentX = pos.x;
+
 }
+
+void Skeleton::Init() {
+  this->player->reactor.AddEventListener(ATTACK, [this](int data) {
+	Damage(data);
+  });
+}
+
 Rectangle Skeleton::GetHitbox() const {
   return collisionRect;
 }
@@ -69,9 +68,11 @@ int Skeleton::GetHealth() const {
 bool Skeleton::IsDead() const {
   return health <= 0;
 }
-void Skeleton::Damage() {
-  health -= 10;
-  damagedByCurrentAttack = true;
+void Skeleton::Damage(int damage) {
+  if (CheckCollisionRecs(player->weaponHitbox, collisionRect)) {
+	hit = true;
+	health -= damage;
+  }
 }
 
 void Skeleton::Attack() {

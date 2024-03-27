@@ -25,10 +25,10 @@ void Player::Attack() {
 	runningTime = 0.0f;
 	frame++;
 	if (frame > 4.f) {
-	  dealDamage = false;
+//	  dealDamage = false;
 	  frame = 0;
 	} else if (frame > 2.f) {
-	  dealDamage = true;
+//	  dealDamage = true;
 	}
   }
 }
@@ -63,9 +63,15 @@ void Player::Draw() {
   };
 
   if (lastDirection == RIGHT) {
-	weaponHitbox = {hitbox.x + hitbox.width, hitbox.y, 170, hitbox.height};
+	weaponHitbox.x = hitbox.x + hitbox.width;
+	weaponHitbox.y = hitbox.y;
+	weaponHitbox.width = 170;
+	weaponHitbox.height = hitbox.height;
   } else {
-	weaponHitbox = {hitbox.x - 170, hitbox.y, 170, hitbox.height};
+	weaponHitbox.x = hitbox.x - 170;
+	weaponHitbox.y = hitbox.y;
+	weaponHitbox.width = 170;
+	weaponHitbox.height = hitbox.height;
   }
 
 #ifdef SHOW_COLLISION_BOXES
@@ -105,6 +111,7 @@ void Player::Draw() {
 	onGround = false;
   } else if ((IsKeyPressed(KEY_N) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) && !attacking) {
 	attacking = true;
+	reactor.DispatchEvent(ATTACK, 10);
   }
 
   position.y += upwardsVelocity;
@@ -163,4 +170,16 @@ void Player::Damage(int damage) {
   if (health <= 0) {
 	isDead = true;
   }
+}
+
+Player::Player() {
+  reactor.RegisterEvent(ATTACK);
+  reactor.RegisterEvent(TAKE_DAMAGE);
+}
+
+void Player::Init() {
+  reactor.AddEventListener(TAKE_DAMAGE, [this](int damage) {
+	TraceLog(LOG_INFO, "Player taking damage");
+	Damage(damage);
+  });
 }

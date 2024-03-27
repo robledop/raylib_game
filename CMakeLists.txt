@@ -42,6 +42,10 @@ add_executable(${PROJECT_NAME}
         src/decorations/decoration.h
         src/enemies/skeleton.cpp
         src/enemies/skeleton.h
+        src/event.cpp
+        src/event.h
+        src/reactor.cpp
+        src/reactor.h
 )
 
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
