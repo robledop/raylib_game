@@ -9,10 +9,9 @@
 class Skeleton : public CollisionBody {
  private:
   bool dealDamage{true};
-  float runningTime{};
-  float frame{};
   bool hit;
   bool facingRight{true};
+  int delay{};
   
   Rectangle weaponHitbox{};
   int health{100};

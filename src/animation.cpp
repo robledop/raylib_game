@@ -30,6 +30,11 @@ float Animation::GetTextureWidth() const {
   return abs(rectangle.width * scale);
 }
 
+void Animation::Reset() {
+  frame = 0;
+  runningTime = 0.0f;
+}
+
 bool Animation::Animate(Vector2 pos, bool facingRight) {
   position = pos;
   bool completed{false};

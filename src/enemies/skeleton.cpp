@@ -29,16 +29,30 @@ void Skeleton::Draw() {
 #endif
 
   if (hit) {
+	attackAnimation.Reset();
+	delay = 0;
+	
 	position.y = currentY - abs(idleAnimation.GetTextureHeight() - hitAnimation.GetTextureHeight());
-	position.x = currentX - abs(idleAnimation.GetTextureWidth() - hitAnimation.GetTextureWidth());
+	if (facingRight){
+	  position.x = currentX - abs(idleAnimation.GetTextureWidth() - hitAnimation.GetTextureWidth());
+	}else{
+	  position.x = currentX - abs(idleAnimation.GetTextureWidth() - hitAnimation.GetTextureWidth() + 30);
+	}
 	bool completed = hitAnimation.Animate(position, facingRight);
 	hit = !completed;
-  } else if (abs(player->position.x - currentX) < 400) {
+  } else if (abs(player->position.x - currentX) < 400 && delay++ >= 60) {
+	// Wait a second before attacking.
+	// The attack animation is 18 frames long, and it runs 1/12 of 60 frames (5 times per second).
+	if (delay > 60 + attackAnimation.numberOfFrames * 5) {
+	  delay = 0;
+	}
+
 	Attack();
   } else {
 	position.y = currentY;
 	position.x = currentX;
 	idleAnimation.Animate(position, facingRight);
+	attackAnimation.Reset();
   }
 
   // Draw health bar at the top of the skeleton
@@ -67,6 +81,7 @@ void Skeleton::Damage(int damage) {
   if (CheckCollisionRecs(player->weaponHitbox, collisionRect)) {
 	hit = true;
 	health -= damage;
+	hitAnimation.Reset();
   }
 }
 
@@ -75,7 +90,6 @@ void Skeleton::Attack() {
 
   if (attackAnimation.frame >= attackAnimation.numberOfFrames - 1) {
 	dealDamage = true;
-	frame = 0;
   } else if (attackAnimation.frame > 6.f) {
 	if (dealDamage) {
 	  dealDamage = false;
@@ -83,3 +97,4 @@ void Skeleton::Attack() {
 	}
   }
 }
+

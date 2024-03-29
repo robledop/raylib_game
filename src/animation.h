@@ -28,6 +28,7 @@ class Animation {
   bool Animate(Vector2 pos, bool facingRight = true);
   Texture2D GetTexture() const;
   Rectangle GetSourceRec() const;
+  void Reset();
 };
 
 #endif //RAYLIB_GAME_SRC_ANIMATION_H

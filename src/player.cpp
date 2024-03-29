@@ -15,20 +15,16 @@ void Player::SetXPosition(float x) {
 }
 
 void Player::Attack() {
-  float deltaTime{GetFrameTime()};
-  static float runningTime{};
-  static float frame{};
-  runningTime += deltaTime;
-  float updateTime{1 / 12.f};
+  if (attackAnimation.Animate(position, facingRight)) {
+	attacking = false;
+  }
 
-  if (runningTime >= updateTime) {
-	runningTime = 0.0f;
-	frame++;
-	if (frame > 4.f) {
-//	  dealDamage = false;
-	  frame = 0;
-	} else if (frame > 2.f) {
-//	  dealDamage = true;
+  if (attackAnimation.frame >= attackAnimation.numberOfFrames - 1) {
+	dealDamage = true;
+  } else if (attackAnimation.frame >= 2.f) {
+	if (dealDamage) {
+	  reactor.DispatchEvent(ATTACK, 10);
+	  dealDamage = false;
 	}
   }
 }
@@ -111,18 +107,14 @@ void Player::Draw() {
 	onGround = false;
   } else if ((IsKeyPressed(KEY_N) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) && !attacking) {
 	attacking = true;
-	reactor.DispatchEvent(ATTACK, 10);
   }
 
   position.y += upwardsVelocity;
 
-  const bool facingRight = lastDirection == RIGHT;
+  facingRight = lastDirection == RIGHT;
 
   if (attacking) {
 	Attack();
-	if (attackAnimation.Animate(position, facingRight)) {
-	  attacking = false;
-	}
   } else if (jumping && upwardsVelocity < 0) {
 	jumpAnimation.Animate(position, facingRight);
   } else if (upwardsVelocity > 0) {

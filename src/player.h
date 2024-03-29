@@ -16,6 +16,8 @@ enum Direction {
 
 class Player {
  private:
+  bool facingRight{true};
+  bool dealDamage{true};
   bool jumping{};
 
   Animation idleAnimation{
