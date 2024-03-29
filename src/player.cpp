@@ -178,8 +178,10 @@ Player::Player() {
 }
 
 void Player::Init() {
-  reactor.AddEventListener(TAKE_DAMAGE, [this](int damage) {
-	TraceLog(LOG_INFO, "Player taking damage");
-	Damage(damage);
-  });
+  this->onBeingHit = [this](int damage, Rectangle enemyWeaponHitbox) {
+	if (CheckCollisionRecs(this->hitbox, enemyWeaponHitbox)) {
+	  Damage(damage);
+	  TraceLog(LOG_INFO, "Player health: %d", health);
+	}
+  };
 }

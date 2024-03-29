@@ -10,13 +10,13 @@ class Animation {
   Texture2D texture;
   Vector2 position;
   float updateTime;
-  float runningTime{};
-  float frame{};
   int width;
   int height;
   Rectangle rectangle;
+  float runningTime{};
 
  public:
+  float frame{};
   float scale{};
   int numberOfFrames;
   Animation(const char *texturePath, int numberOfFrames, float updateTime, float scale = 4.f);

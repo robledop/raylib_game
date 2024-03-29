@@ -51,6 +51,7 @@ class Player {
   };
 
  public:
+  std::function<void(int, Rectangle)> onBeingHit;
   Reactor reactor{};
   int maxHealth{100};
   int health{100};

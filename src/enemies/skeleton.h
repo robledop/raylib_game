@@ -8,13 +8,13 @@
 
 class Skeleton : public CollisionBody {
  private:
-  bool dealDamage{};
+  bool dealDamage{true};
   float runningTime{};
   float frame{};
   bool hit;
+  bool facingRight{true};
   
   Rectangle weaponHitbox{};
-  bool damagedByCurrentAttack{};
   int health{100};
   float currentY{};
   float currentX{};
