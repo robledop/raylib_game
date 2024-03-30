@@ -49,3 +49,6 @@ bool CollisionBody::CheckBottomCollision(Rectangle hitbox,
          hitbox.y <= position.y + (collisionRect.height * 3 * scale) + 10 +
                          playerSpeed * GetFrameTime();
 }
+Rectangle CollisionBody::GetCollisionRect() const {
+  return collisionRect;
+}

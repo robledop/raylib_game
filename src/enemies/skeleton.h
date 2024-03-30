@@ -17,11 +17,13 @@ class Skeleton : public CollisionBody {
   vector<CollisionBody>* terrainCollisionBodies;
   
   Rectangle weaponHitbox{};
-  int health{100};
+  int health{80};
   float currentY{};
   float currentX{};
   Player *player;
-  Animation idleAnimation{
+  
+ public:
+   Animation idleAnimation{
 	  "assets/enemies/skeleton/Skeleton Idle.png",
 	  11,
 	  1.0f / 12.0f,
@@ -34,7 +36,7 @@ class Skeleton : public CollisionBody {
 	  1.0f / 12.0f,
 	  5.f
   };
-  
+
   Animation hitAnimation{
 	  "assets/enemies/skeleton/Skeleton Hit.png",
 	  8,
@@ -48,7 +50,6 @@ class Skeleton : public CollisionBody {
 	  1.0f / 12.0f,
 	  5.f
   };
- public:
   Reactor reactor{};
   Skeleton(Vector2 pos, Rectangle collisionRect, Player *player, vector<CollisionBody>* terrainCollisionBodies);
   void Draw();
@@ -59,5 +60,6 @@ class Skeleton : public CollisionBody {
   void Attack();
   void Init();
 };
+
 
 #endif

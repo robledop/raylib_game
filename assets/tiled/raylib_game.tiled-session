@@ -12,6 +12,10 @@
         "": {
             "scaleInDock": 1
         },
+        "Skeleton Idle.tsj": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
         "Skeleton Walk.tsj": {
             "dynamicWrapping": false,
             "scaleInDock": 1,
@@ -35,11 +39,11 @@
             "expandedGroupLayers": [
                 5
             ],
-            "scale": 2,
-            "selectedLayer": 8,
+            "scale": 1.5,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 501,
-                "y": 458
+                "x": 7144.666666666666,
+                "y": 462.6666666666667
             }
         },
         "level1.json#decorations": {
@@ -87,7 +91,7 @@
         }
     },
     "last.exportedFilePath": "/home/robledo/source/raylib_game/assets/tiled",
-    "last.imagePath": "/home/robledo/source/raylib_game/assets/enemies/skeleton",
+    "last.imagePath": "/home/robledo/Desktop/Skeleton/Files",
     "lastUsedTilesetExportFilter": "JSON tileset files (*.tsj *.json)",
     "map.height": 100,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
@@ -98,18 +102,19 @@
     "openFiles": [
         "level1.json",
         "decorations.tsj",
-        "Skeleton Walk.tsj"
+        "oak_woods_tileset.json",
+        "shop.json"
     ],
     "project": "raylib_game.tiled-project",
     "property.type": "int",
     "recentFiles": [
-        "Skeleton Walk.tsj",
+        "shop.json",
+        "oak_woods_tileset.json",
         "decorations.tsj",
         "level1.json",
+        "Skeleton Walk.tsj",
         "skeleton.tsj",
-        "oak_woods_tileset.json",
         "decorations.json",
-        "shop.json",
         "decorations.tsx",
         "level1.tmx",
         "shop.tsx",
@@ -118,8 +123,8 @@
     "resizeMap.removeObjects": true,
     "tileset.lastUsedFormat": "json",
     "tileset.tileSize": {
-        "height": 33,
-        "width": 22
+        "height": 37,
+        "width": 60
     },
     "tileset.type": 0
 }

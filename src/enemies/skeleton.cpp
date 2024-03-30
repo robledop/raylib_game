@@ -17,7 +17,9 @@ void Skeleton::Draw() {
   DrawRectangleLinesEx(weaponHitbox, 2, SEAGREEN);
 #endif
 
-  sameYPosAsPlayer = abs(player->position.y - position.y) < 350;
+  // Center of player (y coordinate) is less than 200 pixels away from the center of the skeleton
+  sameYPosAsPlayer =
+	  abs((player->hitbox.y + player->GetHeight() / 2) - (collisionRect.y + collisionRect.height / 2)) < 200;
 
   facingRight = player->position.x + collisionRect.width > currentX;
 
@@ -105,7 +107,7 @@ void Skeleton::Draw() {
 		break;
 	  }
 	}
-	
+
 	if (!sideCollision && topCollision) {
 	  currentX -= 1;
 	}
@@ -115,13 +117,13 @@ void Skeleton::Draw() {
 	walkAnimation.Animate(position, facingRight);
   } else if (
 	  sameYPosAsPlayer &&
-		  delay++ >= 60 &&
+		  delay++ >= 30 &&
 		  (!facingRight && (abs(player->hitbox.x - currentX) <= 10)
 			  || (facingRight
 				  && ((player->position.x + player->GetWidth()) - (position.x + collisionRect.width)) <= -20))) {
-	// Wait a second before attacking.
+	// Wait a half a second before attacking.
 	// The attack animation is 18 frames long, and it runs 1/12 of 60 frames (5 times per second).
-	if (delay > 60 + attackAnimation.numberOfFrames * 5) {
+	if (delay > 30 + attackAnimation.numberOfFrames * 5) {
 	  delay = 0;
 	}
 
@@ -133,12 +135,13 @@ void Skeleton::Draw() {
 	attackAnimation.Reset();
   }
 
-// Draw a health bar at the top of the skeleton
+  // Draw a health bar at the top of the skeleton
   DrawRectangle(static_cast
-					<int>(currentX)
-					+ 10, static_cast
-					<int>(currentY)
-					- 10, health, 10, RED);
+					<int>(collisionRect.x - 10),
+				static_cast <int>(collisionRect.y - 20),
+				health,
+				5,
+				RED);
 }
 
 void Skeleton::Init() {
@@ -175,7 +178,7 @@ void Skeleton::Attack() {
   } else if (attackAnimation.frame > 6.f) {
 	if (dealDamage) {
 	  dealDamage = false;
-	  player->onBeingHit(1, weaponHitbox);
+	  player->onBeingHit(10, weaponHitbox);
 	}
   }
 }

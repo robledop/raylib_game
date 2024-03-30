@@ -9,6 +9,7 @@
 #include "include/tileson.hpp"
 #include "terrain/collision_body.h"
 #include "enemies/skeleton.h"
+#include "shop.h"
 
 class Game {
  private:
@@ -16,9 +17,12 @@ class Game {
   float minX{800.f};
   float maxY;
   float minY{};
-  vector<tson::Tileset> tilesets;
   std::map<std::tuple<int, int>, tson::Tile *> tileData;
+  std::map<std::tuple<int, int>, tson::Tile *> tileBackgroundData;
+  std::map<std::tuple<int, int>, tson::Tile *> interactablesData;
   vector<CollisionBody> terrains;
+  vector<CollisionBody> interactables;
+  vector<Shop> shops;
   vector<Skeleton> skeletons;
   tson::Tileson tileson{};
   std::unique_ptr<tson::Map> map;
@@ -29,7 +33,7 @@ class Game {
   float bg2ParallaxX{};
   Texture2D background3;
   float bg3ParallaxX{};
-  Texture2D tileSet = LoadTexture("assets/tilesets/oak_woods_tileset.png");
+  ::map<string ,Texture2D> tileTextures;
   Camera2D camera{};
   float bg1X{};
   float bg2X{};
@@ -41,6 +45,8 @@ class Game {
   void Draw();
   void LoadTileMap();
   void DrawTileMap() const;
+  void DrawTiledBackground() const;
+  void DrawInteractables();
 };
 
 #endif 

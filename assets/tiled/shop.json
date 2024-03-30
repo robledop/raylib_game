@@ -1,4 +1,5 @@
-{ "columns":6,
+{ "class":"interactable",
+ "columns":6,
  "image":"..\/shops\/shop_anim.png",
  "imageheight":128,
  "imagewidth":708,
@@ -35,7 +36,8 @@
                  "duration":100,
                  "tileid":5
                 }],
-         "id":5
+         "id":5,
+         "type":"shop"
         }],
  "tilewidth":118,
  "type":"tileset",

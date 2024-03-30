@@ -3,12 +3,12 @@
 
 #include "raylib.h"
 #include "animation.h"
+#include "terrain/collision_body.h"
 
 extern float scale;
 
-class Shop {
+class Shop : public CollisionBody {
  private:
-  Vector2 position;
   Animation animation{
 	  ASSETS_PATH"shops/shop_anim.png",
 	  6,
@@ -16,8 +16,10 @@ class Shop {
   };
 
  public:
-  Shop(Vector2 pos);
-  void Draw(); 
+  Shop(Vector2 pos, Rectangle collisionRect); 
+  [[nodiscard]] Rectangle GetHitbox() const;
+
+  void Draw();
 };
 
 #endif 

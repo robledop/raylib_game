@@ -22,7 +22,8 @@
          "id":1,
          "image":"..\/decorations\/fence_2.png",
          "imageheight":19,
-         "imagewidth":72
+         "imagewidth":72,
+         "type":"decorations"
         }, 
         {
          "id":2,

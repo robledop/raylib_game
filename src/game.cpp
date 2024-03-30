@@ -139,6 +139,8 @@ void Game::Draw() {
 	  player.rightBlocked = false;
 	}
 
+	DrawInteractables();
+	DrawTiledBackground();
 	DrawTileMap();
 	player.Draw();
 	for (auto &enemy : skeletons) {
@@ -200,6 +202,28 @@ void Game::LoadTileMap() {
 	//	  }
 	//	}
 
+	// Load all textures
+	for (auto &ts : map->getTilesets()) {
+	  string tileSetPath = ts.getImagePath();
+	  if (tileSetPath != "") {
+		tileSetPath = tileSetPath.replace(0, 2, "assets");
+		if (tileTextures.count(tileSetPath) == 0) {
+		  Texture2D tex = LoadTexture(tileSetPath.c_str());
+		  tileTextures.insert(make_pair(tileSetPath, tex));
+		}
+	  }
+
+	  for (auto &t : ts.getTiles()) {
+		string path = t.getImage();
+		if (path == "") continue;
+		path = path.replace(0, 2, "assets");
+		if (tileTextures.count(path) == 0) {
+		  Texture2D tex = LoadTexture(path.c_str());
+		  tileTextures.insert(make_pair(path, tex));
+		}
+	  }
+	}
+
 	tson::Layer *layer = map->getLayer("Collision Layer");
 
 	if (layer->getType() == tson::LayerType::TileLayer) {
@@ -223,6 +247,11 @@ void Game::LoadTileMap() {
 		  terrains.push_back(terrain);
 		}
 	  }
+	}
+
+	tson::Layer *tileBackgroundLayer = map->getLayer("Tiled Background");
+	if (tileBackgroundLayer->getType() == tson::LayerType::TileLayer) {
+	  tileBackgroundData = tileBackgroundLayer->getTileData();
 	}
 
 	const tson::Layer *bg1 = map->getLayer("Background1");
@@ -256,8 +285,25 @@ void Game::LoadTileMap() {
 				   &player, &terrains});
 	}
 
-  } else {
-	TraceLog(LOG_ERROR, "Error occurred: %s", map->getStatusMessage().c_str());
+	const tson::Layer *interactableLayer = map->getLayer("Interactables");
+	if (interactableLayer->getType() == tson::LayerType::TileLayer) {
+	  interactablesData = interactableLayer->getTileData();
+
+	  for (auto &i : interactablesData) {
+		const auto tile = i.second;
+		if (tile->getType() == "shop") {
+		  const auto x = static_cast<float>(get<0>(i.first) * 24 * 3);
+		  const auto y = static_cast<float>(get<1>(i.first) * 24 * 3);
+		  const auto rect = i.second->getDrawingRect();
+		  const auto collisionRect = Rectangle{x * 24 * 3, y * 24 * 3, rect.width * 3.f, rect.height * 3.f};
+		  Shop shop = Shop{{x, y - collisionRect.height - 24 * 2}, collisionRect};
+		  shops.push_back(shop);
+		}
+	  }
+
+	} else {
+	  TraceLog(LOG_ERROR, "Error occurred: %s", map->getStatusMessage().c_str());
+	}
   }
 }
 void Game::DrawTileMap() const {
@@ -271,7 +317,70 @@ void Game::DrawTileMap() const {
 	  const Vector2 position = {static_cast<float>(get<0>(fst) * 24 * 3),
 								static_cast<float>(get<1>(fst) * 24 * 3)};
 	  const Rectangle destRect = {position.x, position.y, 24 * 3, 24 * 3};
+	  string path = snd->getTileset()->getImagePath();
+	  path = path.replace(0, 2, "assets");
+	  Texture2D tileSet = tileTextures.at(path);
 	  DrawTexturePro(tileSet, sourceRect, destRect, {}, 0, WHITE);
 	}
+  }
+}
+
+void Game::DrawTiledBackground() const {
+  for (auto [coord, tile] : tileBackgroundData) {
+	if (tile != nullptr) {
+	  const Rectangle sourceRect = {
+		  static_cast<float>(tile->getDrawingRect().x),
+		  static_cast<float>(tile->getDrawingRect().y),
+		  static_cast<float>(tile->getDrawingRect().width),
+		  static_cast<float>(tile->getDrawingRect().height)
+	  };
+
+	  auto tileSetName = tile->getTileset()->getName();
+	  if (tileSetName == "decorations") {
+		float y;
+		const float x = get<0>(coord) * 24 * 3;
+		if (sourceRect.height > 24) {
+		  y = get<1>(coord) * 24 * 3 - (sourceRect.height * 3 - 24 * 3);
+		} else {
+		  y = get<1>(coord) * 24 * 3 + (24 * 3 - sourceRect.height * 3);
+		}
+
+		const Rectangle destRect = {x, y, sourceRect.width * 3, sourceRect.height * 3};
+		string path;
+		if (tile->getImage() != "") {
+		  path = tile->getImage();
+		} else {
+		  path = tile->getTileset()->getImagePath();
+		}
+
+		path = path.replace(0, 2, "assets");
+		Texture2D t = tileTextures.at(path);
+
+		DrawTexturePro(t, sourceRect, destRect, {}, 0, WHITE);
+	  } else {
+		const float x = get<0>(coord) * 24 * 3;
+		const float y = get<1>(coord) * 24 * 3;
+
+		const Rectangle destRect = {x, y, sourceRect.width * 3, sourceRect.height * 3};
+		string path;
+		if (tile->getImage() != "") {
+		  path = tile->getImage();
+		} else {
+		  path = tile->getTileset()->getImagePath();
+		}
+
+		path = path.replace(0, 2, "assets");
+		Texture2D t = tileTextures.at(path);
+
+		DrawTexturePro(t, sourceRect, destRect, {}, 0, WHITE);
+	  }
+
+	}
+  }
+}
+
+void Game::DrawInteractables() {
+  for (auto &s : shops) {
+	s.Draw();
   }
 }

@@ -4,6 +4,7 @@
  "imagewidth":504,
  "margin":0,
  "name":"oak_woods_tileset",
+ "objectalignment":"bottomleft",
  "spacing":0,
  "tilecount":315,
  "tiledversion":"1.10.2",

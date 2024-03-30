@@ -1,13 +1,13 @@
-{ "columns":13,
- "image":"..\/enemies\/skeleton\/Skeleton Walk.png",
- "imageheight":33,
- "imagewidth":286,
+{ "columns":11,
+ "image":"..\/..\/..\/..\/Desktop\/Skeleton\/Files\/Skeleton Idle.png",
+ "imageheight":37,
+ "imagewidth":660,
  "margin":0,
- "name":"Skeleton Walk",
+ "name":"Skeleton Idle",
  "spacing":0,
- "tilecount":13,
+ "tilecount":11,
  "tiledversion":"1.10.2",
- "tileheight":33,
+ "tileheight":37,
  "tiles":[
         {
          "animation":[
@@ -54,14 +54,6 @@
                 {
                  "duration":100,
                  "tileid":10
-                }, 
-                {
-                 "duration":100,
-                 "tileid":11
-                }, 
-                {
-                 "duration":100,
-                 "tileid":12
                 }],
          "id":0,
          "objectgroup":
@@ -71,38 +63,24 @@
              "name":"",
              "objects":[
                     {
-                     "height":25.5,
+                     "height":32,
                      "id":1,
-                     "name":"",
+                     "name":"skeleton",
                      "rotation":0,
-                     "type":"",
+                     "type":"enemy",
                      "visible":true,
-                     "width":12.25,
-                     "x":1,
-                     "y":7.5
+                     "width":22,
+                     "x":20,
+                     "y":5
                     }],
              "opacity":1,
              "type":"objectgroup",
              "visible":true,
              "x":0,
              "y":0
-            },
-         "properties":[
-                {
-                 "name":"scale",
-                 "type":"int",
-                 "value":3
-                }],
-         "type":"skeleton"
+            }
         }],
- "tilewidth":22,
- "transformations":
-    {
-     "hflip":true,
-     "preferuntransformed":false,
-     "rotate":false,
-     "vflip":false
-    },
+ "tilewidth":60,
  "type":"tileset",
  "version":"1.10"
 }
