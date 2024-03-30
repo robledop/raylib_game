@@ -11,6 +11,7 @@ class Skeleton : public CollisionBody {
   bool dealDamage{true};
   bool hit;
   bool facingRight{true};
+  bool sameYPosAsPlayer{false};
   int delay{};
   
   Rectangle weaponHitbox{};
