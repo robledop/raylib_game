@@ -204,7 +204,7 @@ void Game::LoadTileMap() {
 
 	// Load all textures
 	for (auto &ts : map->getTilesets()) {
-	  string tileSetPath = ts.getImagePath();
+	  string tileSetPath = ts.getImagePath().string();
 	  if (tileSetPath != "") {
 		tileSetPath = tileSetPath.replace(0, 2, "assets");
 		if (tileTextures.count(tileSetPath) == 0) {
@@ -214,7 +214,7 @@ void Game::LoadTileMap() {
 	  }
 
 	  for (auto &t : ts.getTiles()) {
-		string path = t.getImage();
+		string path = t.getImage().string();
 		if (path == "") continue;
 		path = path.replace(0, 2, "assets");
 		if (tileTextures.count(path) == 0) {
@@ -317,7 +317,7 @@ void Game::DrawTileMap() const {
 	  const Vector2 position = {static_cast<float>(get<0>(fst) * 24 * 3),
 								static_cast<float>(get<1>(fst) * 24 * 3)};
 	  const Rectangle destRect = {position.x, position.y, 24 * 3, 24 * 3};
-	  string path = snd->getTileset()->getImagePath();
+	  string path = snd->getTileset()->getImagePath().string();
 	  path = path.replace(0, 2, "assets");
 	  Texture2D tileSet = tileTextures.at(path);
 	  DrawTexturePro(tileSet, sourceRect, destRect, {}, 0, WHITE);
@@ -348,9 +348,9 @@ void Game::DrawTiledBackground() const {
 		const Rectangle destRect = {x, y, sourceRect.width * 3, sourceRect.height * 3};
 		string path;
 		if (tile->getImage() != "") {
-		  path = tile->getImage();
+		  path = tile->getImage().string();
 		} else {
-		  path = tile->getTileset()->getImagePath();
+		  path = tile->getTileset()->getImagePath().string();
 		}
 
 		path = path.replace(0, 2, "assets");
@@ -364,9 +364,9 @@ void Game::DrawTiledBackground() const {
 		const Rectangle destRect = {x, y, sourceRect.width * 3, sourceRect.height * 3};
 		string path;
 		if (tile->getImage() != "") {
-		  path = tile->getImage();
+		  path = tile->getImage().string();
 		} else {
-		  path = tile->getTileset()->getImagePath();
+		  path = tile->getTileset()->getImagePath().string();
 		}
 
 		path = path.replace(0, 2, "assets");
