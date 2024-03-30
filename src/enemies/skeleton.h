@@ -5,6 +5,7 @@
 #include "../player.h"
 #include "colors.h"
 #include "config.h"
+#include <vector>
 
 class Skeleton : public CollisionBody {
  private:
@@ -13,6 +14,7 @@ class Skeleton : public CollisionBody {
   bool facingRight{true};
   bool sameYPosAsPlayer{false};
   int delay{};
+  vector<CollisionBody>* terrainCollisionBodies;
   
   Rectangle weaponHitbox{};
   int health{100};
@@ -48,7 +50,7 @@ class Skeleton : public CollisionBody {
   };
  public:
   Reactor reactor{};
-  Skeleton(Vector2 pos, Rectangle collisionRect, Player *player);
+  Skeleton(Vector2 pos, Rectangle collisionRect, Player *player, vector<CollisionBody>* terrainCollisionBodies);
   void Draw();
   [[nodiscard]] Rectangle GetHitbox() const;
   void Damage(int damage);

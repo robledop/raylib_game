@@ -1,7 +1,8 @@
 #include "skeleton.h"
 
-Skeleton::Skeleton(Vector2 pos, Rectangle collRect, Player *p) : CollisionBody{pos, collRect, true},
-																 player{p} {
+Skeleton::Skeleton(Vector2 pos, Rectangle collRect, Player *p, vector<CollisionBody> *terrainCollisionBodies)
+	: CollisionBody{pos, collRect, true},
+	  player{p}, terrainCollisionBodies{terrainCollisionBodies} {
   currentY = pos.y - 25;
   currentX = pos.x;
 }
@@ -22,16 +23,16 @@ void Skeleton::Draw() {
 
   if (facingRight) {
 	collisionRect =
-		{currentX + idleAnimation.GetTextureWidth() / 3 - 20,
+		{currentX + idleAnimation.GetTextureWidth() / 2 - 25,
 		 currentY + 55,
-		 idleAnimation.GetTextureWidth() / 3,
-		 idleAnimation.GetTextureHeight() - 55};
+		 idleAnimation.GetTextureWidth() / 5,
+		 idleAnimation.GetTextureHeight() - 57};
   } else {
 	collisionRect =
 		{currentX - 30 + idleAnimation.GetTextureWidth() / 2,
 		 currentY + 55,
-		 idleAnimation.GetTextureWidth() / 3,
-		 idleAnimation.GetTextureHeight() - 55};
+		 idleAnimation.GetTextureWidth() / 5,
+		 idleAnimation.GetTextureHeight() - 57};
   }
 
   if (facingRight) {
@@ -51,7 +52,30 @@ void Skeleton::Draw() {
 		  facingRight
 		  && ((player->position.x + player->GetWidth()) - (position.x + collisionRect.width)) < 900
 		  && ((player->position.x + player->GetWidth()) - (position.x + collisionRect.width)) > -20) {
-	currentX += 1;
+	bool sideCollision = false;
+	for (auto &terrain : *terrainCollisionBodies) {
+	  auto [sideColl, xPos] = terrain.CheckSideCollision(collisionRect, 1);
+	  if (sideColl) {
+		sideCollision = true;
+		break;
+	  }
+	}
+	bool topCollision = false;
+	for (auto &terrain : *terrainCollisionBodies) {
+	  auto [topCol, yPos] = terrain.CheckTopCollision({
+														  collisionRect.x + 24 * 3,
+														  collisionRect.y,
+														  collisionRect.width,
+														  collisionRect.height}, 1);
+	  if (topCol) {
+		topCollision = true;
+		break;
+	  }
+	}
+
+	if (!sideCollision && topCollision) {
+	  currentX += 1;
+	}
 
 	position.y = currentY;
 	position.x = currentX;
@@ -61,7 +85,30 @@ void Skeleton::Draw() {
 		  !facingRight
 		  && abs(player->hitbox.x - currentX) < 900
 		  && abs(player->hitbox.x - currentX) > 10) {
-	currentX -= 1;
+	bool sideCollision = false;
+	for (auto &terrain : *terrainCollisionBodies) {
+	  auto [sideColl, _] = terrain.CheckSideCollision(collisionRect, 1);
+	  if (sideColl) {
+		sideCollision = true;
+		break;
+	  }
+	}
+	bool topCollision = false;
+	for (auto &terrain : *terrainCollisionBodies) {
+	  auto [topCol, yPos] = terrain.CheckTopCollision({
+														  collisionRect.x - 24 * 3,
+														  collisionRect.y,
+														  collisionRect.width,
+														  collisionRect.height}, 1);
+	  if (topCol) {
+		topCollision = true;
+		break;
+	  }
+	}
+	
+	if (!sideCollision && topCollision) {
+	  currentX -= 1;
+	}
 
 	position.y = currentY;
 	position.x = currentX;

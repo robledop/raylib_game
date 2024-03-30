@@ -253,7 +253,7 @@ void Game::LoadTileMap() {
 		  Skeleton{{static_cast<float>(x), static_cast<float>(y)},
 				   {x, y, static_cast<float>(rect.width * 5),
 					static_cast<float>(rect.height * 5)},
-				   &player});
+				   &player, &terrains});
 	}
 
   } else {
