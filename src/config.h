@@ -24,7 +24,7 @@
 //#define BG_LOG	
 //#define GUIDES
 
-//#define SHOW_COLLISION_BOXES
+#define SHOW_COLLISION_BOXES
 
 #define FPS
 

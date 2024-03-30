@@ -71,8 +71,8 @@ void Player::Draw() {
   }
 
 #ifdef SHOW_COLLISION_BOXES
-  DrawRectangleRec(hitbox, RED);
-  DrawRectangleRec(weaponHitbox, BLUE);
+  DrawRectangleLinesEx(hitbox,1, RED);
+  DrawRectangleLinesEx(weaponHitbox, 1, BLUE);
 #endif
 
 #ifdef GUIDES

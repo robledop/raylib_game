@@ -24,23 +24,33 @@ void Skeleton::Draw() {
   }
 
 #ifdef SHOW_COLLISION_BOXES
-  DrawRectangleRec(this->collisionRect, CYAN);
-  DrawRectangleRec(weaponHitbox, SEAGREEN);
+  DrawRectangleLinesEx(this->collisionRect, 2, CYAN);
+  DrawRectangleLinesEx(weaponHitbox, 2, SEAGREEN);
 #endif
 
   if (hit) {
 	attackAnimation.Reset();
 	delay = 0;
-	
+
 	position.y = currentY - abs(idleAnimation.GetTextureHeight() - hitAnimation.GetTextureHeight());
-	if (facingRight){
+	if (facingRight) {
 	  position.x = currentX - abs(idleAnimation.GetTextureWidth() - hitAnimation.GetTextureWidth());
-	}else{
+	} else {
 	  position.x = currentX - abs(idleAnimation.GetTextureWidth() - hitAnimation.GetTextureWidth() + 30);
 	}
 	bool completed = hitAnimation.Animate(position, facingRight);
 	hit = !completed;
-  } else if (abs(player->position.x - currentX) < 400 && delay++ >= 60) {
+  }
+  else if (abs(player->position.x - currentX) < 800 && abs(player->position.x - currentX) > 300) {
+	if (player->position.x < currentX) {
+	  currentX -= 1;
+	} else {
+	  currentX += 1;
+	}
+	position.y = currentY;
+	position.x = currentX;
+	walkAnimation.Animate(position, facingRight);
+  } else if (abs(player->position.x - currentX) <= 300 && delay++ >= 60) {
 	// Wait a second before attacking.
 	// The attack animation is 18 frames long, and it runs 1/12 of 60 frames (5 times per second).
 	if (delay > 60 + attackAnimation.numberOfFrames * 5) {

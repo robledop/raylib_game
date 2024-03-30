@@ -52,7 +52,6 @@ bool Animation::Animate(Vector2 pos, bool facingRight) {
 	}
   }
 
-//  DrawTextureRec(texture, rectangle, position, WHITE);
   DrawTexturePro(texture,
 				 rectangle,
 				 {position.x, position.y, abs(rectangle.width * scale), rectangle.height * scale},

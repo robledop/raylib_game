@@ -39,6 +39,12 @@ class Skeleton : public CollisionBody {
 	  5.f
   };
 
+  Animation walkAnimation{
+	  "assets/enemies/skeleton/Skeleton Walk.png",
+	  13,
+	  1.0f / 12.0f,
+	  5.f
+  };
  public:
   Reactor reactor{};
   Skeleton(Vector2 pos, Rectangle collisionRect, Player *player);
