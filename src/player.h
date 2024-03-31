@@ -21,6 +21,7 @@ class Player {
   bool facingRight{true};
   bool dealDamage{true};
   bool jumping{};
+  bool hit{};
 
   Animation idleAnimation;
   Animation runningAnimation;
@@ -28,6 +29,7 @@ class Player {
   Animation jumpAnimation;
   Animation fallAnimation;
   Animation deathAnimation;
+  Animation hitAnimation;
 
  public:
   std::function<void(int, Rectangle)> onBeingHit;

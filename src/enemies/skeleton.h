@@ -12,6 +12,8 @@ extern bool showCollisionBoxes;
 
 class Skeleton : public CollisionBody, public Enemy {
  private:
+  bool deathAnimationPlayed;
+  bool attacking;
   bool dealDamage;
   bool hit;
   bool facingRight;
@@ -30,6 +32,7 @@ class Skeleton : public CollisionBody, public Enemy {
   Animation attackAnimation;
   Animation hitAnimation;
   Animation walkAnimation;
+  Animation deathAnimation;
  
   Reactor reactor;
   Skeleton(Vector2 pos, Rectangle collisionRect, Player *player, vector<CollisionBody> *terrainCollisionBodies);

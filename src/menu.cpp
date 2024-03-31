@@ -77,8 +77,7 @@ void Menu::DrawContent(Vector2 position) {
 		break;
 	  case 5: *showDebugInfo = !*showDebugInfo;
 		break;
-	  case 6:
-		Quit();
+	  case 6: Quit();
 		break;
 	}
   }
@@ -116,9 +115,10 @@ void Menu::DrawContent(Vector2 position) {
 }
 
 void Menu::StartGame() {
+  *showMenu = false;
   game->Start();
 }
 
-void Menu::Quit(){
+void Menu::Quit() {
   *shouldClose = true;
 }

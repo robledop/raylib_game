@@ -20,8 +20,15 @@ Game::Game(bool *showDebugInfo) : showDebugInfo{showDebugInfo} {
 
 void Game::Start() {
   camera.zoom = 1.0f;
-  player.position.y = 688;
   player.position.x = 1000;
+  player.position.y = 688;
+  player.hitbox = {
+	  player.position.x,
+	  player.position.y + player.GetTextureHeight() / 2,
+	  player.GetWidth(),
+	  player.GetHeight()
+  };
+  
   player.isDead = false;
   player.health = player.maxHealth;
   player.upwardsVelocity = 0;

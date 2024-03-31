@@ -30,6 +30,7 @@ class Animation {
   Texture2D GetTexture() const;
   Rectangle GetSourceRec() const;
   void Reset();
+  void DrawLastFrame();
 };
 
 #endif //RAYLIB_GAME_SRC_ANIMATION_H

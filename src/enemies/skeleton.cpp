@@ -24,23 +24,34 @@ Skeleton::Skeleton(Vector2 pos, Rectangle collRect, Player *p, vector<CollisionB
 		13,
 		1.0f / 12.0f,
 		5.f
+	}, deathAnimation{
+		"assets/enemies/skeleton/Skeleton Dead.png",
+		15,
+		1.0f / 12.0f,
+		5.f
 	},
-	  health{100},
+	  attacking{false},
+	  health{50},
 	  dealDamage{true},
 	  hit{false},
 	  facingRight{true},
 	  sameYPosAsPlayer{false},
-	  delay{0} ,
+	  delay{0},
 	  currentY{pos.y - 25},
 	  currentX{pos.x} {
-  
+
   this->player->reactor.AddEventListener(ATTACK, [this](int data) {
 	Damage(data);
   });
 }
 
 void Skeleton::Draw() {
-  if (IsDead()) {
+  facingRight = player->position.x + collisionRect.width > currentX;
+  if (IsDead() && !deathAnimationPlayed) {
+	deathAnimationPlayed = deathAnimation.Animate(position, facingRight);
+	return;
+  } else if (IsDead()) {
+	deathAnimation.DrawLastFrame();
 	return;
   }
 
@@ -82,10 +93,11 @@ void Skeleton::Draw() {
 	bool completed = hitAnimation.Animate(position, facingRight);
 	hit = !completed;
   } else if (
-	  sameYPosAsPlayer &&
+	  !attacking &&
+		  sameYPosAsPlayer &&
 		  facingRight
 		  && ((player->position.x + player->GetWidth()) - (position.x + collisionRect.width)) < 900
-		  && ((player->position.x + player->GetWidth()) - (position.x + collisionRect.width)) > -20) {
+		  && ((player->position.x + player->GetWidth()) - (position.x + collisionRect.width)) > 20) {
 	bool sideCollision = false;
 	for (auto &terrain : *terrainCollisionBodies) {
 	  auto [sideColl, xPos] = terrain.CheckSideCollision(collisionRect, 1);
@@ -115,10 +127,11 @@ void Skeleton::Draw() {
 	position.x = currentX;
 	walkAnimation.Animate(position, facingRight);
   } else if (
-	  sameYPosAsPlayer &&
+	  !attacking &&
+		  sameYPosAsPlayer &&
 		  !facingRight
 		  && abs(player->hitbox.x - currentX) < 900
-		  && abs(player->hitbox.x - currentX) > 10) {
+		  && abs(player->hitbox.x - currentX) >= 10) {
 	bool sideCollision = false;
 	for (auto &terrain : *terrainCollisionBodies) {
 	  auto [sideColl, _] = terrain.CheckSideCollision(collisionRect, 1);
@@ -148,17 +161,17 @@ void Skeleton::Draw() {
 	position.x = currentX;
 	walkAnimation.Animate(position, facingRight);
   } else if (
-	  sameYPosAsPlayer &&
-		  delay++ >= 30 &&
-		  (!facingRight && (abs(player->hitbox.x - currentX) <= 10)
-			  || (facingRight
-				  && ((player->position.x + player->GetWidth()) - (position.x + collisionRect.width)) <= -20))) {
+	  attacking ||
+		  (sameYPosAsPlayer &&
+			  delay++ >= 30 &&
+			  (!facingRight && (abs(player->hitbox.x - currentX) <= 10)
+				  || (facingRight
+					  && ((player->position.x + player->GetWidth()) - (position.x + collisionRect.width)) <= 20)))) {
 	// Wait a half a second before attacking.
 	// The attack animation is 18 frames long, and it runs 1/12 of 60 frames (5 times per second).
 	if (delay > 30 + attackAnimation.numberOfFrames * 5) {
 	  delay = 0;
 	}
-
 	Attack();
   } else {
 	position.y = currentY;
@@ -167,11 +180,12 @@ void Skeleton::Draw() {
 	attackAnimation.Reset();
   }
 
+
   // Draw a health bar at the top of the skeleton
   DrawRectangle(static_cast
 					<int>(collisionRect.x - 10),
 				static_cast <int>(collisionRect.y - 20),
-				health,
+				health * 2,
 				5,
 				RED);
 }
@@ -193,11 +207,11 @@ void Skeleton::Damage(int damage) {
 }
 
 void Skeleton::Attack() {
-  attackAnimation.Animate(position, facingRight);
+  attacking = !attackAnimation.Animate(position, facingRight);
 
   if (attackAnimation.frame >= attackAnimation.numberOfFrames - 1) {
 	dealDamage = true;
-  } else if (attackAnimation.frame > 6.f) {
+  } else if (attackAnimation.frame > 8.f) {
 	if (dealDamage) {
 	  dealDamage = false;
 	  player->onBeingHit(10, weaponHitbox);

@@ -28,7 +28,6 @@ int main() {
   SetTextureFilter(target.texture,
 				   TEXTURE_FILTER_BILINEAR);  // Texture scale filter to use
 
-  // Uncomment to disable ESC for exiting the game
   SetExitKey(0);
 
   game = new Game{&showDebugInfo};

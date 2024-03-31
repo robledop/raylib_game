@@ -35,11 +35,22 @@ void Animation::Reset() {
   runningTime = 0.0f;
 }
 
+void Animation::DrawLastFrame() {
+  Rectangle rect = rectangle;
+
+  rect.x = abs(rectangle.width) * (numberOfFrames - 1);
+  DrawTexturePro(texture,
+				 rect,
+				 {position.x, position.y, abs(rectangle.width * scale), rectangle.height * scale},
+				 {0, 0},
+				 0,
+				 WHITE);
+}
+
 bool Animation::Animate(Vector2 pos, bool facingRight) {
   position = pos;
   bool completed{false};
-  const float deltaTime{GetFrameTime()};
-  runningTime += deltaTime;
+  runningTime += GetFrameTime();
 
   rectangle.width = facingRight ? abs(rectangle.width) : -abs(rectangle.width);
   if (runningTime >= updateTime) {
@@ -61,12 +72,15 @@ bool Animation::Animate(Vector2 pos, bool facingRight) {
 
   return completed;
 }
+
 Texture2D Animation::GetTexture() const {
   return texture;
 }
+
 Rectangle Animation::GetSourceRec() const {
   return rectangle;
 }
+
 Animation::~Animation() {
   UnloadTexture(texture);
 }

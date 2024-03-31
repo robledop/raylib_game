@@ -32,14 +32,7 @@ void Player::Draw() {
 	deathAnimationPlayed = deathAnimation.Animate(position, lastDirection == RIGHT);
 	return;
   } else if (isDead) {
-	auto rect = deathAnimation.GetSourceRec();
-	rect.x = rect.x + abs(rect.width) * (deathAnimation.numberOfFrames - 1);
-	DrawTexturePro(deathAnimation.GetTexture(),
-				   rect,
-				   {position.x, position.y, abs(rect.width) * deathAnimation.scale, rect.height * deathAnimation.scale},
-				   {0, 0},
-				   0,
-				   WHITE);
+	deathAnimation.DrawLastFrame();
 	return;
   }
 
@@ -49,6 +42,7 @@ void Player::Draw() {
   } else {
 	hitboxX = position.x + GetTextureWidth() / 2.1f;
   }
+
   hitbox = {
 	  hitboxX,
 	  position.y + GetTextureHeight() / 2,
@@ -74,10 +68,16 @@ void Player::Draw() {
   }
 
   const float deltaTime{GetFrameTime()};
-  if (direction == LEFT && !attacking && !leftBlocked) {
+  if (direction == LEFT && !attacking && !leftBlocked && !hit) {
 	this->position.x -= RUN_SPEED;
-  } else if (direction == RIGHT && !attacking && !rightBlocked) {
+  } else if (direction == RIGHT && !attacking && !rightBlocked && !hit) {
 	this->position.x += RUN_SPEED;
+  }
+
+  if (hit && lastDirection == LEFT) {
+	this->position.x += RUN_SPEED;
+  } else if (hit && lastDirection == RIGHT) {
+	this->position.x -= RUN_SPEED;
   }
 
   // add gravity to the object
@@ -93,13 +93,13 @@ void Player::Draw() {
 	}
   }
 
-  if ((IsKeyPressed(KEY_SPACE) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) && !jumping) {
+  if ((IsKeyPressed(KEY_SPACE) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) && !jumping &&  !hit) {
 	// jumping
 	jumping = true;
 	// JUMP_FORCE is in pixels per second
 	upwardsVelocity += JUMP_FORCE * deltaTime;
 	onGround = false;
-  } else if ((IsKeyPressed(KEY_N) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) && !attacking) {
+  } else if ((IsKeyPressed(KEY_N) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) && !attacking && !hit) {
 	attacking = true;
   }
 
@@ -107,7 +107,12 @@ void Player::Draw() {
 
   facingRight = lastDirection == RIGHT;
 
-  if (attacking) {
+  if (hit) {
+	bool completed = hitAnimation.Animate(position, facingRight);
+	if (completed) {
+	  hit = false;
+	}
+  } else if (attacking) {
 	Attack();
   } else if (jumping && upwardsVelocity < 0) {
 	jumpAnimation.Animate(position, facingRight);
@@ -184,13 +189,20 @@ Player::Player() :
 		"assets/player/_DeathNoMovement.png",
 		10,
 		1.0f / 12.0f
+	},
+	hitAnimation{
+		"assets/player/_Hit.png",
+		1,
+		1.0f / 12.0f
+
 	} {
   reactor.RegisterEvent(ATTACK);
   reactor.RegisterEvent(TAKE_DAMAGE);
-  
+
   this->onBeingHit = [this](int damage, Rectangle enemyWeaponHitbox) {
 	if (CheckCollisionRecs(this->hitbox, enemyWeaponHitbox)) {
 	  Damage(damage);
+	  hit = true;
 	  TraceLog(LOG_INFO, "Player health: %d", health);
 	}
   };
