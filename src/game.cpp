@@ -28,7 +28,7 @@ void Game::Start() {
 	  player.GetWidth(),
 	  player.GetHeight()
   };
-  
+
   player.isDead = false;
   player.health = player.maxHealth;
   player.upwardsVelocity = 0;
@@ -45,7 +45,7 @@ void Game::Start() {
 	  (player.GetTextureWidth() / 2),
 				   static_cast<float>(GetScreenHeight()) / 2.0f -
 					   player.GetTextureHeight() / 2};
-  
+
   player.reactor.Clear();
 
   LoadEnemies();
@@ -162,9 +162,9 @@ void Game::Draw() {
 	  player.rightBlocked = false;
 	}
 
-	DrawInteractables();
 	DrawTiledBackground();
 	DrawTileMap();
+	DrawInteractables();
 	player.Draw();
 	for (auto &enemy : skeletons) {
 	  enemy->Draw();
@@ -330,6 +330,13 @@ void Game::LoadTileMap() {
 		  const auto collisionRect = Rectangle{x * 24 * 3, y * 24 * 3, rect.width * 3.f, rect.height * 3.f};
 		  Shop *shop = new Shop{{x, y - collisionRect.height - 24 * 2}, collisionRect};
 		  shops.push_back(shop);
+		} else if (tile->getTileset()->getName() == "Chest Animation 1") {
+		  const auto x = static_cast<float>(get<0>(i.first) * 24 * 3);
+		  const auto y = static_cast<float>(get<1>(i.first) * 24 * 3);
+		  const auto rect = i.second->getDrawingRect();
+		  const auto collisionRect = Rectangle{x * 24 * 3, y * 24 * 3, rect.width * 3.f, rect.height * 3.f};
+		  Chest *shop = new Chest{{x, y - 57}, collisionRect};
+		  chests.push_back(shop);
 		}
 	  }
 
@@ -414,6 +421,10 @@ void Game::DrawTiledBackground() const {
 void Game::DrawInteractables() {
   for (auto &s : shops) {
 	s->Draw();
+  }
+
+  for (auto &c : chests) {
+	c->Draw();
   }
 }
 Game::~Game() {

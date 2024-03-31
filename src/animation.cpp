@@ -35,7 +35,24 @@ void Animation::Reset() {
   runningTime = 0.0f;
 }
 
-void Animation::DrawLastFrame() {
+void Animation::DrawFirstFrame(Vector2 pos) {
+  position = pos;
+  Rectangle rect = {
+	  0.0f,
+	  0.0f,
+	  abs(rectangle.width),
+	  rectangle.height
+  };
+  DrawTexturePro(texture,
+				 rect,
+				 {position.x, position.y, abs(rectangle.width * scale), rectangle.height * scale},
+				 {0, 0},
+				 0,
+				 WHITE);
+}
+
+void Animation::DrawLastFrame(Vector2 pos) {
+  position = pos;
   Rectangle rect = rectangle;
 
   rect.x = abs(rectangle.width) * (numberOfFrames - 1);

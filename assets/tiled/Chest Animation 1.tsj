@@ -1,0 +1,47 @@
+{ "columns":7,
+ "image":"..\/village\/Chest Animation 1.png",
+ "imageheight":43,
+ "imagewidth":238,
+ "margin":0,
+ "name":"Chest Animation 1",
+ "spacing":0,
+ "tilecount":7,
+ "tiledversion":"1.10.2",
+ "tileheight":43,
+ "tiles":[
+        {
+         "animation":[
+                {
+                 "duration":100,
+                 "tileid":0
+                }, 
+                {
+                 "duration":100,
+                 "tileid":1
+                }, 
+                {
+                 "duration":100,
+                 "tileid":2
+                }, 
+                {
+                 "duration":100,
+                 "tileid":3
+                }, 
+                {
+                 "duration":100,
+                 "tileid":4
+                }, 
+                {
+                 "duration":100,
+                 "tileid":5
+                }, 
+                {
+                 "duration":100,
+                 "tileid":6
+                }],
+         "id":6
+        }],
+ "tilewidth":34,
+ "type":"tileset",
+ "version":"1.10"
+}

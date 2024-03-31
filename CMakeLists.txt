@@ -28,7 +28,9 @@ set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/src/")
 
 add_executable(${PROJECT_NAME}
         src/enemies/enemy.cpp
-        src/enemies/enemy.h)
+        src/enemies/enemy.h
+        src/chest.cpp
+        src/chest.h)
 
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})

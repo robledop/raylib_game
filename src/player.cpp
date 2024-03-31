@@ -32,7 +32,7 @@ void Player::Draw() {
 	deathAnimationPlayed = deathAnimation.Animate(position, lastDirection == RIGHT);
 	return;
   } else if (isDead) {
-	deathAnimation.DrawLastFrame();
+	deathAnimation.DrawLastFrame(position);
 	return;
   }
 

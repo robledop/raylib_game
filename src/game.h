@@ -9,6 +9,7 @@
 #include "terrain/collision_body.h"
 #include "enemies/skeleton.h"
 #include "shop.h"
+#include "chest.h"
 
 class Game {
  private:
@@ -23,6 +24,7 @@ class Game {
   vector<CollisionBody> terrains;
   vector<CollisionBody> interactables;
   vector<Shop*> shops;
+  vector<Chest*> chests;
   vector<Skeleton*> skeletons;
   tson::Tileson tileson{};
   std::unique_ptr<tson::Map> map;

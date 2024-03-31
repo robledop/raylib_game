@@ -1,5 +1,6 @@
 #include "skeleton.h"
 
+// TODO: Change the way assets are loaded so that they are separately loaded for each instance of the class.
 Skeleton::Skeleton(Vector2 pos, Rectangle collRect, Player *p, vector<CollisionBody> *terrainCollisionBodies)
 	: CollisionBody{pos, collRect, true},
 	  player{p},
@@ -51,7 +52,7 @@ void Skeleton::Draw() {
 	deathAnimationPlayed = deathAnimation.Animate(position, facingRight);
 	return;
   } else if (IsDead()) {
-	deathAnimation.DrawLastFrame();
+	deathAnimation.DrawLastFrame(position);
 	return;
   }
 
