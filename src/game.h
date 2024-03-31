@@ -5,11 +5,12 @@
 #include "raymath.h"
 #include "config.h"
 #include "player.h"
-#include "level_manager.h"
 #include "include/tileson.hpp"
 #include "terrain/collision_body.h"
 #include "enemies/skeleton.h"
 #include "shop.h"
+
+extern bool showCollisionBoxes;
 
 class Game {
  private:
@@ -22,8 +23,8 @@ class Game {
   std::map<std::tuple<int, int>, tson::Tile *> interactablesData;
   vector<CollisionBody> terrains;
   vector<CollisionBody> interactables;
-  vector<Shop> shops;
-  vector<Skeleton> skeletons;
+  vector<Shop*> shops;
+  vector<Skeleton*> skeletons;
   tson::Tileson tileson{};
   std::unique_ptr<tson::Map> map;
   Player player{};
@@ -42,6 +43,7 @@ class Game {
 
  public:
   Game();
+  ~Game();
   void Draw();
   void LoadTileMap();
   void DrawTileMap() const;

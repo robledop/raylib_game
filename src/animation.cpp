@@ -67,3 +67,6 @@ Texture2D Animation::GetTexture() const {
 Rectangle Animation::GetSourceRec() const {
   return rectangle;
 }
+Animation::~Animation() {
+  UnloadTexture(texture);
+}

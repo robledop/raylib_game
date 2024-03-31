@@ -2,7 +2,29 @@
 
 Skeleton::Skeleton(Vector2 pos, Rectangle collRect, Player *p, vector<CollisionBody> *terrainCollisionBodies)
 	: CollisionBody{pos, collRect, true},
-	  player{p}, terrainCollisionBodies{terrainCollisionBodies} {
+	  player{p},
+	  terrainCollisionBodies{terrainCollisionBodies},
+	  idleAnimation{
+		  "assets/enemies/skeleton/Skeleton Idle.png",
+		  11,
+		  1.0f / 12.0f,
+		  5.f
+	  }, attackAnimation{
+		"assets/enemies/skeleton/Skeleton Attack.png",
+		18,
+		1.0f / 12.0f,
+		5.f
+	}, hitAnimation{
+		"assets/enemies/skeleton/Skeleton Hit.png",
+		8,
+		1.0f / 12.0f,
+		5.f
+	}, walkAnimation{
+		"assets/enemies/skeleton/Skeleton Walk.png",
+		13,
+		1.0f / 12.0f,
+		5.f
+	} {
   currentY = pos.y - 25;
   currentX = pos.x;
 }
@@ -12,10 +34,10 @@ void Skeleton::Draw() {
 	return;
   }
 
-#ifdef SHOW_COLLISION_BOXES
-  DrawRectangleLinesEx(this->collisionRect, 2, CYAN);
-  DrawRectangleLinesEx(weaponHitbox, 2, SEAGREEN);
-#endif
+  if (showCollisionBoxes) {
+	DrawRectangleLinesEx(this->collisionRect, 2, CYAN);
+	DrawRectangleLinesEx(weaponHitbox, 2, SEAGREEN);
+  }
 
   // Center of player (y coordinate) is less than 200 pixels away from the center of the skeleton
   sameYPosAsPlayer =
@@ -182,4 +204,3 @@ void Skeleton::Attack() {
 	}
   }
 }
-

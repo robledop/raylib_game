@@ -24,9 +24,10 @@ Game::Game() {
 					   player.GetTextureHeight() / 2};
   LoadTileMap();
   for (auto &enemy : skeletons) {
-	enemy.Init();
+	enemy->Init();
   }
 }
+
 void Game::Draw() {
   player.Init();
   UpdateCamera();
@@ -144,7 +145,7 @@ void Game::Draw() {
 	DrawTileMap();
 	player.Draw();
 	for (auto &enemy : skeletons) {
-	  enemy.Draw();
+	  enemy->Draw();
 	}
   }
   EndMode2D();
@@ -279,7 +280,7 @@ void Game::LoadTileMap() {
 	  const auto y = static_cast<float>(get<1>(e.first) * 24 * 3) - 86;
 	  const auto rect = e.second->getDrawingRect();
 	  skeletons.push_back(
-		  Skeleton{{static_cast<float>(x), static_cast<float>(y)},
+		  new Skeleton{{static_cast<float>(x), static_cast<float>(y)},
 				   {x, y, static_cast<float>(rect.width * 5),
 					static_cast<float>(rect.height * 5)},
 				   &player, &terrains});
@@ -296,7 +297,7 @@ void Game::LoadTileMap() {
 		  const auto y = static_cast<float>(get<1>(i.first) * 24 * 3);
 		  const auto rect = i.second->getDrawingRect();
 		  const auto collisionRect = Rectangle{x * 24 * 3, y * 24 * 3, rect.width * 3.f, rect.height * 3.f};
-		  Shop shop = Shop{{x, y - collisionRect.height - 24 * 2}, collisionRect};
+		  Shop* shop = new Shop{{x, y - collisionRect.height - 24 * 2}, collisionRect};
 		  shops.push_back(shop);
 		}
 	  }
@@ -381,6 +382,25 @@ void Game::DrawTiledBackground() const {
 
 void Game::DrawInteractables() {
   for (auto &s : shops) {
-	s.Draw();
+	s->Draw();
   }
+}
+Game::~Game() {
+  for (auto &t : tileTextures) {
+	UnloadTexture(t.second);
+  }
+  
+  for (auto &s : skeletons) {
+	delete s;
+  }
+  
+  for (auto &s : shops) {
+	delete s;
+  }
+  
+  UnloadTexture(background1);
+  UnloadTexture(background2);
+  UnloadTexture(background3);
+
+  delete map.release();
 }

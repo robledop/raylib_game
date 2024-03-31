@@ -4,8 +4,10 @@
 #include "raylib.h"
 #include "animation.h"
 #include "reactor.h"
+#include "config.h"
 
 extern float scale;
+extern bool showCollisionBoxes;
 
 enum Direction {
   LEFT,

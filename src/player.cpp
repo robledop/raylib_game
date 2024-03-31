@@ -1,5 +1,3 @@
-#include "raylib.h"
-#include "config.h"
 #include "player.h"
 
 void Player::SetOnGround(bool on_ground) {
@@ -70,10 +68,10 @@ void Player::Draw() {
 	weaponHitbox.height = hitbox.height;
   }
 
-#ifdef SHOW_COLLISION_BOXES
-  DrawRectangleLinesEx(hitbox,1, RED);
-  DrawRectangleLinesEx(weaponHitbox, 1, BLUE);
-#endif
+  if (showCollisionBoxes) {
+	DrawRectangleLinesEx(hitbox, 1, RED);
+	DrawRectangleLinesEx(weaponHitbox, 1, BLUE);
+  }
 
 #ifdef GUIDES
   DrawRectangle(position.x, position.y, 10, 10, GREEN);

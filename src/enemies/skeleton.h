@@ -7,6 +7,8 @@
 #include "config.h"
 #include <vector>
 
+extern bool showCollisionBoxes;
+
 class Skeleton : public CollisionBody {
  private:
   bool dealDamage{true};
@@ -14,44 +16,22 @@ class Skeleton : public CollisionBody {
   bool facingRight{true};
   bool sameYPosAsPlayer{false};
   int delay{};
-  vector<CollisionBody>* terrainCollisionBodies;
-  
+  vector<CollisionBody> *terrainCollisionBodies;
+
   Rectangle weaponHitbox{};
   int health{80};
   float currentY{};
   float currentX{};
   Player *player;
-  
+
  public:
-   Animation idleAnimation{
-	  "assets/enemies/skeleton/Skeleton Idle.png",
-	  11,
-	  1.0f / 12.0f,
-	  5.f
-  };
-
-  Animation attackAnimation{
-	  "assets/enemies/skeleton/Skeleton Attack.png",
-	  18,
-	  1.0f / 12.0f,
-	  5.f
-  };
-
-  Animation hitAnimation{
-	  "assets/enemies/skeleton/Skeleton Hit.png",
-	  8,
-	  1.0f / 12.0f,
-	  5.f
-  };
-
-  Animation walkAnimation{
-	  "assets/enemies/skeleton/Skeleton Walk.png",
-	  13,
-	  1.0f / 12.0f,
-	  5.f
-  };
+  Animation idleAnimation;
+  Animation attackAnimation;
+  Animation hitAnimation;
+  Animation walkAnimation;
+ 
   Reactor reactor{};
-  Skeleton(Vector2 pos, Rectangle collisionRect, Player *player, vector<CollisionBody>* terrainCollisionBodies);
+  Skeleton(Vector2 pos, Rectangle collisionRect, Player *player, vector<CollisionBody> *terrainCollisionBodies);
   void Draw();
   [[nodiscard]] Rectangle GetHitbox() const;
   void Damage(int damage);
@@ -60,6 +40,5 @@ class Skeleton : public CollisionBody {
   void Attack();
   void Init();
 };
-
 
 #endif

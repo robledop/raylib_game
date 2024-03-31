@@ -16,6 +16,7 @@ class Animation {
   float runningTime{};
 
  public:
+  ~Animation();
   float frame{};
   float scale{};
   int numberOfFrames;

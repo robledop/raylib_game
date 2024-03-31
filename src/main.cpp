@@ -1,11 +1,19 @@
 #include "config.h"
 #include "raylib.h"
 #include "raymath.h"
-#define RAYGUI_IMPLEMENTATION
-#include "game.h"
-#include "include/raygui.h"
+#include "menu.h"
+
+static Vector2 window_size = {400, 400};
+static Vector2 window_position = {SCREEN_WIDTH / 2 - (400 / 2), SCREEN_HEIGHT / 2 - (400 / 2)};
+static Vector2 scroll;
+static bool showMenu{};
+static bool toggleFullscreen{};
+bool showCollisionBoxes{};
 
 float scale;
+Game *game;
+Menu *menu;
+
 int main() {
   SetConfigFlags(FLAG_VSYNC_HINT);
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
@@ -17,32 +25,22 @@ int main() {
   const RenderTexture2D target = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
   SetTextureFilter(target.texture,
 				   TEXTURE_FILTER_BILINEAR);  // Texture scale filter to use
-  Game game{};
 
   // Uncomment to disable ESC for exiting the game
-  // SetExitKey(0);
+  SetExitKey(0);
+
+  game = new Game{};
+  menu = new Menu{game};
 
   while (!WindowShouldClose()) {
-	// Update virtual mouse (clamped mouse value behind game screen)
-	const Vector2 mouse = GetMousePosition();
-	Vector2 virtualMouse = {0};
-	virtualMouse.x =
-		(mouse.x - (static_cast<float>(GetScreenWidth()) - (SCREEN_WIDTH * scale))) / scale;
-	virtualMouse.y =
-		(mouse.y - (static_cast<float>(GetScreenHeight()) - (SCREEN_HEIGHT * scale))) / scale;
-	virtualMouse = Vector2Clamp(
-		virtualMouse, {0, 0},
-		{static_cast<float>(SCREEN_WIDTH), static_cast<float>(SCREEN_HEIGHT)});
-
-	// Apply the same transformation as the virtual mouse to the real mouse
-	// (i.e. to work with raygui)
-	// SetMouseOffset(-(GetScreenWidth() - (gameScreenWidth*scale))*0.5f,
-	// -(GetScreenHeight() - (gameScreenHeight*scale))*0.5f);
-	// SetMouseScale(1/scale, 1/scale);
-
-	if (IsKeyPressed(KEY_ENTER) &&
-		(IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT))) {
+	if ((IsKeyPressed(KEY_ENTER) &&
+		(IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT))) || toggleFullscreen) {
 	  ToggleFullscreen();
+	  toggleFullscreen = false;
+	}
+
+	if (IsKeyPressed(KEY_ESCAPE) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_RIGHT)) {
+	  showMenu = !showMenu;
 	}
 
 	// Draw everything in the render texture, note this will not be rendered on
@@ -50,7 +48,7 @@ int main() {
 	BeginTextureMode(target);
 	ClearBackground(BLACK);
 
-	game.Draw();
+	game->Draw();
 
 #ifdef BG_LOG
 	DrawText(TextFormat("bg3X RED: %f", bg3X), 10, 10, 50, WHITE);
@@ -66,19 +64,9 @@ int main() {
 	DrawFPS(SCREEN_WIDTH - 100, 10);
 #endif
 
-	//	DrawText(TextFormat("Default Mouse: [%i , %i]",
-	//static_cast<int>(mouse.x), static_cast<int>(mouse.y)), 			 350, 			 25, 			 20,
-	//			 GREEN);
-	//	DrawText(TextFormat("Virtual Mouse: [%i , %i]",
-	//static_cast<int>(virtualMouse.x), static_cast<int>(virtualMouse.y)), 			 350,
-	//			 55,
-	//			 20,
-	//			 YELLOW);
-
 	EndTextureMode();
 
 	BeginDrawing();
-	ClearBackground(BLACK);
 
 	// Draw render texture to screen, properly scaled
 	const Rectangle source = {0.0f, 0.0f,
@@ -94,6 +82,15 @@ int main() {
 							static_cast<float>(SCREEN_HEIGHT) * scale};
 
 	DrawTexturePro(target.texture, source, dest, {0, 0}, 0.0f, WHITE);
+	ClearBackground(BLACK);
+
+	if (showMenu) {
+	  menu->GuiWindowFloating(&window_position,
+							  &window_size,
+							  {140, 320},
+							  &scroll,
+							  "Options");
+	}
 	EndDrawing();
   }
 
@@ -101,3 +98,4 @@ int main() {
 
   return 0;
 }
+
