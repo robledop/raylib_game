@@ -39,11 +39,11 @@
             "expandedGroupLayers": [
                 5
             ],
-            "scale": 1.5,
-            "selectedLayer": 5,
+            "scale": 0.125,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 7144.666666666666,
-                "y": 462.6666666666667
+                "x": 5856,
+                "y": 912
             }
         },
         "level1.json#decorations": {

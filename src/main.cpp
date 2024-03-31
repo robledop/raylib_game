@@ -5,9 +5,10 @@
 
 static Vector2 window_size = {400, 400};
 static Vector2 window_position = {SCREEN_WIDTH / 2 - (400 / 2), SCREEN_HEIGHT / 2 - (400 / 2)};
-static Vector2 scroll;
 static bool showMenu{};
 static bool toggleFullscreen{};
+static bool showFPS{true};
+bool showDebugInfo{false};
 bool showCollisionBoxes{};
 
 float scale;
@@ -29,8 +30,8 @@ int main() {
   // Uncomment to disable ESC for exiting the game
   SetExitKey(0);
 
-  game = new Game{};
-  menu = new Menu{game};
+  game = new Game{&showDebugInfo};
+  menu = new Menu{game, &showMenu, &toggleFullscreen, &showCollisionBoxes, &showFPS, &showDebugInfo};
 
   while (!WindowShouldClose()) {
 	if ((IsKeyPressed(KEY_ENTER) &&
@@ -39,7 +40,7 @@ int main() {
 	  toggleFullscreen = false;
 	}
 
-	if (IsKeyPressed(KEY_ESCAPE) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_RIGHT)) {
+	if (IsKeyPressed(KEY_ESCAPE) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_LEFT)) {
 	  showMenu = !showMenu;
 	}
 
@@ -50,19 +51,9 @@ int main() {
 
 	game->Draw();
 
-#ifdef BG_LOG
-	DrawText(TextFormat("bg3X RED: %f", bg3X), 10, 10, 50, WHITE);
-	DrawText(TextFormat("bg3X_2 BLUE: %f", bg3X + background3.width * 6), 10,
-			 60, 50, WHITE);
-	DrawText(TextFormat("background3.width * 6: %d", background3.width * 6), 10,
-			 110, 50, WHITE);
-	DrawText(TextFormat("background3.width: %d", background3.width), 10, 160,
-			 50, WHITE);
-#endif
-
-#ifdef FPS
-	DrawFPS(SCREEN_WIDTH - 100, 10);
-#endif
+	if (showFPS){
+	  DrawFPS(SCREEN_WIDTH - 100, 10);
+	}
 
 	EndTextureMode();
 
@@ -88,7 +79,6 @@ int main() {
 	  menu->GuiWindowFloating(&window_position,
 							  &window_size,
 							  {140, 320},
-							  &scroll,
 							  "Options");
 	}
 	EndDrawing();

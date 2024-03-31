@@ -10,10 +10,9 @@
 #include "enemies/skeleton.h"
 #include "shop.h"
 
-extern bool showCollisionBoxes;
-
 class Game {
  private:
+  bool* showDebugInfo;
   float maxX;
   float minX{800.f};
   float maxY;
@@ -42,7 +41,7 @@ class Game {
   void UpdateCamera();
 
  public:
-  Game();
+  Game(bool* showDebugInfo);
   ~Game();
   void Draw();
   void LoadTileMap();

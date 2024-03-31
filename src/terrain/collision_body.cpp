@@ -38,6 +38,7 @@ std::tuple<bool, float> CollisionBody::CheckSideCollision(
       position.x);
 }
 
+// TODO: implement this
 bool CollisionBody::CheckBottomCollision(Rectangle hitbox,
                                          float playerSpeed) const {
   if (!blocking)
@@ -49,6 +50,7 @@ bool CollisionBody::CheckBottomCollision(Rectangle hitbox,
          hitbox.y <= position.y + (collisionRect.height * 3 * scale) + 10 +
                          playerSpeed * GetFrameTime();
 }
+
 Rectangle CollisionBody::GetCollisionRect() const {
   return collisionRect;
 }

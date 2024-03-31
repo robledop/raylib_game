@@ -3,28 +3,40 @@
 #include "raylib.h"
 #include "game.h"
 
-#ifndef RAYGUI_IMPLEMENTATION
-#define RAYGUI_IMPLEMENTATION
-#include "include/raygui.h"
-#endif
-
 class Menu {
-  bool showMenu{true};
-  bool toggleFullscreen{false};
-  bool showCollisionBoxes{false};
+  bool *showMenu;
+  bool *toggleFullscreen;
+  bool *showCollisionBoxes;
+  bool *showFPS;
+  bool *showDebugInfo;
   Game *game;
+  
+  int menuButtonSelected = -1;
+  Rectangle fullScreenButtonPosition;
+  Rectangle restartGameButtonPosition;
+  Rectangle showCollisionBoxesButtonPosition;
+  Rectangle showFPSButtonPosition;
+  Rectangle showDebugInfoButtonPosition;
+  Rectangle exitButtonPosition;
 
   void StartGame();
 
  public:
-  Menu(Game* game) : game(game) {};
+  Menu(Game *game, bool *showMenu, bool *toggleFullScreen, bool *showCollisionBoxes, bool *showFPS, bool* showDebugInfo) : showMenu{
+	  showMenu},
+																									  toggleFullscreen{
+																										  toggleFullScreen},
+																									  showCollisionBoxes{
+																										  showCollisionBoxes},
+																									  showFPS{showFPS},
+																									  showDebugInfo{showDebugInfo},
+																									  game(game) {};
   void GuiWindowFloating(Vector2 *position,
 						 Vector2 *size,
 						 Vector2 content_size,
-						 Vector2 *scroll,
 						 const char *title);
 
-  void DrawContent(Vector2 position, Vector2 scroll);
+  void DrawContent(Vector2 position);
 };
 
 #endif

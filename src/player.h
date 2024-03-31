@@ -22,37 +22,12 @@ class Player {
   bool dealDamage{true};
   bool jumping{};
 
-  Animation idleAnimation{
-	  "assets/player/_Idle.png",
-	  10,
-	  1.0f / 12.0f
-  };
-  Animation runningAnimation{
-	  "assets/player/_Run.png",
-	  10,
-	  1.0f / 12.0f
-  };
-  Animation attackAnimation{
-	  "assets/player/_AttackNoMovement.png",
-	  4,
-	  1.0f / 12.0f
-  };
-  Animation jumpAnimation{
-	  "assets/player/_Jump.png",
-	  3,
-	  1.0f / 12.0f
-  };
-  Animation fallAnimation{
-	  "assets/player/_Fall.png",
-	  3,
-	  1.0f / 12.0f
-  };
-
-  Animation deathAnimation{
-	  "assets/player/_DeathNoMovement.png",
-	  10,
-	  1.0f / 12.0f
-  };
+  Animation idleAnimation;
+  Animation runningAnimation;
+  Animation attackAnimation;
+  Animation jumpAnimation;
+  Animation fallAnimation;
+  Animation deathAnimation;
 
  public:
   std::function<void(int, Rectangle)> onBeingHit;
@@ -85,7 +60,6 @@ class Player {
   void SetPosition(Vector2 pos);
   void Attack();
   void Damage(int damage);
-  void Init();
 };
 
 #endif 

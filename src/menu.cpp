@@ -1,8 +1,10 @@
 #include "menu.h"
+#define RAYGUI_IMPLEMENTATION
+#include "include/raygui.h"
+
 void Menu::GuiWindowFloating(Vector2 *position,
 							 Vector2 *size,
 							 Vector2 content_size,
-							 Vector2 *scroll,
 							 const char *title) {
 #if !defined(RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT)
 #define RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT 24
@@ -12,63 +14,103 @@ void Menu::GuiWindowFloating(Vector2 *position,
 #define RAYGUI_WINDOW_CLOSEBUTTON_SIZE 18
 #endif
 
-  int close_title_size_delta_half = (RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT - RAYGUI_WINDOW_CLOSEBUTTON_SIZE) / 2;
-
-  // window movement and resize update
-  if (GuiButton((Rectangle){position->x + size->x - RAYGUI_WINDOW_CLOSEBUTTON_SIZE - close_title_size_delta_half,
-							position->y + close_title_size_delta_half,
-							RAYGUI_WINDOW_CLOSEBUTTON_SIZE,
-							RAYGUI_WINDOW_CLOSEBUTTON_SIZE},
-				"#120#")) {
-	showMenu = false;
-  }
-
   if (showMenu) {
-	showMenu = !GuiWindowBox((Rectangle){position->x, position->y, size->x, size->y}, title);
-	  Rectangle scissor = {0};
-	  GuiScrollPanel((Rectangle){position->x, position->y + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT, size->x,
-								 size->y - RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT},
-					 NULL,
-					 (Rectangle){position->x, position->y, content_size.x, content_size.y},
-					 scroll,
-					 &scissor);
-
-	  bool require_scissor = size->x < content_size.x || size->y < content_size.y;
-
-	  if (require_scissor) {
-		BeginScissorMode(scissor.x, scissor.y, scissor.width, scissor.height);
-	  }
-
-	  DrawContent(*position, *scroll);
-
-	  if (require_scissor) {
-		EndScissorMode();
-	  }
-
-	// draw the resize button/icon
-	GuiDrawIcon(71, position->x + size->x - 20, position->y + size->y - 20, 1, WHITE);
+	*showMenu = !GuiWindowBox({position->x, position->y, size->x, size->y}, title);
+	DrawContent(*position);
   }
 }
-void Menu::DrawContent(Vector2 position, Vector2 scroll) {
-  bool restartGameButton =
-	  GuiButton({position.x + 20 + scroll.x, position.y + 50 + scroll.y, 200, 25}, "Restart game");
+void Menu::DrawContent(Vector2 position) {
+  restartGameButtonPosition = {position.x + 20, position.y + 50, 200, 25};
+  bool restartGameButton = GuiButton(restartGameButtonPosition, "Restart game");
   if (restartGameButton) {
 	StartGame();
   }
 
-  bool fullScreenButton =
-	  GuiButton({position.x + 20 + scroll.x, position.y + 100 + scroll.y, 200, 25}, "Toggle fullscreen");
+  fullScreenButtonPosition = {position.x + 20, position.y + 76, 200, 25};
+  bool fullScreenButton = GuiButton(fullScreenButtonPosition, "Toggle fullscreen");
   if (fullScreenButton) {
-	toggleFullscreen = true;
+	*toggleFullscreen = true;
   }
 
-  GuiCheckBox({position.x + 20 + scroll.x, position.y + 150 + scroll.y, 25, 25},
+  showCollisionBoxesButtonPosition = {position.x + 20, position.y + 102, 25, 25};
+  GuiCheckBox(showCollisionBoxesButtonPosition,
 			  "Show collision boxes",
-			  &showCollisionBoxes);
+			  showCollisionBoxes);
 
-  bool exitButton = GuiButton({position.x + 20 + scroll.x, position.y + 300 + scroll.y, 100, 25}, "Quit");
+  showFPSButtonPosition = {position.x + 20, position.y + 128, 25, 25};
+  GuiCheckBox(showFPSButtonPosition,
+			  "Show FPS",
+			  showFPS);
+
+  showDebugInfoButtonPosition = {position.x + 20, position.y + 154, 25, 25};
+  GuiCheckBox(showDebugInfoButtonPosition,
+			  "Show debug info",
+			  showDebugInfo);
+
+  exitButtonPosition = {position.x + 20, position.y + 300, 100, 25};
+  bool exitButton = GuiButton(exitButtonPosition, "Quit");
   if (exitButton) {
 	CloseWindow();
+  }
+
+  if (GetMouseDelta().y > 0.f) {
+	menuButtonSelected = -1;
+  }
+
+  if (IsKeyPressed(KEY_DOWN) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN)) {
+	menuButtonSelected++;
+  }
+
+  if (IsKeyPressed(KEY_UP) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_LEFT_FACE_UP)) {
+	menuButtonSelected--;
+  }
+
+  if (IsKeyPressed(KEY_ENTER) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_RIGHT)) {
+	switch (menuButtonSelected) {
+	  case 1: StartGame();
+		break;
+	  case 2: *toggleFullscreen = true;
+		break;
+	  case 3: *showCollisionBoxes = !*showCollisionBoxes;
+		break;
+	  case 4: *showFPS = !*showFPS;
+		break;
+	  case 5: *showDebugInfo = !*showDebugInfo;
+		break;
+	  case 6: CloseWindow();
+		break;
+	}
+  }
+
+  switch (menuButtonSelected) {
+	case 1:
+	  SetMousePosition(restartGameButtonPosition.x + restartGameButtonPosition.width - 1,
+					   restartGameButtonPosition.y + restartGameButtonPosition.height - 1);
+	  break;
+	case 2:
+	  SetMousePosition(fullScreenButtonPosition.x + fullScreenButtonPosition.width - 1,
+					   fullScreenButtonPosition.y + fullScreenButtonPosition.height - 1);
+	  break;
+	case 3:
+	  SetMousePosition(showCollisionBoxesButtonPosition.x + showCollisionBoxesButtonPosition.width - 1,
+					   showCollisionBoxesButtonPosition.y + showCollisionBoxesButtonPosition.height - 1);
+	  break;
+	case 4:
+	  SetMousePosition(showFPSButtonPosition.x + showFPSButtonPosition.width - 1,
+					   showFPSButtonPosition.y + showFPSButtonPosition.height - 1);
+	  break;
+	case 5:
+	  SetMousePosition(showDebugInfoButtonPosition.x + showDebugInfoButtonPosition.width - 1,
+					   showDebugInfoButtonPosition.y + showDebugInfoButtonPosition.height - 1);
+	  break;
+	case 6:
+	  SetMousePosition(exitButtonPosition.x + exitButtonPosition.width - 1,
+					   exitButtonPosition.y + exitButtonPosition.height - 1);
+	  break;
+	case 7: menuButtonSelected = 1;
+	  break;
+	case 0: menuButtonSelected = 6;
+	  break;
   }
 }
 
@@ -76,5 +118,5 @@ void Menu::StartGame() {
   if (game != nullptr) {
 	delete game;
   }
-  game = new Game{};
+  game = new Game{showDebugInfo};
 }

@@ -73,10 +73,6 @@ void Player::Draw() {
 	DrawRectangleLinesEx(weaponHitbox, 1, BLUE);
   }
 
-#ifdef GUIDES
-  DrawRectangle(position.x, position.y, 10, 10, GREEN);
-#endif
-
   const float deltaTime{GetFrameTime()};
   if (direction == LEFT && !attacking && !leftBlocked) {
 	this->position.x -= RUN_SPEED;
@@ -122,10 +118,6 @@ void Player::Draw() {
   } else {
 	idleAnimation.Animate(position, facingRight);
   }
-
-#ifdef GUIDES
-  DrawRectangle(hitbox.x, hitbox.y, 10, 10, GREEN);
-#endif
 }
 
 [[nodiscard]] float Player::GetTextureHeight() const {
@@ -162,12 +154,40 @@ void Player::Damage(int damage) {
   }
 }
 
-Player::Player() {
+Player::Player() :
+	idleAnimation{
+		"assets/player/_Idle.png",
+		10,
+		1.0f / 12.0f
+	},
+	runningAnimation{
+		"assets/player/_Run.png",
+		10,
+		1.0f / 12.0f
+	},
+	attackAnimation{
+		"assets/player/_AttackNoMovement.png",
+		4,
+		1.0f / 12.0f
+	},
+	jumpAnimation{
+		"assets/player/_Jump.png",
+		3,
+		1.0f / 12.0f
+	},
+	fallAnimation{
+		"assets/player/_Fall.png",
+		3,
+		1.0f / 12.0f
+	},
+	deathAnimation{
+		"assets/player/_DeathNoMovement.png",
+		10,
+		1.0f / 12.0f
+	} {
   reactor.RegisterEvent(ATTACK);
   reactor.RegisterEvent(TAKE_DAMAGE);
-}
-
-void Player::Init() {
+  
   this->onBeingHit = [this](int damage, Rectangle enemyWeaponHitbox) {
 	if (CheckCollisionRecs(this->hitbox, enemyWeaponHitbox)) {
 	  Damage(damage);
@@ -175,3 +195,4 @@ void Player::Init() {
 	}
   };
 }
+

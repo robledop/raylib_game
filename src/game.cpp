@@ -13,7 +13,7 @@ void Game::UpdateCamera() {
   camera.target.y = Clamp(player.position.y - player.GetHeight(), minY, maxY);
 }
 
-Game::Game() {
+Game::Game(bool *showDebugInfo) : showDebugInfo{showDebugInfo} {
   camera.zoom = 1.0f;
   player.position.y = 688;
   player.position.x = 1000;
@@ -23,13 +23,9 @@ Game::Game() {
 				   static_cast<float>(GetScreenHeight()) / 2.0f -
 					   player.GetTextureHeight() / 2};
   LoadTileMap();
-  for (auto &enemy : skeletons) {
-	enemy->Init();
-  }
 }
 
 void Game::Draw() {
-  player.Init();
   UpdateCamera();
   if (!player.isDead &&
 	  (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D) ||
@@ -154,21 +150,22 @@ void Game::Draw() {
   DrawRectangle(10, 10, player.maxHealth * 2, 10, BLACK);
   DrawRectangle(10, 10, player.health * 2, 10, RED);
 
-#ifdef LOG
-  // Stats
-  DrawText(TextFormat("Player x: %f", player.position.x), 10, 10, 50, WHITE);
-  DrawText(TextFormat("Player y: %f", player.position.y), 10, 60, 50, WHITE);
-  DrawText(TextFormat("Camera x: %f", camera.target.x), 10, 110, 50, WHITE);
-  DrawText(TextFormat("Camera y: %f", camera.target.y), 10, 160, 50, WHITE);
-  DrawText(TextFormat("Camera offset x: %f", camera.offset.x), 10, 210, 50,
-		   WHITE);
-  DrawText(TextFormat("Camera offset y: %f", camera.offset.y), 10, 260, 50,
-		   WHITE);
+  if (*showDebugInfo) {
+	// Stats
+	DrawText(TextFormat("Player x: %.1f", player.position.x), 10, 20, 20, WHITE);
+	DrawText(TextFormat("Player y: %.1f", player.position.y), 10, 20 * 2, 20, WHITE);
+	DrawText(TextFormat("Camera x: %.1f", camera.target.x), 10, 20 * 3, 20, WHITE);
+	DrawText(TextFormat("Camera y: %.1f", camera.target.y), 10, 20 * 4, 20, WHITE);
+	DrawText(TextFormat("Camera offset x: %.1f", camera.offset.x), 10, 20 * 5, 20,
+			 WHITE);
+	DrawText(TextFormat("Camera offset y: %.1f", camera.offset.y), 10, 20 * 6, 20,
+			 WHITE);
 
-  // Guide lines
-//	  DrawLine(GetScreenWidth() / 2, 0, GetScreenWidth() / 2,
-//GetScreenHeight(), RED);
-#endif
+	// Guide lines
+	DrawLine(GetScreenWidth() / 2, 0, GetScreenWidth() / 2,
+			 GetScreenHeight(), RED);
+  }
+
   if (player.isDead) {
 	DrawText("You died!",
 			 GetScreenWidth() / 2 - MeasureText("You died!", 50) / 2,
@@ -281,9 +278,9 @@ void Game::LoadTileMap() {
 	  const auto rect = e.second->getDrawingRect();
 	  skeletons.push_back(
 		  new Skeleton{{static_cast<float>(x), static_cast<float>(y)},
-				   {x, y, static_cast<float>(rect.width * 5),
-					static_cast<float>(rect.height * 5)},
-				   &player, &terrains});
+					   {x, y, static_cast<float>(rect.width * 5),
+						static_cast<float>(rect.height * 5)},
+					   &player, &terrains});
 	}
 
 	const tson::Layer *interactableLayer = map->getLayer("Interactables");
@@ -297,7 +294,7 @@ void Game::LoadTileMap() {
 		  const auto y = static_cast<float>(get<1>(i.first) * 24 * 3);
 		  const auto rect = i.second->getDrawingRect();
 		  const auto collisionRect = Rectangle{x * 24 * 3, y * 24 * 3, rect.width * 3.f, rect.height * 3.f};
-		  Shop* shop = new Shop{{x, y - collisionRect.height - 24 * 2}, collisionRect};
+		  Shop *shop = new Shop{{x, y - collisionRect.height - 24 * 2}, collisionRect};
 		  shops.push_back(shop);
 		}
 	  }
@@ -389,15 +386,15 @@ Game::~Game() {
   for (auto &t : tileTextures) {
 	UnloadTexture(t.second);
   }
-  
+
   for (auto &s : skeletons) {
 	delete s;
   }
-  
+
   for (auto &s : shops) {
 	delete s;
   }
-  
+
   UnloadTexture(background1);
   UnloadTexture(background2);
   UnloadTexture(background3);

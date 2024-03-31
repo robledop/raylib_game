@@ -24,9 +24,19 @@ Skeleton::Skeleton(Vector2 pos, Rectangle collRect, Player *p, vector<CollisionB
 		13,
 		1.0f / 12.0f,
 		5.f
-	} {
-  currentY = pos.y - 25;
-  currentX = pos.x;
+	},
+	  health{100},
+	  dealDamage{true},
+	  hit{false},
+	  facingRight{true},
+	  sameYPosAsPlayer{false},
+	  delay{0} ,
+	  currentY{pos.y - 25},
+	  currentX{pos.x} {
+  
+  this->player->reactor.AddEventListener(ATTACK, [this](int data) {
+	Damage(data);
+  });
 }
 
 void Skeleton::Draw() {
@@ -164,12 +174,6 @@ void Skeleton::Draw() {
 				health,
 				5,
 				RED);
-}
-
-void Skeleton::Init() {
-  this->player->reactor.AddEventListener(ATTACK, [this](int data) {
-	Damage(data);
-  });
 }
 
 Rectangle Skeleton::GetHitbox() const {

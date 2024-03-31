@@ -11,17 +11,17 @@ extern bool showCollisionBoxes;
 
 class Skeleton : public CollisionBody {
  private:
-  bool dealDamage{true};
+  bool dealDamage;
   bool hit;
-  bool facingRight{true};
-  bool sameYPosAsPlayer{false};
-  int delay{};
+  bool facingRight;
+  bool sameYPosAsPlayer;
+  int delay;
   vector<CollisionBody> *terrainCollisionBodies;
 
-  Rectangle weaponHitbox{};
-  int health{80};
-  float currentY{};
-  float currentX{};
+  Rectangle weaponHitbox;
+  int health;
+  float currentY;
+  float currentX;
   Player *player;
 
  public:
@@ -30,7 +30,7 @@ class Skeleton : public CollisionBody {
   Animation hitAnimation;
   Animation walkAnimation;
  
-  Reactor reactor{};
+  Reactor reactor;
   Skeleton(Vector2 pos, Rectangle collisionRect, Player *player, vector<CollisionBody> *terrainCollisionBodies);
   void Draw();
   [[nodiscard]] Rectangle GetHitbox() const;
@@ -38,7 +38,6 @@ class Skeleton : public CollisionBody {
   [[nodiscard]] int GetHealth() const;
   [[nodiscard]] bool IsDead() const;
   void Attack();
-  void Init();
 };
 
 #endif
