@@ -176,10 +176,6 @@ void Skeleton::Draw() {
 				RED);
 }
 
-Rectangle Skeleton::GetHitbox() const {
-  return collisionRect;
-}
-
 int Skeleton::GetHealth() const {
   return health;
 }

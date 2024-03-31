@@ -10,14 +10,14 @@ class CollisionBody {
  protected:
   bool blocking;
   Rectangle collisionRect;
-  Vector2 position{};
+  Vector2 position;
 
  public:
-  CollisionBody(Vector2 pos, Rectangle collisionRect, bool blocking = true);
+  CollisionBody(Vector2 position, Rectangle collisionRect, bool blocking = true);
   std::tuple<bool, float> CheckTopCollision(Rectangle hitbox, float playerSpeed) const;
   std::tuple<bool, float>  CheckSideCollision(Rectangle hitbox, float playerSpeed) const;
   bool CheckBottomCollision(Rectangle hitbox, float playerSpeed) const;
-  Rectangle GetCollisionRect() const;
+  Rectangle GetHitbox() const;
 };
 
 #endif 

@@ -26,23 +26,23 @@ void Menu::DrawContent(Vector2 position) {
 	StartGame();
   }
 
-  fullScreenButtonPosition = {position.x + 20, position.y + 76, 200, 25};
+  fullScreenButtonPosition = {position.x + 20, position.y + 50 + 28, 200, 25};
   bool fullScreenButton = GuiButton(fullScreenButtonPosition, "Toggle fullscreen");
   if (fullScreenButton) {
 	*toggleFullscreen = true;
   }
 
-  showCollisionBoxesButtonPosition = {position.x + 20, position.y + 102, 25, 25};
+  showCollisionBoxesButtonPosition = {position.x + 20, position.y + 50 + 28 * 2, 25, 25};
   GuiCheckBox(showCollisionBoxesButtonPosition,
 			  "Show collision boxes",
 			  showCollisionBoxes);
 
-  showFPSButtonPosition = {position.x + 20, position.y + 128, 25, 25};
+  showFPSButtonPosition = {position.x + 20, position.y + 50 + 28 * 3, 25, 25};
   GuiCheckBox(showFPSButtonPosition,
 			  "Show FPS",
 			  showFPS);
 
-  showDebugInfoButtonPosition = {position.x + 20, position.y + 154, 25, 25};
+  showDebugInfoButtonPosition = {position.x + 20, position.y + 50 + 28 * 4, 25, 25};
   GuiCheckBox(showDebugInfoButtonPosition,
 			  "Show debug info",
 			  showDebugInfo);
@@ -50,7 +50,7 @@ void Menu::DrawContent(Vector2 position) {
   exitButtonPosition = {position.x + 20, position.y + 300, 100, 25};
   bool exitButton = GuiButton(exitButtonPosition, "Quit");
   if (exitButton) {
-	CloseWindow();
+	Quit();
   }
 
   if (GetMouseDelta().y > 0.f) {
@@ -77,7 +77,8 @@ void Menu::DrawContent(Vector2 position) {
 		break;
 	  case 5: *showDebugInfo = !*showDebugInfo;
 		break;
-	  case 6: CloseWindow();
+	  case 6:
+		Quit();
 		break;
 	}
   }
@@ -115,8 +116,9 @@ void Menu::DrawContent(Vector2 position) {
 }
 
 void Menu::StartGame() {
-  if (game != nullptr) {
-	delete game;
-  }
-  game = new Game{showDebugInfo};
+  game->Start();
+}
+
+void Menu::Quit(){
+  *shouldClose = true;
 }

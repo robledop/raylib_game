@@ -6,10 +6,11 @@
 #include "colors.h"
 #include "config.h"
 #include <vector>
+#include "enemy.h"
 
 extern bool showCollisionBoxes;
 
-class Skeleton : public CollisionBody {
+class Skeleton : public CollisionBody, public Enemy {
  private:
   bool dealDamage;
   bool hit;
@@ -33,11 +34,10 @@ class Skeleton : public CollisionBody {
   Reactor reactor;
   Skeleton(Vector2 pos, Rectangle collisionRect, Player *player, vector<CollisionBody> *terrainCollisionBodies);
   void Draw();
-  [[nodiscard]] Rectangle GetHitbox() const;
-  void Damage(int damage);
   [[nodiscard]] int GetHealth() const;
   [[nodiscard]] bool IsDead() const;
   void Attack();
+  void Damage(int damage) override;
 };
 
 #endif

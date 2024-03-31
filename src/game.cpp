@@ -14,15 +14,34 @@ void Game::UpdateCamera() {
 }
 
 Game::Game(bool *showDebugInfo) : showDebugInfo{showDebugInfo} {
+  LoadTileMap();
+  Start();
+}
+
+void Game::Start() {
   camera.zoom = 1.0f;
   player.position.y = 688;
   player.position.x = 1000;
+  player.isDead = false;
+  player.health = player.maxHealth;
+  player.upwardsVelocity = 0;
+  player.falling = false;
+  player.attacking = false;
+  player.blocked = false;
+  player.leftBlocked = false;
+  player.rightBlocked = false;
+  player.direction = STOP;
+  player.lastDirection = RIGHT;
+  player.SetOnGround(true);
 
   camera.offset = {static_cast<float>(GetScreenWidth()) / 2.0f -
 	  (player.GetTextureWidth() / 2),
 				   static_cast<float>(GetScreenHeight()) / 2.0f -
 					   player.GetTextureHeight() / 2};
-  LoadTileMap();
+  
+  player.reactor.Clear();
+
+  LoadEnemies();
 }
 
 void Game::Draw() {
@@ -172,6 +191,26 @@ void Game::Draw() {
 			 GetScreenHeight() / 2, 50, RED);
   }
 }
+
+void Game::LoadEnemies() {
+  for (auto &s : skeletons) {
+	delete s;
+  }
+  skeletons.clear();
+
+  const tson::Layer *enemyLayer = map->getLayer("Enemies");
+  for (auto &e : enemyLayer->getTileData()) {
+	const auto x = static_cast<float>(get<0>(e.first) * 24 * 3);
+	const auto y = static_cast<float>(get<1>(e.first) * 24 * 3) - 86;
+	const auto rect = e.second->getDrawingRect();
+	skeletons.push_back(
+		new Skeleton{{static_cast<float>(x), static_cast<float>(y)},
+					 {x, y, static_cast<float>(rect.width * 5),
+					  static_cast<float>(rect.height * 5)},
+					 &player, &terrains});
+  }
+
+}
 void Game::LoadTileMap() {
   map = tileson.parse("assets/tiled/level1.json");
   if (map->getStatus() == tson::ParseStatus::OK) {
@@ -241,7 +280,7 @@ void Game::LoadTileMap() {
 			  static_cast<float>(drawingRect.width * 3 * scale),
 			  static_cast<float>(drawingRect.height * 3 * scale)};
 
-		  CollisionBody terrain = CollisionBody(pos, collisionRect, true);
+		  CollisionBody terrain = CollisionBody(pos, collisionRect);
 		  terrains.push_back(terrain);
 		}
 	  }
@@ -270,18 +309,6 @@ void Game::LoadTileMap() {
 	bg3ImagePath = bg3ImagePath.replace(0, 2, "assets");
 	background3 = LoadTexture(bg3ImagePath.c_str());
 	bg3ParallaxX = bg3->getParallax().x;
-
-	const tson::Layer *enemyLayer = map->getLayer("Enemies");
-	for (auto &e : enemyLayer->getTileData()) {
-	  const auto x = static_cast<float>(get<0>(e.first) * 24 * 3);
-	  const auto y = static_cast<float>(get<1>(e.first) * 24 * 3) - 86;
-	  const auto rect = e.second->getDrawingRect();
-	  skeletons.push_back(
-		  new Skeleton{{static_cast<float>(x), static_cast<float>(y)},
-					   {x, y, static_cast<float>(rect.width * 5),
-						static_cast<float>(rect.height * 5)},
-					   &player, &terrains});
-	}
 
 	const tson::Layer *interactableLayer = map->getLayer("Interactables");
 	if (interactableLayer->getType() == tson::LayerType::TileLayer) {

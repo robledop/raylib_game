@@ -11,3 +11,8 @@ void Reactor::DispatchEvent(EventType type, int data) {
 void Reactor::AddEventListener(EventType type, std::function<void(int)> callback) {
   events.at(type).RegisterCallback(callback);
 }
+void Reactor::Clear() {
+  for(auto &[type, event] : events) {
+	event.Clear();
+  }
+}

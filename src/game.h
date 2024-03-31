@@ -48,6 +48,8 @@ class Game {
   void DrawTileMap() const;
   void DrawTiledBackground() const;
   void DrawInteractables();
+  void Start();
+  void LoadEnemies();
 };
 
 #endif 

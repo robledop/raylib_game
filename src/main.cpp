@@ -10,6 +10,7 @@ static bool toggleFullscreen{};
 static bool showFPS{true};
 bool showDebugInfo{false};
 bool showCollisionBoxes{};
+bool shouldClose{};
 
 float scale;
 Game *game;
@@ -31,9 +32,9 @@ int main() {
   SetExitKey(0);
 
   game = new Game{&showDebugInfo};
-  menu = new Menu{game, &showMenu, &toggleFullscreen, &showCollisionBoxes, &showFPS, &showDebugInfo};
+  menu = new Menu{game, &showMenu, &toggleFullscreen, &showCollisionBoxes, &showFPS, &showDebugInfo, &shouldClose};
 
-  while (!WindowShouldClose()) {
+  while (!WindowShouldClose() && !shouldClose) {
 	if ((IsKeyPressed(KEY_ENTER) &&
 		(IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT))) || toggleFullscreen) {
 	  ToggleFullscreen();
@@ -49,9 +50,11 @@ int main() {
 	BeginTextureMode(target);
 	ClearBackground(BLACK);
 
-	game->Draw();
+	if (game != nullptr) {
+	  game->Draw();
+	}
 
-	if (showFPS){
+	if (showFPS) {
 	  DrawFPS(SCREEN_WIDTH - 100, 10);
 	}
 

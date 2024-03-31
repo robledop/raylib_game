@@ -16,8 +16,7 @@ class Shop : public CollisionBody {
   };
 
  public:
-  Shop(Vector2 pos, Rectangle collisionRect); 
-  [[nodiscard]] Rectangle GetHitbox() const;
+  Shop(Vector2 position, Rectangle collisionRect); 
 
   void Draw();
 };

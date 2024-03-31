@@ -9,8 +9,9 @@ class Menu {
   bool *showCollisionBoxes;
   bool *showFPS;
   bool *showDebugInfo;
+  bool *shouldClose;
   Game *game;
-  
+
   int menuButtonSelected = -1;
   Rectangle fullScreenButtonPosition;
   Rectangle restartGameButtonPosition;
@@ -22,21 +23,26 @@ class Menu {
   void StartGame();
 
  public:
-  Menu(Game *game, bool *showMenu, bool *toggleFullScreen, bool *showCollisionBoxes, bool *showFPS, bool* showDebugInfo) : showMenu{
-	  showMenu},
-																									  toggleFullscreen{
-																										  toggleFullScreen},
-																									  showCollisionBoxes{
-																										  showCollisionBoxes},
-																									  showFPS{showFPS},
-																									  showDebugInfo{showDebugInfo},
-																									  game(game) {};
+  Menu(Game *game,
+	   bool *showMenu,
+	   bool *toggleFullScreen,
+	   bool *showCollisionBoxes,
+	   bool *showFPS,
+	   bool *showDebugInfo,
+	   bool *shouldClose) : showMenu{showMenu},
+							toggleFullscreen{toggleFullScreen},
+							showCollisionBoxes{showCollisionBoxes},
+							showFPS{showFPS},
+							showDebugInfo{showDebugInfo},
+							shouldClose{shouldClose},
+							game(game) {};
   void GuiWindowFloating(Vector2 *position,
 						 Vector2 *size,
 						 Vector2 content_size,
 						 const char *title);
 
   void DrawContent(Vector2 position);
+  void Quit();
 };
 
 #endif
