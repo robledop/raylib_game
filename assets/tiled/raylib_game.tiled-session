@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "shop.json",
+    "activeFile": "level1.json",
     "expandedProjectPaths": [
         "."
     ],
@@ -51,8 +51,8 @@
             "scale": 1.5,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 476.66666666666663,
-                "y": 610
+                "x": 486.33333333333337,
+                "y": 614
             }
         },
         "level1.json#decorations": {
@@ -112,16 +112,17 @@
         "level1.json",
         "decorations.tsj",
         "oak_woods_tileset.json",
-        "shop.json"
+        "shop.json",
+        "Chest Animation 1.tsj"
     ],
     "project": "raylib_game.tiled-project",
     "property.type": "int",
     "recentFiles": [
         "Chest Animation 1.tsj",
-        "level1.json",
-        "decorations.tsj",
-        "oak_woods_tileset.json",
         "shop.json",
+        "oak_woods_tileset.json",
+        "decorations.tsj",
+        "level1.json",
         "Chest Animation.tsj",
         "Skeleton Walk.tsj",
         "skeleton.tsj",

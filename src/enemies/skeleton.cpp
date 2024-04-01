@@ -1,6 +1,6 @@
 #include "skeleton.h"
 
-// TODO: Change the way assets are loaded so that they are separately loaded for each instance of the class.
+// TODO: Change the way assets are loaded so that they are NOT separately loaded for each instance of the class.
 Skeleton::Skeleton(Vector2 pos, Rectangle collRect, Player *p, vector<CollisionBody> *terrainCollisionBodies)
 	: CollisionBody{pos, collRect, true},
 	  player{p},
@@ -47,7 +47,6 @@ Skeleton::Skeleton(Vector2 pos, Rectangle collRect, Player *p, vector<CollisionB
 }
 
 void Skeleton::Draw() {
-  facingRight = player->position.x + collisionRect.width > currentX;
   if (IsDead() && !deathAnimationPlayed) {
 	deathAnimationPlayed = deathAnimation.Animate(position, facingRight);
 	return;
@@ -60,6 +59,8 @@ void Skeleton::Draw() {
 	DrawRectangleLinesEx(this->collisionRect, 2, CYAN);
 	DrawRectangleLinesEx(weaponHitbox, 2, SEAGREEN);
   }
+
+  facingRight = player->position.x + collisionRect.width > currentX;
 
   // Center of player (y coordinate) is less than 200 pixels away from the center of the skeleton
   sameYPosAsPlayer =
@@ -87,12 +88,24 @@ void Skeleton::Draw() {
 	weaponHitbox = {collisionRect.x - 90, collisionRect.y, 90, collisionRect.height};
   }
 
+  HandleCombat();
+
+  // Draw a health bar at the top of the skeleton
+  DrawRectangle(static_cast
+					<int>(collisionRect.x - 10),
+				static_cast <int>(collisionRect.y - 20),
+				health * 2,
+				5,
+				RED);
+}
+
+void Skeleton::HandleCombat() {
   if (hit) {
-	attackAnimation.Reset();
 	delay = 0;
 
 	bool completed = hitAnimation.Animate(position, facingRight);
 	hit = !completed;
+	if (completed) attackAnimation.Reset();
   } else if (
 	  !attacking &&
 		  sameYPosAsPlayer &&
@@ -164,14 +177,16 @@ void Skeleton::Draw() {
   } else if (
 	  attacking ||
 		  (sameYPosAsPlayer &&
-			  delay++ >= 30 &&
+			  (!staggered || delay++ >= 30) &&
 			  (!facingRight && (abs(player->hitbox.x - currentX) <= 10)
 				  || (facingRight
 					  && ((player->position.x + player->GetWidth()) - (position.x + collisionRect.width)) <= 20)))) {
-	// Wait a half a second before attacking.
+	if (!staggered) delay = 0;
+	// Wait a half a second before attacking when staggered.
 	// The attack animation is 18 frames long, and it runs 1/12 of 60 frames (5 times per second).
 	if (delay > 30 + attackAnimation.numberOfFrames * 5) {
 	  delay = 0;
+	  staggered = false;
 	}
 	Attack();
   } else {
@@ -180,15 +195,6 @@ void Skeleton::Draw() {
 	idleAnimation.Animate(position, facingRight);
 	attackAnimation.Reset();
   }
-
-
-  // Draw a health bar at the top of the skeleton
-  DrawRectangle(static_cast
-					<int>(collisionRect.x - 10),
-				static_cast <int>(collisionRect.y - 20),
-				health * 2,
-				5,
-				RED);
 }
 
 int Skeleton::GetHealth() const {
@@ -202,6 +208,7 @@ bool Skeleton::IsDead() const {
 void Skeleton::Damage(int damage) {
   if (CheckCollisionRecs(player->weaponHitbox, collisionRect)) {
 	hit = true;
+	staggered = true;
 	health -= damage;
 	hitAnimation.Reset();
   }

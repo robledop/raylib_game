@@ -16,6 +16,7 @@ class Skeleton : public CollisionBody, public Enemy {
   bool attacking;
   bool dealDamage;
   bool hit;
+  bool staggered;
   bool facingRight;
   bool sameYPosAsPlayer;
   int delay;
@@ -26,6 +27,7 @@ class Skeleton : public CollisionBody, public Enemy {
   float currentY;
   float currentX;
   Player *player;
+  void HandleCombat();
 
  public:
   Animation idleAnimation;
