@@ -1,60 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="C:\Source\Repos\raylib_game\src\level_manager.cpp">
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\enemies\enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Source\Repos\raylib_game\src\game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Source\Repos\raylib_game\src\terrain\collision_body.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Source\Repos\raylib_game\src\decorations\decoration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Source\Repos\raylib_game\src\shop.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Source\Repos\raylib_game\src\enemies\skeleton.cpp">
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\chest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="C:\Source\Repos\raylib_game\src\animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\decorations\decoration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\enemies\skeleton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Source\Repos\raylib_game\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="C:\Source\Repos\raylib_game\src\player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\reactor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\shop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Source\Repos\raylib_game\src\terrain\collision_body.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C:\Source\Repos\raylib_game\src\player.h">
+    <ClInclude Include="C:\Source\Repos\raylib_game\src\enemies\enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Source\Repos\raylib_game\src\animation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Source\Repos\raylib_game\src\shop.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Source\Repos\raylib_game\src\terrain\collision_body.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Source\Repos\raylib_game\src\level_manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Source\Repos\raylib_game\src\game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Source\Repos\raylib_game\src\colors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Source\Repos\raylib_game\src\decorations\decoration.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Source\Repos\raylib_game\src\enemies\skeleton.h">
+    <ClInclude Include="C:\Source\Repos\raylib_game\src\chest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

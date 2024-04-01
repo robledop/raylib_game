@@ -1,14 +1,13 @@
-{ "class":"interactable",
- "columns":6,
- "image":"..\/shops\/shop_anim.png",
- "imageheight":128,
- "imagewidth":708,
+{ "columns":7,
+ "image":"..\/village\/Chest Animation 1.png",
+ "imageheight":43,
+ "imagewidth":238,
  "margin":0,
- "name":"shop",
+ "name":"Chest Animation 1",
  "spacing":0,
- "tilecount":6,
+ "tilecount":7,
  "tiledversion":"1.10.2",
- "tileheight":128,
+ "tileheight":43,
  "tiles":[
         {
          "animation":[
@@ -35,11 +34,14 @@
                 {
                  "duration":100,
                  "tileid":5
+                }, 
+                {
+                 "duration":100,
+                 "tileid":6
                 }],
-         "id":5,
-         "type":"shop"
+         "id":6
         }],
- "tilewidth":118,
+ "tilewidth":34,
  "type":"tileset",
  "version":"1.10"
 }
