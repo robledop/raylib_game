@@ -8,9 +8,9 @@
  "margin":0,
  "name":"decorations",
  "spacing":0,
- "tilecount":10,
+ "tilecount":27,
  "tiledversion":"1.10.2",
- "tileheight":57,
+ "tileheight":162,
  "tiles":[
         {
          "id":0,
@@ -72,8 +72,110 @@
          "image":"..\/decorations\/sign.png",
          "imageheight":31,
          "imagewidth":22
+        }, 
+        {
+         "id":10,
+         "image":"..\/decorations\/arrow target.png",
+         "imageheight":47,
+         "imagewidth":58
+        }, 
+        {
+         "id":11,
+         "image":"..\/decorations\/barrel.png",
+         "imageheight":36,
+         "imagewidth":32
+        }, 
+        {
+         "id":12,
+         "image":"..\/decorations\/broken wall.png",
+         "imageheight":43,
+         "imagewidth":136
+        }, 
+        {
+         "id":13,
+         "image":"..\/decorations\/crate1.png",
+         "imageheight":45,
+         "imagewidth":45
+        }, 
+        {
+         "id":14,
+         "image":"..\/decorations\/crate2.png",
+         "imageheight":35,
+         "imagewidth":35
+        }, 
+        {
+         "id":15,
+         "image":"..\/decorations\/message board.png",
+         "imageheight":64,
+         "imagewidth":68
+        }, 
+        {
+         "id":16,
+         "image":"..\/decorations\/statue.png",
+         "imageheight":78,
+         "imagewidth":35
+        }, 
+        {
+         "id":17,
+         "image":"..\/decorations\/stump.png",
+         "imageheight":32,
+         "imagewidth":32
+        }, 
+        {
+         "id":18,
+         "image":"..\/decorations\/summoning stone.png",
+         "imageheight":34,
+         "imagewidth":32
+        }, 
+        {
+         "id":19,
+         "image":"..\/decorations\/summoning stone active.png",
+         "imageheight":34,
+         "imagewidth":32
+        }, 
+        {
+         "id":20,
+         "image":"..\/decorations\/tombstone1.png",
+         "imageheight":48,
+         "imagewidth":35
+        }, 
+        {
+         "id":21,
+         "image":"..\/decorations\/tombstone2.png",
+         "imageheight":32,
+         "imagewidth":34
+        }, 
+        {
+         "id":22,
+         "image":"..\/decorations\/tombstone3.png",
+         "imageheight":48,
+         "imagewidth":32
+        }, 
+        {
+         "id":23,
+         "image":"..\/decorations\/tombstone4.png",
+         "imageheight":48,
+         "imagewidth":32
+        }, 
+        {
+         "id":24,
+         "image":"..\/decorations\/tree1.png",
+         "imageheight":145,
+         "imagewidth":129
+        }, 
+        {
+         "id":25,
+         "image":"..\/decorations\/tree2.png",
+         "imageheight":162,
+         "imagewidth":177
+        }, 
+        {
+         "id":26,
+         "image":"..\/decorations\/well.png",
+         "imageheight":96,
+         "imagewidth":128
         }],
- "tilewidth":73,
+ "tilewidth":177,
  "type":"tileset",
  "version":"1.10"
 }

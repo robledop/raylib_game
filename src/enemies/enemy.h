@@ -6,4 +6,4 @@ class Enemy {
   virtual void Damage(int damage) = 0;
 };
 
-#endif //RAYLIB_GAME_SRC_ENEMIES_ENEMY_H_
+#endif 

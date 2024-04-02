@@ -1,4 +1,5 @@
 #include "game.h"
+#include "utils/where.h"
 
 void Game::UpdateCamera() {
   camera.target = {player.position.x,
@@ -13,9 +14,27 @@ void Game::UpdateCamera() {
   camera.target.y = Clamp(player.position.y - player.GetHeight(), minY, maxY);
 }
 
-Game::Game(bool *showDebugInfo) : showDebugInfo{showDebugInfo} {
+Game::Game(bool *showDebugInfo) : showDebugInfo{showDebugInfo}, coinAnimation{
+	"assets/items/coins/bronze.png",
+	5,
+	1 / 12.f,
+	1.5} {
+  potionTexture = LoadTexture("assets/items/medium_health_potion.png");
   LoadTileMap();
   Start();
+
+  reactor.
+	  RegisterEvent(ENEMY_DEATH);
+  reactor.
+	  AddEventListener(ENEMY_DEATH,
+					   [this](
+						   Vector2 pos
+					   ) {
+						 BronzeCoin
+							 *coin = new BronzeCoin{"assets/items/coins/bronze.png", pos, {pos.x, pos.y, 24, 24}};
+						 bronzeCoins.
+							 push_back(coin);
+					   });
 }
 
 void Game::Start() {
@@ -31,7 +50,7 @@ void Game::Start() {
 
   player.isDead = false;
   player.health = player.maxHealth;
-  player.upwardsVelocity = 0;
+  player.fallSpeed = 0;
   player.falling = false;
   player.attacking = false;
   player.blocked = false;
@@ -119,7 +138,7 @@ void Game::Draw() {
 
 	for (auto &terrain : terrains) {
 	  auto [coll, y] =
-		  terrain.CheckTopCollision(player.hitbox, player.upwardsVelocity);
+		  terrain.CheckTopCollision(player.hitbox, player.fallSpeed);
 	  if (coll) {
 		collision = true;
 		yPos = y;
@@ -127,9 +146,36 @@ void Game::Draw() {
 	  }
 	}
 
+	// TODO: it's not smart to do this every frame
+	auto uncollectedCoins = where<BronzeCoin *>(bronzeCoins, [](BronzeCoin *a) { return (!a->isCollected); });
+	for (auto &coin : uncollectedCoins) {
+	  if (CheckCollisionRecs(player.hitbox, coin->GetHitbox())) {
+		coin->isCollected = true;
+		player.collectedCoins++;
+		continue;
+	  }
+
+	  bool terrainCollision = false;
+	  for (auto &terrain : terrains) {
+		auto [coll, y] = terrain.CheckTopCollision(coin->GetHitbox(), 0.1f * GetFrameTime());
+		if (coll) {
+		  terrainCollision = true;
+		  break;
+		}
+	  }
+
+	  if (terrainCollision) {
+		coin->bouncing = true;
+	  }
+	  coin->Update();
+	  if (showCollisionBoxes) {
+		DrawRectangleLinesEx(coin->GetHitbox(), 1, RED);
+	  }
+	}
+
 	for (auto &terrain : terrains) {
 	  auto [sideColl, x] = terrain.CheckSideCollision(
-		  player.hitbox, RUN_SPEED + player.upwardsVelocity / 2.0f);
+		  player.hitbox, RUN_SPEED + player.fallSpeed / 2.0f);
 	  if (sideColl) {
 		sideCollision = true;
 		xPos = x;
@@ -140,7 +186,7 @@ void Game::Draw() {
 	if (collision) {
 	  player.SetOnGround(true);
 	  player.position.y = yPos - player.GetTextureHeight();
-	  player.upwardsVelocity = 0;
+	  player.fallSpeed = 0;
 	  player.falling = false;
 	} else {
 	  player.SetOnGround(false);
@@ -168,13 +214,26 @@ void Game::Draw() {
 	player.Draw();
 	for (auto &enemy : skeletons) {
 	  enemy->Draw();
-	}
+	} 
   }
   EndMode2D();
 
   // Draw the health bar in the top-left corner of the screen
   DrawRectangle(10, 10, player.maxHealth * 2, 10, BLACK);
   DrawRectangle(10, 10, player.health * 2, 10, RED);
+  
+  // Draw the stamina bar in the top-left corner of the screen
+  DrawRectangle(10, 21, player.maxStamina * 2, 10, BLACK);
+  DrawRectangle(10, 21, player.stamina * 2, 10, GREENYELLOW);
+
+  // Draw the coin animation in the top-left corner of the screen with the number of collected coins
+  coinAnimation.Animate({10, 47});
+  DrawText(TextFormat("x %d", player.collectedCoins), 40, 50, 20, WHITE);
+  
+  // Draw the potion texture in the top-left corner of the screen
+  DrawTextureEx(potionTexture, {7, 70}, 0.0f, 2.0f, WHITE);
+  DrawText(TextFormat("x %d", player.healthPotions), 40, 83, 20, WHITE);
+  
 
   if (*showDebugInfo) {
 	// Stats
@@ -214,7 +273,7 @@ void Game::LoadEnemies() {
 		new Skeleton{{static_cast<float>(x), static_cast<float>(y)},
 					 {x, y, static_cast<float>(rect.width * 5),
 					  static_cast<float>(rect.height * 5)},
-					 &player, &terrains});
+					 &player, &terrains, &reactor});
   }
 
 }
@@ -337,6 +396,15 @@ void Game::LoadTileMap() {
 		  const auto collisionRect = Rectangle{x * 24 * 3, y * 24 * 3, rect.width * 3.f, rect.height * 3.f};
 		  Chest *shop = new Chest{{x, y - 57}, collisionRect};
 		  chests.push_back(shop);
+		} else if (tile->getTileset()->getName() == "bronze_coin") {
+		  const auto x = static_cast<float>(get<0>(i.first) * 24 * 3);
+		  const auto y = static_cast<float>(get<1>(i.first) * 24 * 3);
+		  const auto rect = i.second->getDrawingRect();
+		  const auto collisionRect = Rectangle{x * 24 * 3, y * 24 * 3, rect.width * 3.f, rect.height * 3.f};
+		  string texturePath = tile->getTileset()->getImagePath();
+		  texturePath = texturePath.replace(0, 2, "assets");
+		  BronzeCoin *bronzeCoin = new BronzeCoin{texturePath.c_str(), {x, y + 40}, collisionRect};
+		  bronzeCoins.push_back(bronzeCoin);
 		}
 	  }
 
@@ -413,7 +481,6 @@ void Game::DrawTiledBackground() const {
 
 		DrawTexturePro(t, sourceRect, destRect, {}, 0, WHITE);
 	  }
-
 	}
   }
 }
@@ -424,6 +491,10 @@ void Game::DrawInteractables() {
   }
 
   for (auto &c : chests) {
+	c->Draw();
+  }
+
+  for (auto &c : bronzeCoins) {
 	c->Draw();
   }
 }

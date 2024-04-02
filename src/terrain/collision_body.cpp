@@ -1,4 +1,5 @@
 #include "collision_body.h"
+#include "config.h"
 
 CollisionBody::CollisionBody(Vector2 position,
 							 Rectangle collisionRect,
@@ -53,4 +54,26 @@ bool CollisionBody::CheckBottomCollision(Rectangle hitbox,
 
 Rectangle CollisionBody::GetHitbox() const {
   return collisionRect;
+}
+void CollisionBody::SetPosition(Vector2 pos) {
+  this->position = pos;
+}
+Vector2 CollisionBody::GetPosition() {
+  return position;
+}
+
+void CollisionBody::Update() {
+  if (fallSpeed < 5){
+	fallSpeed += 150 * GetFrameTime() * GetFrameTime();
+  } 
+  
+  if (bouncing) {
+	fallSpeed += -(fallSpeed * bounciness);
+	bouncing = false;
+  }
+  
+  position.y += fallSpeed;
+  position.x += sidewaysSpeed;
+  collisionRect.x = position.x;
+  collisionRect.y = position.y;
 }

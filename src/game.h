@@ -10,9 +10,13 @@
 #include "enemies/skeleton.h"
 #include "shop.h"
 #include "chest.h"
+#include "items/coins/bronze_coin.h"
+#include "reactor.h"
 
 class Game {
  private:
+  Animation coinAnimation;
+  Texture2D potionTexture;
   bool* showDebugInfo;
   float maxX;
   float minX{800.f};
@@ -25,6 +29,7 @@ class Game {
   vector<CollisionBody> interactables;
   vector<Shop*> shops;
   vector<Chest*> chests;
+  vector<BronzeCoin*> bronzeCoins;
   vector<Skeleton*> skeletons;
   tson::Tileson tileson{};
   std::unique_ptr<tson::Map> map;
@@ -43,6 +48,7 @@ class Game {
   void UpdateCamera();
 
  public:
+  Reactor<Vector2> reactor{};
   Game(bool* showDebugInfo);
   ~Game();
   void Draw();

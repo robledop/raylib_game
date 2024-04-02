@@ -1,7 +1,12 @@
 #include "skeleton.h"
+#include "reactor.h"
 
 // TODO: Change the way assets are loaded so that they are NOT separately loaded for each instance of the class.
-Skeleton::Skeleton(Vector2 pos, Rectangle collRect, Player *p, vector<CollisionBody> *terrainCollisionBodies)
+Skeleton::Skeleton(Vector2 pos,
+				   Rectangle collRect,
+				   Player *p,
+				   vector<CollisionBody> *terrainCollisionBodies,
+				   Reactor<Vector2> *reactor)
 	: CollisionBody{pos, collRect, true},
 	  player{p},
 	  terrainCollisionBodies{terrainCollisionBodies},
@@ -30,7 +35,7 @@ Skeleton::Skeleton(Vector2 pos, Rectangle collRect, Player *p, vector<CollisionB
 		15,
 		1.0f / 12.0f,
 		5.f
-	},
+	}, deathReactor{reactor},
 	  attacking{false},
 	  health{50},
 	  dealDamage{true},
@@ -177,14 +182,14 @@ void Skeleton::HandleCombat() {
   } else if (
 	  attacking ||
 		  (sameYPosAsPlayer &&
-			  (!staggered || delay++ >= 30) &&
+			  (!staggered || delay++ >= 10) &&
 			  (!facingRight && (abs(player->hitbox.x - currentX) <= 10)
 				  || (facingRight
 					  && ((player->position.x + player->GetWidth()) - (position.x + collisionRect.width)) <= 20)))) {
 	if (!staggered) delay = 0;
-	// Wait a half a second before attacking when staggered.
+	// Wait a few frames before attacking when staggered.
 	// The attack animation is 18 frames long, and it runs 1/12 of 60 frames (5 times per second).
-	if (delay > 30 + attackAnimation.numberOfFrames * 5) {
+	if (delay > 10 + attackAnimation.numberOfFrames * 5) {
 	  delay = 0;
 	  staggered = false;
 	}
@@ -211,6 +216,10 @@ void Skeleton::Damage(int damage) {
 	staggered = true;
 	health -= damage;
 	hitAnimation.Reset();
+  }
+  if (health <= 0 && !droppedLoot) {
+	deathReactor->DispatchEvent(ENEMY_DEATH, {this->collisionRect.x, this->collisionRect.y});
+	droppedLoot = true;
   }
 }
 

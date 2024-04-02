@@ -74,6 +74,10 @@ void Player::Draw() {
 	this->position.x += RUN_SPEED;
   }
 
+  if (!attacking && stamina < 100){
+	stamina += 20 * deltaTime;
+  }
+
   if (hit && lastDirection == LEFT) {
 	this->position.x += RUN_SPEED;
   } else if (hit && lastDirection == RIGHT) {
@@ -83,27 +87,29 @@ void Player::Draw() {
   // add gravity to the object
   if (onGround) {
 	// on the ground
-	upwardsVelocity = 0;
+	fallSpeed = 0;
 	jumping = false;
   } else {
 	// falling
 	// GRAVITY is in pixels per second squared
-	if (upwardsVelocity < 10) {
-	  upwardsVelocity += GRAVITY * deltaTime * deltaTime;
+	if (fallSpeed < 10) {
+	  fallSpeed += GRAVITY * deltaTime * deltaTime;
 	}
   }
 
-  if ((IsKeyPressed(KEY_SPACE) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) && !jumping &&  !hit) {
+  if ((IsKeyPressed(KEY_SPACE) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) && !jumping && !hit) {
 	// jumping
 	jumping = true;
 	// JUMP_FORCE is in pixels per second
-	upwardsVelocity += JUMP_FORCE * deltaTime;
+	fallSpeed += JUMP_FORCE * deltaTime;
 	onGround = false;
-  } else if ((IsKeyPressed(KEY_N) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) && !attacking && !hit) {
+  } else if ((IsKeyPressed(KEY_N) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) && !attacking && !hit
+	  && stamina >= 10) {
 	attacking = true;
+	stamina -= 10;
   }
 
-  position.y += upwardsVelocity;
+  position.y += fallSpeed;
 
   facingRight = lastDirection == RIGHT;
 
@@ -114,9 +120,9 @@ void Player::Draw() {
 	}
   } else if (attacking) {
 	Attack();
-  } else if (jumping && upwardsVelocity < 0) {
+  } else if (jumping && fallSpeed < 0) {
 	jumpAnimation.Animate(position, facingRight);
-  } else if (upwardsVelocity > 0) {
+  } else if (fallSpeed > 0) {
 	fallAnimation.Animate(position, facingRight);
   } else if (direction == RIGHT || direction == LEFT) {
 	runningAnimation.Animate(position, facingRight);

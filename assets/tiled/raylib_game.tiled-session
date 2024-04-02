@@ -23,9 +23,15 @@
         },
         "Skeleton Idle.tsj": {
             "dynamicWrapping": false,
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "Skeleton Walk.tsj": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "bronze_coin.tsj": {
             "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -48,11 +54,11 @@
             "expandedGroupLayers": [
                 5
             ],
-            "scale": 1.5,
-            "selectedLayer": 5,
+            "scale": 3,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 486.33333333333337,
-                "y": 614
+                "x": 516.8333333333333,
+                "y": 230
             }
         },
         "level1.json#decorations": {
@@ -100,7 +106,7 @@
         }
     },
     "last.exportedFilePath": "/home/robledo/source/raylib_game/assets/tiled",
-    "last.imagePath": "/home/robledo/source/raylib_game/assets/village",
+    "last.imagePath": "/home/robledo/source/raylib_game/assets/decorations",
     "lastUsedTilesetExportFilter": "JSON tileset files (*.tsj *.json)",
     "map.height": 100,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
@@ -110,32 +116,29 @@
     "map.width": 500,
     "openFiles": [
         "level1.json",
-        "decorations.tsj",
-        "oak_woods_tileset.json",
-        "shop.json",
-        "Chest Animation 1.tsj"
+        "bronze_coin.tsj"
     ],
     "project": "raylib_game.tiled-project",
     "property.type": "int",
     "recentFiles": [
-        "Chest Animation 1.tsj",
-        "shop.json",
-        "oak_woods_tileset.json",
-        "decorations.tsj",
+        "bronze_coin.tsj",
         "level1.json",
+        "decorations.tsj",
+        "Skeleton Idle.tsj",
+        "Chest Animation 1.tsj",
+        "oak_woods_tileset.json",
+        "shop.json",
         "Chest Animation.tsj",
         "Skeleton Walk.tsj",
         "skeleton.tsj",
         "decorations.json",
-        "decorations.tsx",
-        "level1.tmx",
-        "shop.tsx"
+        "decorations.tsx"
     ],
     "resizeMap.removeObjects": true,
     "tileset.lastUsedFormat": "json",
     "tileset.tileSize": {
-        "height": 43,
-        "width": 34
+        "height": 16,
+        "width": 16
     },
     "tileset.type": 0
 }

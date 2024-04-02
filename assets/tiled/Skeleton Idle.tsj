@@ -1,5 +1,5 @@
 { "columns":11,
- "image":"..\/..\/..\/..\/Desktop\/Skeleton\/Files\/Skeleton Idle.png",
+ "image":"..\/enemies\/skeleton\/Skeleton Idle.png",
  "imageheight":37,
  "imagewidth":660,
  "margin":0,
@@ -59,7 +59,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {

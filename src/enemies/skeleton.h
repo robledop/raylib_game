@@ -35,9 +35,11 @@ class Skeleton : public CollisionBody, public Enemy {
   Animation hitAnimation;
   Animation walkAnimation;
   Animation deathAnimation;
+  bool droppedLoot{false};
  
-  Reactor reactor;
-  Skeleton(Vector2 pos, Rectangle collisionRect, Player *player, vector<CollisionBody> *terrainCollisionBodies);
+  Reactor<int> reactor;
+  Reactor<Vector2>* deathReactor;
+  Skeleton(Vector2 pos, Rectangle collisionRect, Player *player, vector<CollisionBody> *terrainCollisionBodies, Reactor<Vector2> *reactor);
   void Draw();
   [[nodiscard]] int GetHealth() const;
   [[nodiscard]] bool IsDead() const;

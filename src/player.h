@@ -32,10 +32,14 @@ class Player {
   Animation hitAnimation;
 
  public:
+  int collectedCoins{};
+  int healthPotions{};
   std::function<void(int, Rectangle)> onBeingHit;
-  Reactor reactor{};
-  int maxHealth{100};
-  int health{100};
+  Reactor<int> reactor{};
+  float maxHealth{100};
+  float maxStamina{100};
+  float health{100};
+  float stamina{100};
   Rectangle weaponHitbox{};
   bool isDead{false};
   bool deathAnimationPlayed{false};
@@ -43,7 +47,7 @@ class Player {
   bool leftBlocked{};
   bool rightBlocked{};
   bool falling{};
-  float upwardsVelocity{};
+  float fallSpeed{};
   Rectangle hitbox{};
   bool onGround{true};
   bool attacking{};
