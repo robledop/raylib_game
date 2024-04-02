@@ -99,5 +99,6 @@ Rectangle Animation::GetSourceRec() const {
 }
 
 Animation::~Animation() {
+  TraceLog(LOG_INFO, "Unloading texture %d", texture.id);
   UnloadTexture(texture);
 }

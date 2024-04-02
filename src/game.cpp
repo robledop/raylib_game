@@ -146,12 +146,19 @@ void Game::Draw() {
 	  }
 	}
 
-	// TODO: it's not smart to do this every frame
-	auto uncollectedCoins = where<BronzeCoin *>(bronzeCoins, [](BronzeCoin *a) { return (!a->isCollected); });
-	for (auto &coin : uncollectedCoins) {
+	for (auto it = bronzeCoins.begin(); it != bronzeCoins.end();) {
+	  if ((*it)->isCollected) {
+		delete *it;
+		it = bronzeCoins.erase(it);
+	  } else {
+		++it;
+	  }
+	}
+
+	for (auto &coin : bronzeCoins) {
 	  if (CheckCollisionRecs(player.hitbox, coin->GetHitbox())) {
-		coin->isCollected = true;
 		player.collectedCoins++;
+		coin->isCollected = true;
 		continue;
 	  }
 
@@ -214,14 +221,14 @@ void Game::Draw() {
 	player.Draw();
 	for (auto &enemy : skeletons) {
 	  enemy->Draw();
-	} 
+	}
   }
   EndMode2D();
 
   // Draw the health bar in the top-left corner of the screen
   DrawRectangle(10, 10, player.maxHealth * 2, 10, BLACK);
   DrawRectangle(10, 10, player.health * 2, 10, RED);
-  
+
   // Draw the stamina bar in the top-left corner of the screen
   DrawRectangle(10, 21, player.maxStamina * 2, 10, BLACK);
   DrawRectangle(10, 21, player.stamina * 2, 10, GREENYELLOW);
@@ -229,11 +236,10 @@ void Game::Draw() {
   // Draw the coin animation in the top-left corner of the screen with the number of collected coins
   coinAnimation.Animate({10, 47});
   DrawText(TextFormat("x %d", player.collectedCoins), 40, 50, 20, WHITE);
-  
+
   // Draw the potion texture in the top-left corner of the screen
   DrawTextureEx(potionTexture, {7, 70}, 0.0f, 2.0f, WHITE);
   DrawText(TextFormat("x %d", player.healthPotions), 40, 83, 20, WHITE);
-  
 
   if (*showDebugInfo) {
 	// Stats
