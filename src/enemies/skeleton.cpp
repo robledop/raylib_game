@@ -1,6 +1,8 @@
 #include "skeleton.h"
 #include "reactor.h"
 
+#define WALK_SPEED 3
+
 // TODO: Change the way assets are loaded so that they are NOT separately loaded for each instance of the class.
 Skeleton::Skeleton(Vector2 pos,
 				   Rectangle collRect,
@@ -23,12 +25,12 @@ Skeleton::Skeleton(Vector2 pos,
 	}, hitAnimation{
 		"assets/enemies/skeleton/Skeleton Hit.png",
 		8,
-		1.0f / 12.0f,
+		1.0f / 24.0f,
 		5.f
 	}, walkAnimation{
 		"assets/enemies/skeleton/Skeleton Walk.png",
 		13,
-		1.0f / 12.0f,
+		1.0f / (12.f * WALK_SPEED),
 		5.f
 	}, deathAnimation{
 		"assets/enemies/skeleton/Skeleton Dead.png",
@@ -139,7 +141,7 @@ void Skeleton::HandleCombat() {
 	}
 
 	if (!sideCollision && topCollision) {
-	  currentX += 1;
+	  currentX += WALK_SPEED;
 	}
 
 	position.y = currentY;
@@ -173,7 +175,7 @@ void Skeleton::HandleCombat() {
 	}
 
 	if (!sideCollision && topCollision) {
-	  currentX -= 1;
+	  currentX -= WALK_SPEED;
 	}
 
 	position.y = currentY;
@@ -213,7 +215,8 @@ bool Skeleton::IsDead() const {
 void Skeleton::Damage(int damage) {
   if (CheckCollisionRecs(player->weaponHitbox, collisionRect)) {
 	hit = true;
-	staggered = true;
+	// Set this to true to enable staggering
+	staggered = false;
 	health -= damage;
 	hitAnimation.Reset();
   }

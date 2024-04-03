@@ -49,7 +49,10 @@ void Game::Start() {
   };
 
   player.isDead = false;
+  player.collectedCoins = 0;
+  player.healthPotions = 0;
   player.health = player.maxHealth;
+  player.stamina = player.maxStamina;
   player.fallSpeed = 0;
   player.falling = false;
   player.attacking = false;

@@ -75,7 +75,7 @@ void Player::Draw() {
   }
 
   if (!attacking && stamina < 100){
-	stamina += 20 * deltaTime;
+	stamina += 18 * deltaTime;
   }
 
   if (hit && lastDirection == LEFT) {
