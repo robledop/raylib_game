@@ -12,9 +12,11 @@
 #include "chest.h"
 #include "items/coins/bronze_coin.h"
 #include "reactor.h"
+#include "enemies/boss.h"
 
 class Game {
  private:
+  Boss* boss;
   Animation coinAnimation;
   Texture2D potionTexture;
   bool* showDebugInfo;

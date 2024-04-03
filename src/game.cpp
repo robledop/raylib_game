@@ -225,6 +225,8 @@ void Game::Draw() {
 	for (auto &enemy : skeletons) {
 	  enemy->Draw();
 	}
+	
+	boss->Draw();
   }
   EndMode2D();
 
@@ -278,11 +280,18 @@ void Game::LoadEnemies() {
 	const auto x = static_cast<float>(get<0>(e.first) * 24 * 3);
 	const auto y = static_cast<float>(get<1>(e.first) * 24 * 3) - 86;
 	const auto rect = e.second->getDrawingRect();
-	skeletons.push_back(
-		new Skeleton{{static_cast<float>(x), static_cast<float>(y)},
-					 {x, y, static_cast<float>(rect.width * 5),
-					  static_cast<float>(rect.height * 5)},
-					 &player, &terrains, &reactor});
+	if (e.second->getTileset()->getName() == "Boss1") {
+	  boss = new Boss{{x, y - rect.height * 2.5f}, {x, y - rect.height * 2.5f, static_cast<float>(rect.width * 5),
+							   static_cast<float>(rect.height * 5)},
+					  &player, &terrains, &reactor};
+	} else {
+	  skeletons.push_back(
+		  new Skeleton{{static_cast<float>(x), static_cast<float>(y)},
+					   {x, y, static_cast<float>(rect.width * 5),
+						static_cast<float>(rect.height * 5)},
+					   &player, &terrains, &reactor});
+
+	}
   }
 
 }

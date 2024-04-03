@@ -26,7 +26,9 @@ FetchContent_MakeAvailable(raylib)
 file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
 set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/src/")
 
-add_executable(${PROJECT_NAME})
+add_executable(${PROJECT_NAME}
+        src/enemies/boss.cpp
+        src/enemies/boss.h)
  
 
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})

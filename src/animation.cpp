@@ -1,16 +1,17 @@
 #include "animation.h"
 
-Animation::Animation(const char *texturePath, int numberOfFrames, float updateTime, float scale) {
+Animation::Animation(const char *texturePath, int numberOfFrames, float updateTime, float scale, int rows) :
+	numberOfFrames{numberOfFrames},
+	updateTime{updateTime},
+	scale{scale},
+	rows{rows} {
   this->scale = scale;
   this->texture = LoadTexture(texturePath);
-
-  this->numberOfFrames = numberOfFrames;
-  this->updateTime = updateTime;
   rectangle = {
 	  0.0f,
 	  0.0f,
 	  static_cast<float>(texture.width) / static_cast<float>(numberOfFrames),
-	  static_cast<float>(texture.height)
+	  static_cast<float>(texture.height) / static_cast<float>(rows)
   };
 }
 
@@ -72,7 +73,15 @@ bool Animation::Animate(Vector2 pos, bool facingRight) {
   rectangle.width = facingRight ? abs(rectangle.width) : -abs(rectangle.width);
   if (runningTime >= updateTime) {
 	runningTime = 0.0f;
+	if (rectangle.x + rectangle.width >= texture.width) {
+	  if (currentRow >= rows - 1) {
+		currentRow = 0;
+	  } else {
+		currentRow++;
+	  }
+	}
 	rectangle.x = frame * abs(rectangle.width);
+	rectangle.y = currentRow * abs(rectangle.height);
 	frame++;
 	if (frame >= static_cast<float>(numberOfFrames)) {
 	  frame = 0;
