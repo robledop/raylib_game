@@ -18,7 +18,7 @@ Skeleton::Skeleton(Vector2 pos,
 	  }, attackAnimation{
 		"assets/enemies/skeleton/Skeleton Attack.png",
 		18,
-		1.0f / 12.0f,
+		1.0f / 24.0f,
 		5.f
 	}, hitAnimation{
 		"assets/enemies/skeleton/Skeleton Hit.png",
