@@ -5,7 +5,6 @@ Animation::Animation(const char *texturePath, int numberOfFrames, float updateTi
 	updateTime{updateTime},
 	scale{scale},
 	rows{rows} {
-  this->scale = scale;
   this->texture = LoadTexture(texturePath);
   rectangle = {
 	  0.0f,
@@ -13,6 +12,8 @@ Animation::Animation(const char *texturePath, int numberOfFrames, float updateTi
 	  static_cast<float>(texture.width) / static_cast<float>(numberOfFrames),
 	  static_cast<float>(texture.height) / static_cast<float>(rows)
   };
+  
+  texturePath = texturePath;
 }
 
 void Animation::SetPosition(Vector2 pos) {

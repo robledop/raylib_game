@@ -7,6 +7,7 @@ using namespace std;
 
 class Animation {
  private:
+  string texturePath;
   Texture2D texture;
   Vector2 position;
   float updateTime;

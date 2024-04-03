@@ -10,7 +10,7 @@ class Menu {
   bool *showFPS;
   bool *showDebugInfo;
   bool *shouldClose;
-  Game *game;
+  const unique_ptr<Game> &game;
 
   int menuButtonSelected = -1;
   Rectangle fullScreenButtonPosition;
@@ -23,7 +23,7 @@ class Menu {
   void StartGame();
 
  public:
-  Menu(Game *game,
+  Menu(const unique_ptr<Game> &game,
 	   bool *showMenu,
 	   bool *toggleFullScreen,
 	   bool *showCollisionBoxes,

@@ -13,8 +13,8 @@ bool showCollisionBoxes{};
 bool shouldClose{};
 
 float scale;
-Game *game;
-Menu *menu;
+unique_ptr<Game> game;
+unique_ptr<Menu> menu;
 
 int main() {
   SetConfigFlags(FLAG_VSYNC_HINT);
@@ -30,8 +30,14 @@ int main() {
 
   SetExitKey(0);
 
-  game = new Game{&showDebugInfo};
-  menu = new Menu{game, &showMenu, &toggleFullscreen, &showCollisionBoxes, &showFPS, &showDebugInfo, &shouldClose};
+  game = make_unique<Game>(&showDebugInfo);
+  menu = make_unique<Menu>(game,
+						   &showMenu,
+						   &toggleFullscreen,
+						   &showCollisionBoxes,
+						   &showFPS,
+						   &showDebugInfo,
+						   &shouldClose);
 
   while (!WindowShouldClose() && !shouldClose) {
 	if ((IsKeyPressed(KEY_ENTER) &&
@@ -44,8 +50,7 @@ int main() {
 	  showMenu = !showMenu;
 	}
 
-	// Draw everything in the render texture, note this will not be rendered on
-	// screen, yet
+	// Draw everything in the render texture, this will not be rendered on screen, yet
 	BeginTextureMode(target);
 	ClearBackground(BLACK);
 
@@ -61,7 +66,6 @@ int main() {
 
 	BeginDrawing();
 
-	// Draw render texture to screen, properly scaled
 	const Rectangle source = {0.0f, 0.0f,
 							  static_cast<float>(target.texture.width),
 							  static_cast<float>(-target.texture.height)};
@@ -85,6 +89,10 @@ int main() {
 	}
 	EndDrawing();
   }
+  
+  game.release();
+  
+  UnloadRenderTexture(target);
 
   CloseWindow();
 

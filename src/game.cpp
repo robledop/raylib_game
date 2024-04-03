@@ -2,95 +2,98 @@
 #include "utils/where.h"
 
 void Game::UpdateCamera() {
-  camera.target = {player.position.x,
+  camera.target = {player->position.x,
 				   static_cast<float>(GetScreenHeight()) -
 					   static_cast<float>(GetScreenHeight()) * 0.65f};
   camera.offset = {static_cast<float>(GetScreenWidth()) / 2.0f -
-	  (player.GetTextureWidth() / 2),
+	  (player->GetTextureWidth() / 2),
 				   static_cast<float>(GetScreenHeight()) / 2.0f -
-					   player.GetTextureHeight() / 2};
+					   player->GetTextureHeight() / 2};
 
-  camera.target.x = Clamp(player.position.x, minX, maxX);
-  camera.target.y = Clamp(player.position.y - player.GetHeight(), minY, maxY);
+  camera.target.x = Clamp(player->position.x, minX, maxX);
+  camera.target.y = Clamp(player->position.y - player->GetHeight(), minY, maxY);
 }
 
-Game::Game(bool *showDebugInfo) : showDebugInfo{showDebugInfo}, coinAnimation{
-	"assets/items/coins/bronze.png",
-	5,
-	1 / 12.f,
-	1.5} {
+Game::Game(bool *showDebugInfo) :
+	showDebugInfo{showDebugInfo},
+	coinAnimation{
+		"assets/items/coins/bronze.png",
+		5,
+		1 / 12.f,
+		1.5},
+	player{make_unique<Player>()},
+	terrains{make_unique<vector<unique_ptr<CollisionBody>>>()} {
   potionTexture = LoadTexture("assets/items/medium_health_potion.png");
   LoadTileMap();
   Start();
 
-  reactor.
+  reactor->
 	  RegisterEvent(ENEMY_DEATH);
-  reactor.
+  reactor->
 	  AddEventListener(ENEMY_DEATH,
-					   [this](
-						   Vector2 pos
-					   ) {
-						 BronzeCoin
-							 *coin = new BronzeCoin{"assets/items/coins/bronze.png", pos, {pos.x, pos.y, 24, 24}};
-						 bronzeCoins.
-							 push_back(coin);
+					   [this](Vector2 pos) {
+						 bronzeCoins.push_back(make_unique<BronzeCoin>("assets/items/coins/bronze.png",
+																	   pos,
+																	   (Rectangle){pos.x, pos.y, 24, 24}));
 					   });
 }
 
 void Game::Start() {
   camera.zoom = 1.0f;
-  player.position.x = 1000;
-  player.position.y = 688;
-  player.hitbox = {
-	  player.position.x,
-	  player.position.y + player.GetTextureHeight() / 2,
-	  player.GetWidth(),
-	  player.GetHeight()
+  player->position.x = 1000;
+  player->position.y = 688;
+  player->hitbox = {
+	  player->position.x,
+	  player->position.y + player->GetTextureHeight() / 2,
+	  player->GetWidth(),
+	  player->GetHeight()
   };
+  
+  bronzeCoins.clear();
 
-  player.isDead = false;
-  player.collectedCoins = 0;
-  player.healthPotions = 0;
-  player.health = player.maxHealth;
-  player.stamina = player.maxStamina;
-  player.fallSpeed = 0;
-  player.falling = false;
-  player.attacking = false;
-  player.blocked = false;
-  player.leftBlocked = false;
-  player.rightBlocked = false;
-  player.direction = STOP;
-  player.lastDirection = RIGHT;
-  player.SetOnGround(true);
+  player->isDead = false;
+  player->collectedCoins = 0;
+  player->healthPotions = 0;
+  player->health = player->maxHealth;
+  player->stamina = player->maxStamina;
+  player->fallSpeed = 0;
+  player->falling = false;
+  player->attacking = false;
+  player->blocked = false;
+  player->leftBlocked = false;
+  player->rightBlocked = false;
+  player->direction = STOP;
+  player->lastDirection = RIGHT;
+  player->SetOnGround(true);
 
   camera.offset = {static_cast<float>(GetScreenWidth()) / 2.0f -
-	  (player.GetTextureWidth() / 2),
+	  (player->GetTextureWidth() / 2),
 				   static_cast<float>(GetScreenHeight()) / 2.0f -
-					   player.GetTextureHeight() / 2};
+					   player->GetTextureHeight() / 2};
 
-  player.reactor.Clear();
+  player->reactor.Clear();
 
   LoadEnemies();
 }
 
 void Game::Draw() {
   UpdateCamera();
-  if (!player.isDead &&
+  if (!player->isDead &&
 	  (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D) ||
 		  IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT))) {
-	player.direction = RIGHT;
-	player.lastDirection = RIGHT;
-  } else if (!player.isDead &&
+	player->direction = RIGHT;
+	player->lastDirection = RIGHT;
+  } else if (!player->isDead &&
 	  (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A) ||
 		  IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT))) {
-	player.direction = LEFT;
-	player.lastDirection = LEFT;
+	player->direction = LEFT;
+	player->lastDirection = LEFT;
   } else {
-	player.direction = STOP;
+	player->direction = STOP;
   }
 
-  if (player.direction == RIGHT && !player.attacking && !player.blocked &&
-	  !player.isDead && player.position.x < maxX && player.position.x > minX) {
+  if (player->direction == RIGHT && !player->attacking && !player->blocked &&
+	  !player->isDead && player->position.x < maxX && player->position.x > minX) {
 	bg1X -= 1;
 	bg2X -= 2;
 	bg3X -= 3;
@@ -103,8 +106,8 @@ void Game::Draw() {
 	  bg3X = 0;
   }
 
-  if (player.direction == LEFT && !player.attacking && !player.blocked &&
-	  !player.isDead && player.position.x > minX && player.position.x < maxX) {
+  if (player->direction == LEFT && !player->attacking && !player->blocked &&
+	  !player->isDead && player->position.x > minX && player->position.x < maxX) {
 	bg1X += 1;
 	bg2X += 2;
 	bg3X += 3;
@@ -139,9 +142,9 @@ void Game::Draw() {
 	float yPos;
 	float xPos;
 
-	for (auto &terrain : terrains) {
+	for (auto &terrain : *terrains) {
 	  auto [coll, y] =
-		  terrain.CheckTopCollision(player.hitbox, player.fallSpeed);
+		  terrain->CheckTopCollision(player->hitbox, player->fallSpeed);
 	  if (coll) {
 		collision = true;
 		yPos = y;
@@ -151,7 +154,7 @@ void Game::Draw() {
 
 	for (auto it = bronzeCoins.begin(); it != bronzeCoins.end();) {
 	  if ((*it)->isCollected) {
-		delete *it;
+//		delete *it;
 		it = bronzeCoins.erase(it);
 	  } else {
 		++it;
@@ -159,15 +162,15 @@ void Game::Draw() {
 	}
 
 	for (auto &coin : bronzeCoins) {
-	  if (CheckCollisionRecs(player.hitbox, coin->GetHitbox())) {
-		player.collectedCoins++;
+	  if (CheckCollisionRecs(player->hitbox, coin->GetHitbox())) {
+		player->collectedCoins++;
 		coin->isCollected = true;
 		continue;
 	  }
 
 	  bool terrainCollision = false;
-	  for (auto &terrain : terrains) {
-		auto [coll, y] = terrain.CheckTopCollision(coin->GetHitbox(), 0.1f * GetFrameTime());
+	  for (auto &terrain : *terrains) {
+		auto [coll, y] = terrain->CheckTopCollision(coin->GetHitbox(), 0.1f * GetFrameTime());
 		if (coll) {
 		  terrainCollision = true;
 		  break;
@@ -183,9 +186,9 @@ void Game::Draw() {
 	  }
 	}
 
-	for (auto &terrain : terrains) {
-	  auto [sideColl, x] = terrain.CheckSideCollision(
-		  player.hitbox, RUN_SPEED + player.fallSpeed / 2.0f);
+	for (auto &terrain : *terrains) {
+	  auto [sideColl, x] = terrain->CheckSideCollision(
+		  player->hitbox, RUN_SPEED + player->fallSpeed / 2.0f);
 	  if (sideColl) {
 		sideCollision = true;
 		xPos = x;
@@ -194,62 +197,62 @@ void Game::Draw() {
 	}
 
 	if (collision) {
-	  player.SetOnGround(true);
-	  player.position.y = yPos - player.GetTextureHeight();
-	  player.fallSpeed = 0;
-	  player.falling = false;
+	  player->SetOnGround(true);
+	  player->position.y = yPos - player->GetTextureHeight();
+	  player->fallSpeed = 0;
+	  player->falling = false;
 	} else {
-	  player.SetOnGround(false);
+	  player->SetOnGround(false);
 	}
 
 	if (sideCollision) {
-	  player.blocked = true;
-	  if (xPos > player.hitbox.x) {
-		player.rightBlocked = true;
-		player.leftBlocked = false;
-	  } else if (xPos < player.hitbox.x + player.GetWidth()) {
-		player.leftBlocked = true;
-		player.rightBlocked = false;
+	  player->blocked = true;
+	  if (xPos > player->hitbox.x) {
+		player->rightBlocked = true;
+		player->leftBlocked = false;
+	  } else if (xPos < player->hitbox.x + player->GetWidth()) {
+		player->leftBlocked = true;
+		player->rightBlocked = false;
 	  }
-	  player.SetXPosition(xPos);
+	  player->SetXPosition(xPos);
 	} else {
-	  player.blocked = false;
-	  player.leftBlocked = false;
-	  player.rightBlocked = false;
+	  player->blocked = false;
+	  player->leftBlocked = false;
+	  player->rightBlocked = false;
 	}
 
 	DrawTiledBackground();
 	DrawTileMap();
 	DrawInteractables();
-	player.Draw();
+	player->Draw();
 	for (auto &enemy : skeletons) {
 	  enemy->Draw();
 	}
-	
+
 	boss->Draw();
   }
   EndMode2D();
 
   // Draw the health bar in the top-left corner of the screen
-  DrawRectangle(10, 10, player.maxHealth * 2, 10, BLACK);
-  DrawRectangle(10, 10, player.health * 2, 10, RED);
+  DrawRectangle(10, 10, player->maxHealth * 2, 10, BLACK);
+  DrawRectangle(10, 10, player->health * 2, 10, RED);
 
   // Draw the stamina bar in the top-left corner of the screen
-  DrawRectangle(10, 21, player.maxStamina * 2, 10, BLACK);
-  DrawRectangle(10, 21, player.stamina * 2, 10, GREENYELLOW);
+  DrawRectangle(10, 21, player->maxStamina * 2, 10, BLACK);
+  DrawRectangle(10, 21, player->stamina * 2, 10, GREENYELLOW);
 
   // Draw the coin animation in the top-left corner of the screen with the number of collected coins
   coinAnimation.Animate({10, 47});
-  DrawText(TextFormat("x %d", player.collectedCoins), 40, 50, 20, WHITE);
+  DrawText(TextFormat("x %d", player->collectedCoins), 40, 50, 20, WHITE);
 
   // Draw the potion texture in the top-left corner of the screen
   DrawTextureEx(potionTexture, {7, 70}, 0.0f, 2.0f, WHITE);
-  DrawText(TextFormat("x %d", player.healthPotions), 40, 83, 20, WHITE);
+  DrawText(TextFormat("x %d", player->healthPotions), 40, 83, 20, WHITE);
 
   if (*showDebugInfo) {
 	// Stats
-	DrawText(TextFormat("Player x: %.1f", player.position.x), 10, 20, 20, WHITE);
-	DrawText(TextFormat("Player y: %.1f", player.position.y), 10, 20 * 2, 20, WHITE);
+	DrawText(TextFormat("Player x: %.1f", player->position.x), 10, 20, 20, WHITE);
+	DrawText(TextFormat("Player y: %.1f", player->position.y), 10, 20 * 2, 20, WHITE);
 	DrawText(TextFormat("Camera x: %.1f", camera.target.x), 10, 20 * 3, 20, WHITE);
 	DrawText(TextFormat("Camera y: %.1f", camera.target.y), 10, 20 * 4, 20, WHITE);
 	DrawText(TextFormat("Camera offset x: %.1f", camera.offset.x), 10, 20 * 5, 20,
@@ -262,7 +265,7 @@ void Game::Draw() {
 			 GetScreenHeight(), RED);
   }
 
-  if (player.isDead) {
+  if (player->isDead) {
 	DrawText("You died!",
 			 GetScreenWidth() / 2 - MeasureText("You died!", 50) / 2,
 			 GetScreenHeight() / 2, 50, RED);
@@ -270,9 +273,9 @@ void Game::Draw() {
 }
 
 void Game::LoadEnemies() {
-  for (auto &s : skeletons) {
-	delete s;
-  }
+//  for (auto &s : skeletons) {
+//	delete s;
+//  }
   skeletons.clear();
 
   const tson::Layer *enemyLayer = map->getLayer("Enemies");
@@ -281,15 +284,17 @@ void Game::LoadEnemies() {
 	const auto y = static_cast<float>(get<1>(e.first) * 24 * 3) - 86;
 	const auto rect = e.second->getDrawingRect();
 	if (e.second->getTileset()->getName() == "Boss1") {
-	  boss = new Boss{{x, y - rect.height * 2.5f}, {x, y - rect.height * 2.5f, static_cast<float>(rect.width * 5),
-							   static_cast<float>(rect.height * 5)},
-					  &player, &terrains, &reactor};
+	  boss =
+		  make_unique<Boss>((Vector2){x, y - rect.height * 2.5f},
+							(Rectangle){x, y - rect.height * 2.5f, static_cast<float>(rect.width * 5),
+										static_cast<float>(rect.height * 5)},
+							player, terrains, reactor);
 	} else {
 	  skeletons.push_back(
-		  new Skeleton{{static_cast<float>(x), static_cast<float>(y)},
-					   {x, y, static_cast<float>(rect.width * 5),
-						static_cast<float>(rect.height * 5)},
-					   &player, &terrains, &reactor});
+		  make_unique<Skeleton>((Vector2){static_cast<float>(x), static_cast<float>(y)},
+								(Rectangle){x, y, static_cast<float>(rect.width * 5),
+											static_cast<float>(rect.height * 5)},
+								player, terrains, reactor));
 
 	}
   }
@@ -364,8 +369,7 @@ void Game::LoadTileMap() {
 			  static_cast<float>(drawingRect.width * 3 * scale),
 			  static_cast<float>(drawingRect.height * 3 * scale)};
 
-		  CollisionBody terrain = CollisionBody(pos, collisionRect);
-		  terrains.push_back(terrain);
+		  terrains->push_back(make_unique<CollisionBody>(pos, collisionRect));
 		}
 	  }
 	}
@@ -405,15 +409,13 @@ void Game::LoadTileMap() {
 		  const auto y = static_cast<float>(get<1>(i.first) * 24 * 3);
 		  const auto rect = i.second->getDrawingRect();
 		  const auto collisionRect = Rectangle{x * 24 * 3, y * 24 * 3, rect.width * 3.f, rect.height * 3.f};
-		  Shop *shop = new Shop{{x, y - collisionRect.height - 24 * 2}, collisionRect};
-		  shops.push_back(shop);
+		  shops.push_back(make_unique<Shop>((Vector2){x, y - collisionRect.height - 24 * 2}, collisionRect));
 		} else if (tile->getTileset()->getName() == "Chest Animation 1") {
 		  const auto x = static_cast<float>(get<0>(i.first) * 24 * 3);
 		  const auto y = static_cast<float>(get<1>(i.first) * 24 * 3);
 		  const auto rect = i.second->getDrawingRect();
 		  const auto collisionRect = Rectangle{x * 24 * 3, y * 24 * 3, rect.width * 3.f, rect.height * 3.f};
-		  Chest *shop = new Chest{{x, y - 57}, collisionRect};
-		  chests.push_back(shop);
+		  chests.push_back(make_unique<Chest>((Vector2){x, y - 57}, collisionRect));
 		} else if (tile->getTileset()->getName() == "bronze_coin") {
 		  const auto x = static_cast<float>(get<0>(i.first) * 24 * 3);
 		  const auto y = static_cast<float>(get<1>(i.first) * 24 * 3);
@@ -421,8 +423,7 @@ void Game::LoadTileMap() {
 		  const auto collisionRect = Rectangle{x * 24 * 3, y * 24 * 3, rect.width * 3.f, rect.height * 3.f};
 		  string texturePath = tile->getTileset()->getImagePath();
 		  texturePath = texturePath.replace(0, 2, "assets");
-		  BronzeCoin *bronzeCoin = new BronzeCoin{texturePath.c_str(), {x, y + 40}, collisionRect};
-		  bronzeCoins.push_back(bronzeCoin);
+		  bronzeCoins.push_back(make_unique<BronzeCoin>(texturePath.c_str(), (Vector2){x, y + 40}, collisionRect));
 		}
 	  }
 
@@ -517,21 +518,12 @@ void Game::DrawInteractables() {
   }
 }
 Game::~Game() {
-  for (auto &t : tileTextures) {
-	UnloadTexture(t.second);
-  }
-
-  for (auto &s : skeletons) {
-	delete s;
-  }
-
-  for (auto &s : shops) {
-	delete s;
-  }
-
-  UnloadTexture(background1);
-  UnloadTexture(background2);
-  UnloadTexture(background3);
-
-  delete map.release();
+//  for (auto &t : tileTextures) {
+//	UnloadTexture(t.second);
+//  }
+//
+//  UnloadTexture(background1);
+//  UnloadTexture(background2);
+//  UnloadTexture(background3);
+//  UnloadTexture(potionTexture);
 }

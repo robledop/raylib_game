@@ -1,19 +1,19 @@
 #include "boss.h"
 Boss::Boss(Vector2 pos,
 		   Rectangle collisionRect,
-		   Player *player,
-		   vector<CollisionBody> *terrainCollisionBodies,
-		   Reactor<Vector2> *reactor) : CollisionBody{pos, collisionRect, true},
+		   const unique_ptr<Player> &player,
+		   unique_ptr<vector<unique_ptr<CollisionBody>>> &terrainCollisionBodies,
+		   const unique_ptr<Reactor<Vector2>> &reactor) : CollisionBody{pos, collisionRect, true},
 										player{player},
 										terrainCollisionBodies{terrainCollisionBodies},
 										reactor{reactor},
 										idleAnimation{
-  											"assets/bosses/boss1/Idle.png",
+											"assets/bosses/boss1/Idle.png",
 											2,
 											1.0f / 12.0f,
 											5.f,
 											4
-}{
+										} {
 
 }
 int Boss::GetHealth() const {
@@ -29,7 +29,7 @@ void Boss::Damage(int damage) {
 
 }
 void Boss::Draw() {
-  if (showCollisionBoxes){
+  if (showCollisionBoxes) {
 	DrawRectangleLinesEx(this->collisionRect, 2, RED);
   }
   idleAnimation.Animate(position, true);

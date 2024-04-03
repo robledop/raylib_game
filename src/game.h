@@ -13,13 +13,16 @@
 #include "items/coins/bronze_coin.h"
 #include "reactor.h"
 #include "enemies/boss.h"
+#include <memory>
+
+using namespace std;
 
 class Game {
  private:
-  Boss* boss;
+  unique_ptr<Boss> boss;
   Animation coinAnimation;
   Texture2D potionTexture;
-  bool* showDebugInfo;
+  unique_ptr<bool> showDebugInfo;
   float maxX;
   float minX{800.f};
   float maxY;
@@ -27,22 +30,22 @@ class Game {
   std::map<std::tuple<int, int>, tson::Tile *> tileData;
   std::map<std::tuple<int, int>, tson::Tile *> tileBackgroundData;
   std::map<std::tuple<int, int>, tson::Tile *> interactablesData;
-  vector<CollisionBody> terrains;
+  unique_ptr<vector<unique_ptr<CollisionBody>>> terrains;
   vector<CollisionBody> interactables;
-  vector<Shop*> shops;
-  vector<Chest*> chests;
-  vector<BronzeCoin*> bronzeCoins;
-  vector<Skeleton*> skeletons;
+  vector<unique_ptr<Shop>> shops;
+  vector<unique_ptr<Chest>> chests;
+  vector<unique_ptr<BronzeCoin>> bronzeCoins;
+  vector<unique_ptr<Skeleton>> skeletons;
   tson::Tileson tileson{};
   std::unique_ptr<tson::Map> map;
-  Player player{};
+  unique_ptr<Player> player;
   Texture2D background1;
   float bg1ParallaxX{};
   Texture2D background2;
   float bg2ParallaxX{};
   Texture2D background3;
   float bg3ParallaxX{};
-  ::map<string ,Texture2D> tileTextures;
+  std::map<string, Texture2D> tileTextures;
   Camera2D camera{};
   float bg1X{};
   float bg2X{};
@@ -50,8 +53,8 @@ class Game {
   void UpdateCamera();
 
  public:
-  Reactor<Vector2> reactor{};
-  Game(bool* showDebugInfo);
+  unique_ptr<Reactor<Vector2>> reactor = make_unique<Reactor<Vector2>>();
+  Game(bool *showDebugInfo);
   ~Game();
   void Draw();
   void LoadTileMap();

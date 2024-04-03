@@ -6,9 +6,9 @@
 // TODO: Change the way assets are loaded so that they are NOT separately loaded for each instance of the class.
 Skeleton::Skeleton(Vector2 pos,
 				   Rectangle collRect,
-				   Player *p,
-				   vector<CollisionBody> *terrainCollisionBodies,
-				   Reactor<Vector2> *reactor)
+				   const unique_ptr<Player> &p,
+				   const unique_ptr<vector<unique_ptr<CollisionBody>>> &terrainCollisionBodies,
+				   const unique_ptr<Reactor<Vector2>> &reactor)
 	: CollisionBody{pos, collRect, true},
 	  player{p},
 	  terrainCollisionBodies{terrainCollisionBodies},
@@ -121,7 +121,7 @@ void Skeleton::HandleCombat() {
 		  && ((player->position.x + player->GetWidth()) - (position.x + collisionRect.width)) > 20) {
 	bool sideCollision = false;
 	for (auto &terrain : *terrainCollisionBodies) {
-	  auto [sideColl, xPos] = terrain.CheckSideCollision(collisionRect, 1);
+	  auto [sideColl, xPos] = terrain->CheckSideCollision(collisionRect, 1);
 	  if (sideColl) {
 		sideCollision = true;
 		break;
@@ -129,7 +129,7 @@ void Skeleton::HandleCombat() {
 	}
 	bool topCollision = false;
 	for (auto &terrain : *terrainCollisionBodies) {
-	  auto [topCol, yPos] = terrain.CheckTopCollision({
+	  auto [topCol, yPos] = terrain->CheckTopCollision({
 														  collisionRect.x + 24 * 3,
 														  collisionRect.y,
 														  collisionRect.width,
@@ -155,7 +155,7 @@ void Skeleton::HandleCombat() {
 		  && abs(player->hitbox.x - currentX) >= 10) {
 	bool sideCollision = false;
 	for (auto &terrain : *terrainCollisionBodies) {
-	  auto [sideColl, _] = terrain.CheckSideCollision(collisionRect, 1);
+	  auto [sideColl, _] = terrain->CheckSideCollision(collisionRect, 1);
 	  if (sideColl) {
 		sideCollision = true;
 		break;
@@ -163,7 +163,7 @@ void Skeleton::HandleCombat() {
 	}
 	bool topCollision = false;
 	for (auto &terrain : *terrainCollisionBodies) {
-	  auto [topCol, yPos] = terrain.CheckTopCollision({
+	  auto [topCol, yPos] = terrain->CheckTopCollision({
 														  collisionRect.x - 24 * 3,
 														  collisionRect.y,
 														  collisionRect.width,
