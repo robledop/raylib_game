@@ -106,7 +106,7 @@ void Player::Draw() {
   } else if ((IsKeyPressed(KEY_N) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) && !attacking && !hit
 	  && stamina >= 10) {
 	attacking = true;
-	stamina -= 10;
+	stamina -= 15;
   }
 
   position.y += fallSpeed;

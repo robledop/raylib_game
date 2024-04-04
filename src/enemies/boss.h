@@ -10,6 +10,18 @@ using namespace std;
 
 class Boss : public CollisionBody, public Enemy {
   Animation idleAnimation;
+  Animation runAnimation;
+  Animation attack1Animation;
+  Animation attack2Animation;
+  Animation attack3Animation;
+  Animation attackFromAirAnimation;
+  Animation hurtAnimation;
+  Animation healthAnimation;
+  Animation prayAnimation;
+  Animation deathAnimation;
+  Animation jumpAnimation;
+  bool animationCompleted{};
+  int random{};
  public:
   Boss(Vector2 pos,
 	   Rectangle collisionRect,

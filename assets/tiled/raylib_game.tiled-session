@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Skeleton Idle.tsj",
+    "activeFile": "level1.json",
     "expandedProjectPaths": [
         "."
     ],
@@ -61,8 +61,8 @@
             "scale": 1,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 7475,
-                "y": 345
+                "x": 654,
+                "y": 703
             }
         },
         "level1.json#decorations": {
@@ -119,20 +119,13 @@
     "map.tileWidth": 24,
     "map.width": 500,
     "openFiles": [
-        "level1.json",
-        "bronze_coin.tsj",
-        "boss1.tsj",
-        "Skeleton Idle.tsj",
-        "shop.json",
-        "oak_woods_tileset.json",
-        "decorations.tsj",
-        "Chest Animation 1.tsj"
+        "level1.json"
     ],
     "project": "raylib_game.tiled-project",
     "property.type": "int",
     "recentFiles": [
-        "boss1.tsj",
         "level1.json",
+        "boss1.tsj",
         "Chest Animation 1.tsj",
         "decorations.tsj",
         "oak_woods_tileset.json",

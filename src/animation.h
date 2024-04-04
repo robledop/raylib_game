@@ -14,6 +14,8 @@ class Animation {
   int width;
   int height;
   int rows;
+  int firstRow;
+  int lastRow;
   int currentRow{};
   Rectangle rectangle;
   float runningTime{};
@@ -23,7 +25,7 @@ class Animation {
   float frame{};
   float scale{};
   int numberOfFrames;
-  Animation(const char *texturePath, int numberOfFrames, float updateTime, float scale = 4.f, int rows = 1);
+  Animation(const char *texturePath, int numberOfFrames, float updateTime, float scale = 4.f, int rows = 1, int firstRow = 0, int lastRow = 0);
 
   void SetPosition(Vector2 pos);
   Vector2 GetPosition() const;
