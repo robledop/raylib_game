@@ -22,8 +22,16 @@ Game::Game(bool *showDebugInfo) :
 		1 / 12.f,
 		1.5},
 	player{make_unique<Player>()},
-	terrains{make_unique<vector<unique_ptr<CollisionBody>>>()} {
-  potionTexture = LoadTexture("assets/items/medium_health_potion.png");
+	terrains{make_unique<vector<unique_ptr<CollisionBody>>>()},
+	skeletonIdleTexture{make_shared<raylib::Texture2D>("assets/enemies/skeleton/Skeleton Idle.png")},
+	skeletonAttackTexture{make_shared<raylib::Texture2D>("assets/enemies/skeleton/Skeleton Attack.png")},
+	skeletonHitTexture{make_shared<raylib::Texture2D>("assets/enemies/skeleton/Skeleton Hit.png")},
+	skeletonWalkTexture{make_shared<raylib::Texture2D>("assets/enemies/skeleton/Skeleton Walk.png")},
+	skeletonDeathTexture{make_shared<raylib::Texture2D>("assets/enemies/skeleton/Skeleton Dead.png")},
+	potionTexture{"assets/items/medium_health_potion.png"} {
+  
+  // ! TODO: Try to create vector of unique pointers to Texture2D objects for the skeleton textures
+  
   LoadTileMap();
   Start();
 
@@ -36,6 +44,7 @@ Game::Game(bool *showDebugInfo) :
 																	   pos,
 																	   (Rectangle){pos.x, pos.y, 24, 24}));
 					   });
+
 }
 
 void Game::Start() {
@@ -43,12 +52,12 @@ void Game::Start() {
   player->position.x = 1000;
   player->position.y = 688;
   player->hitbox = {
-	  player->position.x,
-	  player->position.y + player->GetTextureHeight() / 2,
-	  player->GetWidth(),
-	  player->GetHeight()
+	  .x = player->position.x,
+	  .y = player->position.y + player->GetTextureHeight() / 2,
+	  .width = player->GetWidth(),
+	  .height = player->GetHeight()
   };
-  
+
   bronzeCoins.clear();
 
   player->isDead = false;
@@ -80,12 +89,12 @@ void Game::Draw() {
   UpdateCamera();
   if (!player->isDead &&
 	  (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D) ||
-		  IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT))) {
+		  raylib::Gamepad(0).IsButtonDown(GAMEPAD_BUTTON_LEFT_FACE_RIGHT))) {
 	player->direction = RIGHT;
 	player->lastDirection = RIGHT;
   } else if (!player->isDead &&
 	  (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A) ||
-		  IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT))) {
+		  raylib::Gamepad(0).IsButtonDown(GAMEPAD_BUTTON_LEFT_FACE_LEFT))) {
 	player->direction = LEFT;
 	player->lastDirection = LEFT;
   } else {
@@ -120,22 +129,22 @@ void Game::Draw() {
 	  bg3X = -background3.width * scale * BG_SCALE;
   }
 
-  const Vector2 bg1Pos{bg1X, 0};
-  const Vector2 bg1Pos_2{bg1X + background1.width * scale * BG_SCALE, 0};
-  const Vector2 bg2Pos{bg2X, 0};
-  const Vector2 bg2Pos_2{bg2X + background2.width * scale * BG_SCALE, 0};
+  const raylib::Vector2 bg1Pos{bg1X, 0};
+  const raylib::Vector2 bg1Pos_2{bg1X + background1.width * scale * BG_SCALE, 0};
+  const raylib::Vector2 bg2Pos{bg2X, 0};
+  const raylib::Vector2 bg2Pos_2{bg2X + background2.width * scale * BG_SCALE, 0};
 
-  const Vector2 bg3Pos{bg3X, 0};
-  const Vector2 bg3Pos_2{bg3X + background3.width * scale * BG_SCALE, 0};
+  const raylib::Vector2 bg3Pos{bg3X, 0};
+  const raylib::Vector2 bg3Pos_2{bg3X + background3.width * scale * BG_SCALE, 0};
 
-  DrawTextureEx(background1, bg1Pos, 0.0f, scale * BG_SCALE, WHITE);
-  DrawTextureEx(background1, bg1Pos_2, 0.0f, scale * BG_SCALE, WHITE);
-  DrawTextureEx(background2, bg2Pos, 0.0f, scale * BG_SCALE, WHITE);
-  DrawTextureEx(background2, bg2Pos_2, 0.0f, scale * BG_SCALE, WHITE);
-  DrawTextureEx(background3, bg3Pos, 0.0f, scale * BG_SCALE, WHITE);
-  DrawTextureEx(background3, bg3Pos_2, 0.0f, scale * BG_SCALE, WHITE);
+  background1.Draw(bg1Pos, 0.0f, scale * BG_SCALE, WHITE);
+  background1.Draw(bg1Pos_2, 0.0f, scale * BG_SCALE, WHITE);
+  background2.Draw(bg2Pos, 0.0f, scale * BG_SCALE, WHITE);
+  background2.Draw(bg2Pos_2, 0.0f, scale * BG_SCALE, WHITE);
+  background3.Draw(bg3Pos, 0.0f, scale * BG_SCALE, WHITE);
+  background3.Draw(bg3Pos_2, 0.0f, scale * BG_SCALE, WHITE);
 
-  BeginMode2D(camera);
+  camera.BeginMode();
   {
 	bool collision = false;
 	bool sideCollision = false;
@@ -154,7 +163,6 @@ void Game::Draw() {
 
 	for (auto it = bronzeCoins.begin(); it != bronzeCoins.end();) {
 	  if ((*it)->isCollected) {
-//		delete *it;
 		it = bronzeCoins.erase(it);
 	  } else {
 		++it;
@@ -162,7 +170,7 @@ void Game::Draw() {
 	}
 
 	for (auto &coin : bronzeCoins) {
-	  if (CheckCollisionRecs(player->hitbox, coin->GetHitbox())) {
+	  if (player->hitbox.CheckCollision(coin->GetHitbox())) {
 		player->collectedCoins++;
 		coin->isCollected = true;
 		continue;
@@ -182,7 +190,7 @@ void Game::Draw() {
 	  }
 	  coin->Update();
 	  if (showCollisionBoxes) {
-		DrawRectangleLinesEx(coin->GetHitbox(), 1, RED);
+		coin->GetHitbox().DrawLines(RED, 1);
 	  }
 	}
 
@@ -230,8 +238,10 @@ void Game::Draw() {
 	}
 
 	boss->Draw();
+
+	DrawCollectables();
   }
-  EndMode2D();
+  camera.EndMode();
 
   // Draw the health bar in the top-left corner of the screen
   DrawRectangle(10, 10, player->maxHealth * 2, 10, BLACK);
@@ -246,7 +256,7 @@ void Game::Draw() {
   DrawText(TextFormat("x %d", player->collectedCoins), 40, 50, 20, WHITE);
 
   // Draw the potion texture in the top-left corner of the screen
-  DrawTextureEx(potionTexture, {7, 70}, 0.0f, 2.0f, WHITE);
+  potionTexture.Draw({7, 70}, 0.0f, 2.0f, WHITE);
   DrawText(TextFormat("x %d", player->healthPotions), 40, 83, 20, WHITE);
 
   if (*showDebugInfo) {
@@ -273,9 +283,6 @@ void Game::Draw() {
 }
 
 void Game::LoadEnemies() {
-//  for (auto &s : skeletons) {
-//	delete s;
-//  }
   skeletons.clear();
 
   const tson::Layer *enemyLayer = map->getLayer("Enemies");
@@ -290,44 +297,41 @@ void Game::LoadEnemies() {
 										static_cast<float>(rect.height * 5)},
 							player, terrains, reactor);
 	} else {
+
 	  skeletons.push_back(
-		  make_unique<Skeleton>((Vector2){static_cast<float>(x), static_cast<float>(y)},
-								(Rectangle){x, y, static_cast<float>(rect.width * 5),
-											static_cast<float>(rect.height * 5)},
-								player, terrains, reactor));
+		  make_unique<Skeleton>((raylib::Vector2){static_cast<float>(x), static_cast<float>(y)},
+								(raylib::Rectangle){x, y, static_cast<float>(rect.width * 5),
+													static_cast<float>(rect.height * 5)},
+								player,
+								terrains,
+								reactor,
+								skeletonIdleTexture,
+								skeletonAttackTexture,
+								skeletonHitTexture,
+								skeletonWalkTexture,
+								skeletonDeathTexture));
 
 	}
   }
 
 }
 void Game::LoadTileMap() {
+  tileTextures.clear();
+  terrains->clear();
+  chests.clear();
+  background1.Unload();
+  background2.Unload();
+  background3.Unload();
+  this->tileData.clear();
+  this->skeletons.clear();
+  this->shops.clear();
+  this->interactables.clear();
+  this->tileBackgroundData.clear();
+  this->interactablesData.clear();
+  map.reset();
+
   map = tileson.parse("assets/tiled/level1.json");
   if (map->getStatus() == tson::ParseStatus::OK) {
-	// You can loop through every container of objects
-	//	for (auto &layer : map->getLayers()) {
-	//	  if (layer.getType() == tson::LayerType::ObjectGroup) {
-	//		for (auto &obj : layer.getObjects()) {
-	//		  //Just iterate through all the objects
-	//		}
-	//		//Or use these queries:
-	//
-	//		//Gets the first object it finds with the name specified
-	////                tson::Object *player = layer.firstObj("player"); //Does
-	///not exist in demo map->..
-	//
-	//		//Gets all objects with a matching name
-	////                std::vector<tson::Object> enemies =
-	///layer.getObjectsByName("goomba"); //But we got two of those
-	//
-	//		//Gets all objects of a specific type
-	//		std::vector<tson::Object> objects =
-	//layer.getObjectsByType(tson::ObjectType::Object);
-	//
-	//		//Gets a unique object by its name.
-	//		tson::Object *uniqueObj = layer.getObj(2);
-	//	  }
-	//	}
-
 	// Load all textures
 	for (auto &ts : map->getTilesets()) {
 	  string tileSetPath = ts.getImagePath().string();
@@ -385,17 +389,17 @@ void Game::LoadTileMap() {
 
 	string bg1ImagePath = bg1->getImage();
 	bg1ImagePath = bg1ImagePath.replace(0, 2, "assets");
-	background1 = LoadTexture(bg1ImagePath.c_str());
+	background1 = {bg1ImagePath.c_str()};
 	bg1ParallaxX = bg1->getParallax().x;
 
 	string bg2ImagePath = bg2->getImage();
 	bg2ImagePath = bg2ImagePath.replace(0, 2, "assets");
-	background2 = LoadTexture(bg2ImagePath.c_str());
+	background2 = {bg2ImagePath.c_str()};
 	bg2ParallaxX = bg2->getParallax().x;
 
 	string bg3ImagePath = bg3->getImage();
 	bg3ImagePath = bg3ImagePath.replace(0, 2, "assets");
-	background3 = LoadTexture(bg3ImagePath.c_str());
+	background3 = {bg3ImagePath.c_str()};
 	bg3ParallaxX = bg3->getParallax().x;
 
 	const tson::Layer *interactableLayer = map->getLayer("Interactables");
@@ -512,18 +516,10 @@ void Game::DrawInteractables() {
   for (auto &c : chests) {
 	c->Draw();
   }
+}
 
+void Game::DrawCollectables() {
   for (auto &c : bronzeCoins) {
 	c->Draw();
   }
-}
-Game::~Game() {
-//  for (auto &t : tileTextures) {
-//	UnloadTexture(t.second);
-//  }
-//
-//  UnloadTexture(background1);
-//  UnloadTexture(background2);
-//  UnloadTexture(background3);
-//  UnloadTexture(potionTexture);
 }

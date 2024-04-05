@@ -1,29 +1,50 @@
 #include "animation.h"
+Animation::Animation(const string &texturePath,
+					 int numberOfFrames,
+					 float updateTime,
+					 float scale,
+					 int rows,
+					 int firstRow,
+					 int lastRow) :
+	Animation{
+		make_shared<raylib::Texture2D>(texturePath),
+		numberOfFrames,
+		updateTime,
+		scale,
+		rows,
+		firstRow,
+		lastRow} {
+}
 
-Animation::Animation(const char *texturePath, int numberOfFrames, float updateTime, float scale, int rows, int firstRow, int lastRow) :
+Animation::Animation(const shared_ptr<raylib::Texture2D> texture,
+					 int numberOfFrames,
+					 float updateTime,
+					 float scale,
+					 int rows,
+					 int firstRow,
+					 int lastRow) :
 	numberOfFrames{numberOfFrames},
 	updateTime{updateTime},
 	scale{scale},
 	rows{rows},
 	firstRow{firstRow},
-	lastRow{lastRow} {
-  this->texture = LoadTexture(texturePath);
+	lastRow{lastRow},
+	texture{texture} {
+
   rectangle = {
-	  0.0f,
-	  0.0f,
-	  static_cast<float>(texture.width) / static_cast<float>(numberOfFrames),
-	  static_cast<float>(texture.height) / static_cast<float>(rows)
+	  .x = 0.0f,
+	  .y = 0.0f,
+	  .width = static_cast<float>(texture->width) / static_cast<float>(numberOfFrames),
+	  .height = static_cast<float>(texture->height) / static_cast<float>(rows)
   };
   currentRow = firstRow;
-  
-  texturePath = texturePath;
 }
 
-void Animation::SetPosition(Vector2 pos) {
+void Animation::SetPosition(raylib::Vector2 pos) {
   this->position = pos;
 }
 
-Vector2 Animation::GetPosition() const {
+raylib::Vector2 Animation::GetPosition() const {
   return position;
 }
 
@@ -40,36 +61,41 @@ void Animation::Reset() {
   runningTime = 0.0f;
 }
 
-void Animation::DrawFirstFrame(Vector2 pos) {
+void Animation::DrawFirstFrame(raylib::Vector2 pos) {
   position = pos;
-  Rectangle rect = {
+  raylib::Rectangle rect = {
 	  0.0f,
 	  0.0f,
 	  abs(rectangle.width),
 	  rectangle.height
   };
-  DrawTexturePro(texture,
-				 rect,
-				 {position.x, position.y, abs(rectangle.width * scale), rectangle.height * scale},
-				 {0, 0},
-				 0,
-				 WHITE);
+  texture->Draw(
+	  rect,
+	  {
+		  position.x,
+		  position.y,
+		  abs(rectangle.width * scale),
+		  rectangle.height * scale
+	  },
+	  {0, 0},
+	  0,
+	  WHITE);
 }
 
-void Animation::DrawLastFrame(Vector2 pos) {
+void Animation::DrawLastFrame(raylib::Vector2 pos) {
   position = pos;
-  Rectangle rect = rectangle;
+  raylib::Rectangle rect = rectangle;
 
   rect.x = abs(rectangle.width) * (numberOfFrames - 1);
-  DrawTexturePro(texture,
-				 rect,
-				 {position.x, position.y, abs(rectangle.width * scale), rectangle.height * scale},
-				 {0, 0},
-				 0,
-				 WHITE);
+  texture->Draw(
+	  rect,
+	  {position.x, position.y, abs(rectangle.width * scale), rectangle.height * scale},
+	  {0, 0},
+	  0,
+	  WHITE);
 }
 
-bool Animation::Animate(Vector2 pos, bool facingRight) {
+bool Animation::Animate(raylib::Vector2 pos, bool facingRight) {
   position = pos;
   bool completed{false};
   runningTime += GetFrameTime();
@@ -77,7 +103,7 @@ bool Animation::Animate(Vector2 pos, bool facingRight) {
   rectangle.width = facingRight ? abs(rectangle.width) : -abs(rectangle.width);
   if (runningTime >= updateTime) {
 	runningTime = 0.0f;
-	if (rectangle.x + abs(rectangle.width) >= texture.width) {
+	if (rectangle.x + abs(rectangle.width) >= texture->width) {
 	  if (currentRow >= lastRow) {
 		currentRow = firstRow;
 	  } else {
@@ -93,24 +119,25 @@ bool Animation::Animate(Vector2 pos, bool facingRight) {
 	}
   }
 
-  DrawTexturePro(texture,
-				 rectangle,
-				 {position.x, position.y, abs(rectangle.width * scale), rectangle.height * scale},
-				 {0, 0},
-				 0,
-				 WHITE);
+  texture->Draw(
+	  rectangle,
+	  {
+		  position.x,
+		  position.y,
+		  abs(rectangle.width * scale),
+		  rectangle.height * scale
+	  },
+	  {0, 0},
+	  0,
+	  WHITE);
 
   return completed;
 }
 
-Texture2D Animation::GetTexture() const {
-  return texture;
-}
-
-Rectangle Animation::GetSourceRec() const {
+raylib::Rectangle Animation::GetSourceRec() const {
   return rectangle;
 }
 
-Animation::~Animation() {
-  UnloadTexture(texture);
-}
+//Animation::~Animation() {
+////  texture->Unload();
+//}

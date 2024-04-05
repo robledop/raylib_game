@@ -1,32 +1,28 @@
 #include "config.h"
-#include "raylib.h"
-#include "raymath.h"
 #include "menu.h"
 
-static Vector2 window_size = {400, 400};
-static Vector2 window_position = {SCREEN_WIDTH / 2 - (400 / 2), SCREEN_HEIGHT / 2 - (400 / 2)};
-static bool showMenu{};
-static bool toggleFullscreen{};
-static bool showFPS{true};
-bool showDebugInfo{false};
 bool showCollisionBoxes{};
-bool shouldClose{};
-
 float scale;
-unique_ptr<Game> game;
-unique_ptr<Menu> menu;
 
 int main() {
-  SetConfigFlags(FLAG_VSYNC_HINT);
-  InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
-  SetTargetFPS(60);
+  unique_ptr<Game> game;
+  unique_ptr<Menu> menu;
+
+  bool showDebugInfo{};
+  bool shouldClose{};
+  bool showMenu{};
+  bool toggleFullscreen{};
+  bool showFPS{true};
+
+  raylib::Window window(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
+  window.SetTargetFPS(60);
+  window.SetConfigFlags(FLAG_VSYNC_HINT);
 
   scale = MIN((float)GetScreenWidth() / SCREEN_WIDTH,
 			  (float)GetScreenHeight() / SCREEN_HEIGHT);
 
-  const RenderTexture2D target = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
-  SetTextureFilter(target.texture,
-				   TEXTURE_FILTER_BILINEAR);  // Texture scale filter to use
+  raylib::RenderTexture2D target(SCREEN_WIDTH, SCREEN_HEIGHT);
+  target.GetTexture().SetFilter(TEXTURE_FILTER_BILINEAR);  // Texture scale filter to use
 
   SetExitKey(0);
 
@@ -39,62 +35,62 @@ int main() {
 						   &showDebugInfo,
 						   &shouldClose);
 
-  while (!WindowShouldClose() && !shouldClose) {
+  while (!window.ShouldClose() && !shouldClose) {
 	if ((IsKeyPressed(KEY_ENTER) &&
 		(IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT))) || toggleFullscreen) {
 	  ToggleFullscreen();
 	  toggleFullscreen = false;
 	}
 
-	if (IsKeyPressed(KEY_ESCAPE) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_LEFT)) {
+	if (IsKeyPressed(KEY_ESCAPE) || raylib::Gamepad(0).IsButtonPressed(GAMEPAD_BUTTON_MIDDLE_LEFT)) {
 	  showMenu = !showMenu;
 	}
 
 	// Draw everything in the render texture, this will not be rendered on screen, yet
-	BeginTextureMode(target);
-	ClearBackground(BLACK);
+	target.BeginMode();
+	window.ClearBackground(BLACK);
 
 	if (game != nullptr) {
 	  game->Draw();
 	}
 
 	if (showFPS) {
-	  DrawFPS(SCREEN_WIDTH - 100, 10);
+	  window.DrawFPS(SCREEN_WIDTH - 100, 10);
 	}
 
-	EndTextureMode();
+	target.EndMode();
 
-	BeginDrawing();
+	window.BeginDrawing();
 
-	const Rectangle source = {0.0f, 0.0f,
-							  static_cast<float>(target.texture.width),
-							  static_cast<float>(-target.texture.height)};
-	const Rectangle dest = {(static_cast<float>(GetScreenWidth()) -
+	const raylib::Rectangle source = {0.0f, 0.0f,
+									  static_cast<float>(target.texture.width),
+									  static_cast<float>(-target.texture.height)};
+	const raylib::Rectangle dest = {(static_cast<float>(GetScreenWidth()) -
 		(static_cast<float>(SCREEN_WIDTH) * scale)) *
 		0.5f,
-							(static_cast<float>(GetScreenHeight()) -
-								(static_cast<float>(SCREEN_HEIGHT) * scale)) *
-								0.5f,
-							static_cast<float>(SCREEN_WIDTH) * scale,
-							static_cast<float>(SCREEN_HEIGHT) * scale};
+									(static_cast<float>(GetScreenHeight()) -
+										(static_cast<float>(SCREEN_HEIGHT) * scale)) *
+										0.5f,
+									static_cast<float>(SCREEN_WIDTH) * scale,
+									static_cast<float>(SCREEN_HEIGHT) * scale};
 
-	DrawTexturePro(target.texture, source, dest, {0, 0}, 0.0f, WHITE);
-	ClearBackground(BLACK);
+	target.GetTexture().Draw(source, dest, {0, 0}, 0.0f, WHITE);
+
+	window.ClearBackground(BLACK);
+
+	raylib::Vector2 menu_window_size = {400, 400};
+	raylib::Vector2 menu_window_position = {SCREEN_WIDTH / 2 - (400 / 2), SCREEN_HEIGHT / 2 - (400 / 2)};
 
 	if (showMenu) {
-	  menu->GuiWindowFloating(&window_position,
-							  &window_size,
+	  menu->GuiWindowFloating(&menu_window_position,
+							  &menu_window_size,
 							  {140, 320},
 							  "Options");
 	}
-	EndDrawing();
+	window.EndDrawing();
   }
-  
-  game.release();
-  
-  UnloadRenderTexture(target);
 
-  CloseWindow();
+  game.release();
 
   return 0;
 }

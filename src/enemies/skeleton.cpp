@@ -3,55 +3,112 @@
 
 #define WALK_SPEED 3
 
-// TODO: Change the way assets are loaded so that they are NOT separately loaded for each instance of the class.
-Skeleton::Skeleton(Vector2 pos,
-				   Rectangle collRect,
-				   const unique_ptr<Player> &p,
+Skeleton::Skeleton(raylib::Vector2 pos,
+				   raylib::Rectangle collisionRect,
+				   const unique_ptr<Player> &player,
 				   const unique_ptr<vector<unique_ptr<CollisionBody>>> &terrainCollisionBodies,
-				   const unique_ptr<Reactor<Vector2>> &reactor)
-	: CollisionBody{pos, collRect, true},
-	  player{p},
-	  terrainCollisionBodies{terrainCollisionBodies},
-	  idleAnimation{
-		  "assets/enemies/skeleton/Skeleton Idle.png",
-		  11,
-		  1.0f / 12.0f,
-		  5.f
-	  }, attackAnimation{
-		"assets/enemies/skeleton/Skeleton Attack.png",
+				   const unique_ptr<Reactor<raylib::Vector2>> &reactor,
+				   const shared_ptr<raylib::Texture2D> idleTexture,
+				   const shared_ptr<raylib::Texture2D> attackTexture,
+				   const shared_ptr<raylib::Texture2D> hitTexture,
+				   const shared_ptr<raylib::Texture2D> walkTexture,
+				   const shared_ptr<raylib::Texture2D> deathTexture) :
+	CollisionBody{pos, collisionRect, true},
+	player{player},
+	terrainCollisionBodies{terrainCollisionBodies},
+	deathReactor{reactor},
+	idleAnimation{
+		idleTexture,
+		11,
+		1.0f / 12.0f,
+		5.f
+	},
+	attackAnimation{
+		attackTexture,
 		18,
 		1.0f / 24.0f,
 		5.f
-	}, hitAnimation{
-		"assets/enemies/skeleton/Skeleton Hit.png",
+	},
+	hitAnimation{
+		hitTexture,
 		8,
 		1.0f / 24.0f,
 		5.f
-	}, walkAnimation{
-		"assets/enemies/skeleton/Skeleton Walk.png",
+	},
+	walkAnimation{
+		walkTexture,
 		13,
 		1.0f / (12.f * WALK_SPEED),
 		5.f
-	}, deathAnimation{
-		"assets/enemies/skeleton/Skeleton Dead.png",
+	},
+	deathAnimation{
+		deathTexture,
 		15,
 		1.0f / 12.0f,
 		5.f
-	}, deathReactor{reactor},
-	  attacking{false},
-	  health{50},
-	  dealDamage{true},
-	  hit{false},
-	  facingRight{true},
-	  sameYPosAsPlayer{false},
-	  delay{0},
-	  currentY{pos.y - 25},
-	  currentX{pos.x} {
-
+	},
+	attacking{false},
+	health{50},
+	dealDamage{true},
+	hit{false},
+	facingRight{true},
+	sameYPosAsPlayer{false},
+	delay{0},
+	currentY{pos.y - 25},
+	currentX{pos.x} {
   this->player->reactor.AddEventListener(ATTACK, [this](int data) {
 	Damage(data);
   });
 }
+
+//Skeleton::Skeleton(raylib::Vector2 pos,
+//				   raylib::Rectangle collRect,
+//				   const unique_ptr<Player> &p,
+//				   const unique_ptr<vector<unique_ptr<CollisionBody>>> &terrainCollisionBodies,
+//				   const unique_ptr<Reactor<raylib::Vector2>> &reactor)
+//	: CollisionBody{pos, collRect, true},
+//	  player{p},
+//	  terrainCollisionBodies{terrainCollisionBodies},
+//	  idleAnimation{
+//		  "assets/enemies/skeleton/Skeleton Idle.png",
+//		  11,
+//		  1.0f / 12.0f,
+//		  5.f
+//	  }, attackAnimation{
+//		"assets/enemies/skeleton/Skeleton Attack.png",
+//		18,
+//		1.0f / 24.0f,
+//		5.f
+//	}, hitAnimation{
+//		"assets/enemies/skeleton/Skeleton Hit.png",
+//		8,
+//		1.0f / 24.0f,
+//		5.f
+//	}, walkAnimation{
+//		"assets/enemies/skeleton/Skeleton Walk.png",
+//		13,
+//		1.0f / (12.f * WALK_SPEED),
+//		5.f
+//	}, deathAnimation{
+//		"assets/enemies/skeleton/Skeleton Dead.png",
+//		15,
+//		1.0f / 12.0f,
+//		5.f
+//	}, deathReactor{reactor},
+//	  attacking{false},
+//	  health{50},
+//	  dealDamage{true},
+//	  hit{false},
+//	  facingRight{true},
+//	  sameYPosAsPlayer{false},
+//	  delay{0},
+//	  currentY{pos.y - 25},
+//	  currentX{pos.x} {
+//
+//  this->player->reactor.AddEventListener(ATTACK, [this](int data) {
+//	Damage(data);
+//  });
+//}
 
 void Skeleton::Draw() {
   if (IsDead() && !deathAnimationPlayed) {
@@ -77,16 +134,19 @@ void Skeleton::Draw() {
 
   if (facingRight) {
 	collisionRect =
-		{currentX + idleAnimation.GetTextureWidth() / 2 - 25,
-		 currentY + 55,
-		 idleAnimation.GetTextureWidth() / 5,
-		 idleAnimation.GetTextureHeight() - 57};
+		{
+			.x = currentX + idleAnimation.GetTextureWidth() / 2 - 25,
+			.y = currentY + 55,
+			.width = idleAnimation.GetTextureWidth() / 5,
+			.height = idleAnimation.GetTextureHeight() - 57};
   } else {
 	collisionRect =
-		{currentX - 30 + idleAnimation.GetTextureWidth() / 2,
-		 currentY + 55,
-		 idleAnimation.GetTextureWidth() / 5,
-		 idleAnimation.GetTextureHeight() - 57};
+		{
+			.x = currentX - 30 + idleAnimation.GetTextureWidth() / 2,
+			.y = currentY + 55,
+			.width = idleAnimation.GetTextureWidth() / 5,
+			.height = idleAnimation.GetTextureHeight() - 57
+		};
   }
 
   if (facingRight) {
@@ -130,10 +190,10 @@ void Skeleton::HandleCombat() {
 	bool topCollision = false;
 	for (auto &terrain : *terrainCollisionBodies) {
 	  auto [topCol, yPos] = terrain->CheckTopCollision({
-														  collisionRect.x + 24 * 3,
-														  collisionRect.y,
-														  collisionRect.width,
-														  collisionRect.height}, 1);
+														   collisionRect.x + 24 * 3,
+														   collisionRect.y,
+														   collisionRect.width,
+														   collisionRect.height}, 1);
 	  if (topCol) {
 		topCollision = true;
 		break;
@@ -164,10 +224,10 @@ void Skeleton::HandleCombat() {
 	bool topCollision = false;
 	for (auto &terrain : *terrainCollisionBodies) {
 	  auto [topCol, yPos] = terrain->CheckTopCollision({
-														  collisionRect.x - 24 * 3,
-														  collisionRect.y,
-														  collisionRect.width,
-														  collisionRect.height}, 1);
+														   collisionRect.x - 24 * 3,
+														   collisionRect.y,
+														   collisionRect.width,
+														   collisionRect.height}, 1);
 	  if (topCol) {
 		topCollision = true;
 		break;

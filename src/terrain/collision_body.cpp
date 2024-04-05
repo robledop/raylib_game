@@ -1,13 +1,13 @@
 #include "collision_body.h"
 #include "config.h"
 
-CollisionBody::CollisionBody(Vector2 position,
-							 Rectangle collisionRect,
+CollisionBody::CollisionBody(raylib::Vector2 position,
+							 raylib::Rectangle collisionRect,
 							 bool blocking)
 	: blocking{blocking}, collisionRect{collisionRect}, position{position} {}
 
 std::tuple<bool, float> CollisionBody::CheckTopCollision(
-	Rectangle hitbox,
+	raylib::Rectangle hitbox,
 	float playerSpeed) const {
   if (!this->blocking)
 	return std::make_tuple(false, 0);
@@ -21,7 +21,7 @@ std::tuple<bool, float> CollisionBody::CheckTopCollision(
 }
 
 std::tuple<bool, float> CollisionBody::CheckSideCollision(
-	Rectangle hitbox,
+	raylib::Rectangle hitbox,
 	float playerSpeed) const {
   if (!blocking)
 	return std::make_tuple(false, 0);
@@ -40,7 +40,7 @@ std::tuple<bool, float> CollisionBody::CheckSideCollision(
 }
 
 // TODO: implement this
-bool CollisionBody::CheckBottomCollision(Rectangle hitbox,
+bool CollisionBody::CheckBottomCollision(raylib::Rectangle hitbox,
 										 float playerSpeed) const {
   if (!blocking)
 	return false;
@@ -52,13 +52,13 @@ bool CollisionBody::CheckBottomCollision(Rectangle hitbox,
 		  playerSpeed * GetFrameTime();
 }
 
-Rectangle CollisionBody::GetHitbox() const {
+raylib::Rectangle CollisionBody::GetHitbox() const {
   return collisionRect;
 }
-void CollisionBody::SetPosition(Vector2 pos) {
+void CollisionBody::SetPosition(raylib::Vector2 pos) {
   this->position = pos;
 }
-Vector2 CollisionBody::GetPosition() {
+raylib::Vector2 CollisionBody::GetPosition() {
   return position;
 }
 

@@ -1,7 +1,7 @@
 #ifndef RAYLIB_GAME_SRC_SHOP_H_
 #define RAYLIB_GAME_SRC_SHOP_H_
 
-#include "raylib.h"
+#include "raylib-cpp.hpp"
 #include "animation.h"
 #include "terrain/collision_body.h"
 
@@ -16,7 +16,7 @@ class Shop : public CollisionBody {
   };
 
  public:
-  Shop(Vector2 position, Rectangle collisionRect); 
+  Shop(raylib::Vector2 position, raylib::Rectangle collisionRect); 
 
   void Draw();
 };

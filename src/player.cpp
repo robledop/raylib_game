@@ -44,10 +44,10 @@ void Player::Draw() {
   }
 
   hitbox = {
-	  hitboxX,
-	  position.y + GetTextureHeight() / 2,
-	  GetWidth(),
-	  GetHeight()
+	  .x = hitboxX,
+	  .y = position.y + GetTextureHeight() / 2,
+	  .width = GetWidth(),
+	  .height = GetHeight()
   };
 
   if (lastDirection == RIGHT) {
@@ -74,7 +74,7 @@ void Player::Draw() {
 	this->position.x += RUN_SPEED;
   }
 
-  if (!attacking && stamina < 100){
+  if (!attacking && stamina < 100) {
 	stamina += 18 * deltaTime;
   }
 
@@ -97,13 +97,15 @@ void Player::Draw() {
 	}
   }
 
-  if ((IsKeyPressed(KEY_SPACE) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) && !jumping && !hit) {
+  if ((IsKeyPressed(KEY_SPACE) || raylib::Gamepad(0).IsButtonPressed(GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) && !jumping
+	  && !hit) {
 	// jumping
 	jumping = true;
 	// JUMP_FORCE is in pixels per second
 	fallSpeed += JUMP_FORCE * deltaTime;
 	onGround = false;
-  } else if ((IsKeyPressed(KEY_N) || IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) && !attacking && !hit
+  } else if ((IsKeyPressed(KEY_N) || raylib::Gamepad(0).IsButtonPressed(GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) && !attacking
+	  && !hit
 	  && stamina >= 10) {
 	attacking = true;
 	stamina -= 15;
@@ -155,7 +157,7 @@ void Player::Draw() {
   }
 }
 
-void Player::SetPosition(Vector2 pos) {
+void Player::SetPosition(raylib::Vector2 pos) {
   this->position = pos;
 }
 void Player::Damage(int damage) {

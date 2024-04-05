@@ -1,17 +1,17 @@
 #ifndef RAYLIB_GAME_SRC_DECORATIONS_DECORATION_H_
 #define RAYLIB_GAME_SRC_DECORATIONS_DECORATION_H_
 
-#include "raylib.h"
+#include "raylib-cpp.hpp"
 extern float scale;
 
 class Decoration {
-  const Texture *texture;
-  Vector2 position;
-  Rectangle rec;
+  const raylib::Texture *texture;
+  raylib::Vector2 position;
+  raylib::Rectangle rec;
 
  public:
-  Decoration(Vector2 pos, const Texture *tex);
-  Decoration(Vector2 pos, const Texture *tex, Rectangle rec);
+  Decoration(raylib::Vector2 pos, const raylib::Texture *tex);
+  Decoration(raylib::Vector2 pos, const raylib::Texture *tex, raylib::Rectangle rec);
   void Draw() const;
 };
 

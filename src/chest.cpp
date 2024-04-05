@@ -1,6 +1,6 @@
 #include "chest.h"
 
-Chest::Chest(Vector2 position, Rectangle collisionRect) : CollisionBody{position, collisionRect} {
+Chest::Chest(raylib::Vector2 position, raylib::Rectangle collisionRect) : CollisionBody{position, collisionRect} {
 
 }
 

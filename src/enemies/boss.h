@@ -23,11 +23,11 @@ class Boss : public CollisionBody, public Enemy {
   bool animationCompleted{};
   int random{};
  public:
-  Boss(Vector2 pos,
-	   Rectangle collisionRect,
+  Boss(raylib::Vector2 pos,
+	   raylib::Rectangle collisionRect,
 	   const unique_ptr<Player> &player,
 	   unique_ptr<vector<unique_ptr<CollisionBody>>> &terrainCollisionBodies,
-	   const unique_ptr<Reactor<Vector2>> &reactor);
+	   const unique_ptr<Reactor<raylib::Vector2>> &reactor);
   void Draw();
   [[nodiscard]] int GetHealth() const;
   [[nodiscard]] bool IsDead() const;
@@ -37,7 +37,7 @@ class Boss : public CollisionBody, public Enemy {
  private:
   const unique_ptr<Player> &player;
   unique_ptr<vector<unique_ptr<CollisionBody>>> &terrainCollisionBodies;
-  const unique_ptr<Reactor<Vector2>> &reactor;
+  const unique_ptr<Reactor<raylib::Vector2>> &reactor;
 };
 
 #endif 

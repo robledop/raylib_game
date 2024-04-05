@@ -4,6 +4,6 @@ void Shop::Draw() {
   animation.Animate(position, true);
 }
 
-Shop::Shop(Vector2 position, Rectangle collisionRect) : CollisionBody(position, collisionRect, false) {
+Shop::Shop(raylib::Vector2 position, raylib::Rectangle collisionRect) : CollisionBody(position, collisionRect, false) {
 
 }

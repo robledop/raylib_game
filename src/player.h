@@ -1,7 +1,7 @@
 #ifndef RAYLIB_GAME_SRC_PLAYER_H_
 #define RAYLIB_GAME_SRC_PLAYER_H_
 
-#include "raylib.h"
+//#include "raylib-cpp.hpp"
 #include "animation.h"
 #include "reactor.h"
 #include "config.h"
@@ -34,13 +34,13 @@ class Player {
  public:
   int collectedCoins{};
   int healthPotions{};
-  std::function<void(int, Rectangle)> onBeingHit;
+  std::function<void(int, raylib::Rectangle)> onBeingHit;
   Reactor<int> reactor{};
   float maxHealth{100};
   float maxStamina{100};
   float health{100};
   float stamina{100};
-  Rectangle weaponHitbox{};
+  raylib::Rectangle weaponHitbox{};
   bool isDead{false};
   bool deathAnimationPlayed{false};
   bool blocked{false};
@@ -48,10 +48,10 @@ class Player {
   bool rightBlocked{};
   bool falling{};
   float fallSpeed{};
-  Rectangle hitbox{};
+  raylib::Rectangle hitbox{};
   bool onGround{true};
   bool attacking{};
-  Vector2 position{};
+  raylib::Vector2 position{};
   Direction direction{STOP};
   Direction lastDirection{RIGHT};
 
@@ -63,7 +63,7 @@ class Player {
   [[nodiscard]] float GetHeight() const;
   [[nodiscard]] float GetTextureWidth() const;
   [[nodiscard]] float GetWidth() const;
-  void SetPosition(Vector2 pos);
+  void SetPosition(raylib::Vector2 pos);
   void Attack();
   void Damage(int damage);
 };

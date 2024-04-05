@@ -14,7 +14,7 @@ class Chest : public CollisionBody{
   };
 
  public:
-  Chest(Vector2 position, Rectangle collisionRect);
+  Chest(raylib::Vector2 position, raylib::Rectangle collisionRect);
   void Draw();
 
 };

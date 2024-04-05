@@ -15,6 +15,12 @@ extern bool showCollisionBoxes;
 
 class Skeleton : public CollisionBody, public Enemy {
  private:
+  
+//  Skeleton(raylib::Vector2 pos,
+//		   raylib::Rectangle collisionRect,
+//		   const unique_ptr<Player> &player,
+//		   const unique_ptr<vector<unique_ptr<CollisionBody>>> &terrainCollisionBodies,
+//		   const unique_ptr<Reactor<raylib::Vector2>> &reactor);
   bool deathAnimationPlayed;
   bool attacking;
   bool dealDamage;
@@ -33,6 +39,16 @@ class Skeleton : public CollisionBody, public Enemy {
   void HandleCombat();
 
  public:
+  Skeleton(raylib::Vector2 pos,
+		   raylib::Rectangle collisionRect,
+		   const unique_ptr<Player> &player,
+		   const unique_ptr<vector<unique_ptr<CollisionBody>>> &terrainCollisionBodies,
+		   const unique_ptr<Reactor<raylib::Vector2>> &reactor,
+		   const shared_ptr<raylib::Texture2D> idleTexture,
+		   const shared_ptr<raylib::Texture2D> attackTexture,
+		   const shared_ptr<raylib::Texture2D> hitTexture,
+		   const shared_ptr<raylib::Texture2D> walkTexture,
+		   const shared_ptr<raylib::Texture2D> deathTexture);
   Animation idleAnimation;
   Animation attackAnimation;
   Animation hitAnimation;
@@ -41,12 +57,7 @@ class Skeleton : public CollisionBody, public Enemy {
   bool droppedLoot{false};
 
   Reactor<int> reactor;
-  const unique_ptr<Reactor<Vector2>> &deathReactor;
-  Skeleton(Vector2 pos,
-		   Rectangle collisionRect,
-		   const unique_ptr<Player> &player,
-		   const unique_ptr<vector<unique_ptr<CollisionBody>>> &terrainCollisionBodies,
-		   const unique_ptr<Reactor<Vector2>> &reactor);
+  const unique_ptr<Reactor<raylib::Vector2>> &deathReactor;
   void Draw();
   [[nodiscard]] int GetHealth() const;
   [[nodiscard]] bool IsDead() const;

@@ -9,7 +9,7 @@ class BronzeCoin : public CollisionBody {
 
  public:
   bool isCollected{};
-  BronzeCoin(const char *texturePath, Vector2 position, Rectangle drawingRect) :
+  BronzeCoin(const char *texturePath, raylib::Vector2 position, raylib::Rectangle drawingRect) :
 	  animation{texturePath, 5, 1.0f / 12.0f, 2.f},
 	  CollisionBody{position, drawingRect} {
   }

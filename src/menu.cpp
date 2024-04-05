@@ -20,34 +20,69 @@ void Menu::GuiWindowFloating(Vector2 *position,
   }
 }
 void Menu::DrawContent(Vector2 position) {
-  restartGameButtonPosition = {position.x + 20, position.y + 50, 200, 25};
+  restartGameButtonPosition = {
+	  .x = position.x + 20,
+	  .y = position.y + 50,
+	  .width = 200,
+	  .height = 25
+  };
   bool restartGameButton = GuiButton(restartGameButtonPosition, "Restart game");
   if (restartGameButton) {
 	StartGame();
   }
 
-  fullScreenButtonPosition = {position.x + 20, position.y + 50 + 28, 200, 25};
+  fullScreenButtonPosition = {
+	  .x =position.x + 20,
+	  .y = position.y + 50 + 28,
+	  .width= 200,
+	  .height= 25
+  };
+
   bool fullScreenButton = GuiButton(fullScreenButtonPosition, "Toggle fullscreen");
   if (fullScreenButton) {
 	*toggleFullscreen = true;
   }
 
-  showCollisionBoxesButtonPosition = {position.x + 20, position.y + 50 + 28 * 2, 25, 25};
+  showCollisionBoxesButtonPosition = {
+	  .x =position.x + 20,
+	  .y = position.y + 50 + 28 * 2,
+	  .width =25,
+	  .height = 25
+  };
+
   GuiCheckBox(showCollisionBoxesButtonPosition,
 			  "Show collision boxes",
 			  showCollisionBoxes);
 
-  showFPSButtonPosition = {position.x + 20, position.y + 50 + 28 * 3, 25, 25};
+  showFPSButtonPosition = {
+	  .x = position.x + 20,
+	  .y = position.y + 50 + 28 * 3,
+	  .width= 25,
+	  .height = 25
+  };
+
   GuiCheckBox(showFPSButtonPosition,
 			  "Show FPS",
 			  showFPS);
 
-  showDebugInfoButtonPosition = {position.x + 20, position.y + 50 + 28 * 4, 25, 25};
+  showDebugInfoButtonPosition = {
+	  .x = position.x + 20,
+	  .y = position.y + 50 + 28 * 4,
+	  .width = 25,
+	  .height = 25
+  };
+
   GuiCheckBox(showDebugInfoButtonPosition,
 			  "Show debug info",
 			  showDebugInfo);
 
-  exitButtonPosition = {position.x + 20, position.y + 300, 100, 25};
+  exitButtonPosition = {
+	  .x = position.x + 20,
+	  .y = position.y + 300,
+	  .width = 100,
+	  .height = 25
+  };
+
   bool exitButton = GuiButton(exitButtonPosition, "Quit");
   if (exitButton) {
 	Quit();
